@@ -1,8 +1,10 @@
 ﻿using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Types;
+using MusixmatchClientLib.Auth;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,8 @@ namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
+        private static string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MusixmatchClientLib");
+
         private enum StatusCode
         {
             Success = 200, // The request was successful.
@@ -26,15 +30,9 @@ namespace MusixmatchClientLib
 
         private ApiRequestFactory requestFactory;
 
-        public static string IssueNewToken()
+        public MusixmatchClient(MusixmatchToken userToken)
         {
-            ApiRequestFactory requestFactory = new ApiRequestFactory("van-darkholme-dungeon-master-performance-artist-deep-dark-fantasies");
-            return requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet, new Dictionary<string, string>()).Cast<TokenGet>().UserToken;
-        }
-
-        public MusixmatchClient(string userToken)
-        {
-            requestFactory = new ApiRequestFactory(userToken);
+            requestFactory = new ApiRequestFactory(userToken.Token);
         }
 
         /// <summary>

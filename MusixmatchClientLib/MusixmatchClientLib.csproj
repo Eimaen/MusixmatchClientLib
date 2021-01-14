@@ -58,6 +58,7 @@
     <Compile Include="API\Model\Types\Track.cs" />
     <Compile Include="API\Model\TrackSnippetGet.cs" />
     <Compile Include="API\Model\Types\User.cs" />
+    <Compile Include="Auth\MusixmatchToken.cs" />
     <Compile Include="MusixmatchClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
