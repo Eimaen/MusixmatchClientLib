@@ -48,11 +48,9 @@
     <Compile Include="API\Model\MusixmatchApiResponse.cs" />
     <Compile Include="API\Model\TrackGet.cs" />
     <Compile Include="API\Model\TrackLyricsGet.cs" />
-    <Compile Include="API\Model\TrackLyricsTranslationGet.cs" />
     <Compile Include="API\Model\TrackSearch.cs" />
     <Compile Include="API\Model\TrackSubtitleGet.cs" />
     <Compile Include="API\Model\Types\Lyrics.cs" />
-    <Compile Include="API\Model\Types\LyricsTranslation.cs" />
     <Compile Include="API\Model\Types\MusicGenre.cs" />
     <Compile Include="API\Model\Types\Snippet.cs" />
     <Compile Include="API\Model\Types\Subtitle.cs" />

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model
 {
-    class TrackSubtitleGet : MusixmatchApiResponse
+    public class TrackSubtitleGet : MusixmatchApiResponse
     {
         [JsonProperty("subtitle")]
         public Subtitle Subtitle;

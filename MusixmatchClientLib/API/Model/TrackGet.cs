@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model
 {
-    class TrackGet : MusixmatchApiResponse
+    public class TrackGet : MusixmatchApiResponse
     {
         [JsonProperty("track")]
         public Track Track;

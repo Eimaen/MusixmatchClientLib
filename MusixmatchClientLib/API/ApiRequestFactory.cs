@@ -43,7 +43,6 @@ namespace MusixmatchClientLib.API
         {
             TrackGet,
             TrackLyricsGet,
-            TrackLyricsTranslationGet,
             TrackSearch,
             TrackSnippetGet,
             TrackSubtitleGet
@@ -56,7 +55,6 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackSubtitleGet] = "track.subtitle.get",
             [ApiMethod.TrackLyricsGet] = "track.lyrics.get",
             [ApiMethod.TrackSnippetGet] = "track.snippet.get",
-            [ApiMethod.TrackLyricsTranslationGet] = "track.lyrics.translation.get"
         };
 
         public ApiRequestFactory(string userToken)
