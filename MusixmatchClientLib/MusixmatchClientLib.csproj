@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="API\ApiRequestFactory.cs" />
     <Compile Include="API\Model\MusixmatchApiResponse.cs" />
+    <Compile Include="API\Model\TokenGet.cs" />
     <Compile Include="API\Model\TrackGet.cs" />
     <Compile Include="API\Model\TrackLyricsGet.cs" />
     <Compile Include="API\Model\TrackSearch.cs" />

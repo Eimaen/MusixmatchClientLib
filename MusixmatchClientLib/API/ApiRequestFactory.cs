@@ -41,6 +41,7 @@ namespace MusixmatchClientLib.API
 
         public enum ApiMethod
         {
+            TokenGet,
             TrackGet,
             TrackLyricsGet,
             TrackSearch,
@@ -50,6 +51,7 @@ namespace MusixmatchClientLib.API
 
         private static Dictionary<ApiMethod, string> Endpoints = new Dictionary<ApiMethod, string>()
         {
+            [ApiMethod.TokenGet] = "token.get",
             [ApiMethod.TrackSearch] = "track.search",
             [ApiMethod.TrackGet] = "track.get",
             [ApiMethod.TrackSubtitleGet] = "track.subtitle.get",

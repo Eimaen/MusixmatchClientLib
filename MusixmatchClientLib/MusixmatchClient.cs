@@ -26,6 +26,12 @@ namespace MusixmatchClientLib
 
         private ApiRequestFactory requestFactory;
 
+        public static string IssueNewToken()
+        {
+            ApiRequestFactory requestFactory = new ApiRequestFactory("van-darkholme-dungeon-master-performance-artist-deep-dark-fantasies");
+            return requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet, new Dictionary<string, string>()).Cast<TokenGet>().UserToken;
+        }
+
         public MusixmatchClient(string userToken)
         {
             requestFactory = new ApiRequestFactory(userToken);
@@ -188,7 +194,8 @@ namespace MusixmatchClientLib
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsGet, new Dictionary<string, string>
             {
-                ["track_id"] = id.ToString()
+                ["track_id"] = id.ToString(),
+                ["part"] = "user,lyrics_verified_by"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
