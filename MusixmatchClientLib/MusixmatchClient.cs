@@ -155,8 +155,10 @@ namespace MusixmatchClientLib
         /// </summary>
         public enum SubtitleFormat
         {
-            Lrc,
-            Musixmatch
+            Lrc, 
+            Dfxp, // Xml representation
+            Stledu, // I dont know what is it
+            Musixmatch // Secret one
         }
 
         /// <summary>
@@ -172,6 +174,12 @@ namespace MusixmatchClientLib
             {
                 case SubtitleFormat.Lrc:
                     parameters.Add("subtitle_format", "lrc");
+                    break;
+                case SubtitleFormat.Dfxp:
+                    parameters.Add("subtitle_format", "dfxp");
+                    break;
+                case SubtitleFormat.Stledu:
+                    parameters.Add("subtitle_format", "stledu");
                     break;
                 case SubtitleFormat.Musixmatch:
                     parameters.Add("subtitle_format", "mxm");
