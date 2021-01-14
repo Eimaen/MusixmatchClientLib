@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusixmatchClientLib", "MusixmatchClientLib\MusixmatchClientLib.csproj", "{8723FAB2-444E-436C-AEE7-08F929E7DBAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "MCLTest\Tests.csproj", "{698E86F0-0E46-4DB8-9A4F-F042EB4377A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8723FAB2-444E-436C-AEE7-08F929E7DBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8723FAB2-444E-436C-AEE7-08F929E7DBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8723FAB2-444E-436C-AEE7-08F929E7DBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8723FAB2-444E-436C-AEE7-08F929E7DBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{698E86F0-0E46-4DB8-9A4F-F042EB4377A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{698E86F0-0E46-4DB8-9A4F-F042EB4377A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{698E86F0-0E46-4DB8-9A4F-F042EB4377A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{698E86F0-0E46-4DB8-9A4F-F042EB4377A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1A43762F-4EEA-4E81-9EED-A6C06C01B9DB}
+	EndGlobalSection
+EndGlobal
