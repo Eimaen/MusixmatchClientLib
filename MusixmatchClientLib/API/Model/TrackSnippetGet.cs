@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model
 {
-    public class TrackSnippetGet
+    public class TrackSnippetGet : MusixmatchApiResponse
     {
         [JsonProperty("snippet")]
         public Snippet Snippet;
