@@ -26,6 +26,10 @@ namespace MusixmatchClientLib.Auth
         
         public MusixmatchToken() => Token = IssueNewToken();
 
+        /// <summary>
+        /// Creates an url to authorize a token
+        /// </summary>
+        /// <returns></returns>
         public string GetAuthUrl() => $"https://oauth.musixmatch.com/credential/signin?app_id=web-desktop-app-v1.0&usertoken={Token}";
     }
 }
