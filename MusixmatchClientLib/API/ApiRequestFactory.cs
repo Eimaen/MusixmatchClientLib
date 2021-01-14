@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
 {
-    public class ApiRequestFactory
+    class ApiRequestFactory
     {
         private const string ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/";
         private const string AppId = @"web-desktop-app-v1.0";
