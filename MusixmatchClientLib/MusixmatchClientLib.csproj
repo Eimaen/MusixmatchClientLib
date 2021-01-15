@@ -45,12 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ApiRequestFactory.cs" />
+    <Compile Include="API\Model\Exceptions\MusixmatchRequestException.cs" />
     <Compile Include="API\Model\MusixmatchApiResponse.cs" />
     <Compile Include="API\Model\TokenGet.cs" />
     <Compile Include="API\Model\TrackGet.cs" />
     <Compile Include="API\Model\TrackLyricsGet.cs" />
     <Compile Include="API\Model\TrackSearch.cs" />
     <Compile Include="API\Model\TrackSubtitleGet.cs" />
+    <Compile Include="API\Model\TrackSubtitlePost.cs" />
     <Compile Include="API\Model\Types\Lyrics.cs" />
     <Compile Include="API\Model\Types\MusicGenre.cs" />
     <Compile Include="API\Model\Types\Snippet.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Auth\MusixmatchToken.cs" />
     <Compile Include="MusixmatchClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\TrackSearchParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

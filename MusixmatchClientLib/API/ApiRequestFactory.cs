@@ -16,11 +16,23 @@ namespace MusixmatchClientLib.API
         private const string AppId = @"web-desktop-app-v1.0";
         public string UserToken { get; private set; }
 
-        private string Fetch(string _url)
+        private CookieContainer cookieContainer = new CookieContainer();
+
+        private string Request(string _url, string _method = "GET", string _data = "")
         {
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(_url);
-            request.CookieContainer = new CookieContainer();
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_url);
+            request.Method = _method;
+            request.CookieContainer = cookieContainer;
+            if (_method == "POST")
+            {
+                byte[] byteArray = Encoding.UTF8.GetBytes(_data);
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = byteArray.Length;
+                using (Stream dataStream = request.GetRequestStream())
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+            }
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            cookieContainer.Add(response.Cookies);
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
@@ -33,8 +45,10 @@ namespace MusixmatchClientLib.API
         private string GetArgumentString(Dictionary<string, string> arguments)
         {
             string argumentString = "?";
-            foreach (var pair in arguments)
-                argumentString += $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}&";
+            if (arguments != null)
+                foreach (var pair in arguments)
+                    if (pair.Value != string.Empty)
+                        argumentString += $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}&";
             argumentString = argumentString.Remove(argumentString.Length - 1);
             return argumentString;
         }
@@ -46,7 +60,8 @@ namespace MusixmatchClientLib.API
             TrackLyricsGet,
             TrackSearch,
             TrackSnippetGet,
-            TrackSubtitleGet
+            TrackSubtitleGet,
+            TrackSubtitlePost
         }
 
         private static Dictionary<ApiMethod, string> Endpoints = new Dictionary<ApiMethod, string>()
@@ -57,6 +72,18 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackSubtitleGet] = "track.subtitle.get",
             [ApiMethod.TrackLyricsGet] = "track.lyrics.get",
             [ApiMethod.TrackSnippetGet] = "track.snippet.get",
+            [ApiMethod.TrackSubtitlePost] = "track.subtitle.post",
+        };
+
+        private static Dictionary<ApiMethod, string> RequestMethods = new Dictionary<ApiMethod, string>()
+        {
+            [ApiMethod.TokenGet] = "GET",
+            [ApiMethod.TrackSearch] = "GET",
+            [ApiMethod.TrackGet] = "GET",
+            [ApiMethod.TrackSubtitleGet] = "GET",
+            [ApiMethod.TrackLyricsGet] = "GET",
+            [ApiMethod.TrackSnippetGet] = "GET",
+            [ApiMethod.TrackSubtitlePost] = "POST",
         };
 
         public ApiRequestFactory(string userToken)
@@ -64,8 +91,10 @@ namespace MusixmatchClientLib.API
             UserToken = userToken;
         }
 
-        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments)
+        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments, Dictionary<string, string> data = null)
         {
+            string requestMethod = RequestMethods[method];
+
             string endpoint = Endpoints[method];
 
             additionalArguments.Add("format", "json");
@@ -74,9 +103,10 @@ namespace MusixmatchClientLib.API
             // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
 
             string arguments = GetArgumentString(additionalArguments);
+            string dataEncoded = GetArgumentString(data);
 
             string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
-            string response = Fetch(requestUrl);
+            string response = Request(requestUrl, requestMethod, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
 
             var responseParsed = JObject.Parse(response);
 
@@ -84,10 +114,12 @@ namespace MusixmatchClientLib.API
             {
                 StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
                 TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
-                Body = responseParsed.SelectToken("$..body").ToString()
+                Body = responseParsed.SelectToken("$..body").ToString(),
+                Header = responseParsed.SelectToken("$..header").ToString()
             };
 
             return apiResponse;
         }
+
     }
 }

@@ -1,10 +1,12 @@
 ﻿using MusixmatchClientLib;
 using MusixmatchClientLib.Auth;
+using MusixmatchClientLib.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MCLTest
@@ -13,16 +15,14 @@ namespace MCLTest
     {
         static void Main(string[] args)
         {
-            var token = string.Empty;
+            var tokenString = string.Empty;
             if (File.Exists("token.mxm"))
-                token = File.ReadAllText("token.mxm");
+                tokenString = File.ReadAllText("token.mxm");
             else
-                File.WriteAllText("token.mxm", (token = new MusixmatchToken().Token));
-            MusixmatchClient client = new MusixmatchClient(new MusixmatchToken(token));
-            var tracks = client.SongSearch("Tristam - Once Again"); // JSaB <3
-            var firstTrack = tracks.First();
-            var lyrics = client.GetSyncedLyrics(firstTrack.TrackId, MusixmatchClient.SubtitleFormat.Musixmatch);
-            Console.WriteLine(lyrics.SubtitleBody);
+                File.WriteAllText("token.mxm", (tokenString = new MusixmatchToken().Token));
+            MusixmatchToken token = new MusixmatchToken(tokenString);
+            MusixmatchClient client = new MusixmatchClient(token);
+            Console.WriteLine(client.GetSyncedLyrics(client.SongSearch("Tristam - Till it's over").First().TrackId).SubtitleBody);
             Console.ReadKey();
         }
     }

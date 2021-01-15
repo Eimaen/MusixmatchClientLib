@@ -2,6 +2,7 @@
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Types;
 using MusixmatchClientLib.Auth;
+using MusixmatchClientLib.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,7 @@ namespace MusixmatchClientLib
     {
         private static string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MusixmatchClientLib");
 
-        private enum StatusCode
+        private enum StatusCode // All the descriptions were taken from the official Musixmatch API documentation
         {
             Success = 200, // The request was successful.
             BadSyntax = 400, // The request had bad syntax or was inherently impossible to be satisfied.
@@ -30,9 +31,36 @@ namespace MusixmatchClientLib
 
         private ApiRequestFactory requestFactory;
 
-        public MusixmatchClient(MusixmatchToken userToken)
+        public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
+
+        /// <summary>
+        /// Search the Musixmatch song database for a track.
+        /// </summary>
+        /// <param name="query">Search query, any word in the song title or artist name or lyrics</param>
+        /// <returns>List of tracks</returns>
+        public List<Track> SongSearch(TrackSearchParameters parameters)
         {
-            requestFactory = new ApiRequestFactory(userToken.Token);
+            var sortDecrypted = TrackSearchParameters.StrategyDecryptions[TrackSearchParameters.SortStrategy.TrackRatingAsc];
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSearch, new Dictionary<string, string>
+            {
+                ["q"] = parameters.Query,
+                ["q_lyrics"] = parameters.LyricsQuery,
+                ["q_artist"] = parameters.Artist,
+                ["q_track"] = parameters.Title,
+                ["q_album"] = parameters.Album,
+                ["f_has_lyrics"] = parameters.HasLyrics ? "1" : "",
+                ["f_has_subtitle"] = parameters.HasSubtitles ? "1" : "",
+                [sortDecrypted.Key] = sortDecrypted.Value,
+                ["page"] = parameters.PageNumber.ToString(),
+                ["page_size"] = parameters.PageSize.ToString(),
+                ["f_lyrics_language"] = parameters.Language
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+            List<Track> tracks = new List<Track>();
+            foreach (var track in response.Cast<TrackSearch>().Results)
+                tracks.Add(track.Track);
+            return tracks;
         }
 
         /// <summary>
@@ -66,29 +94,6 @@ namespace MusixmatchClientLib
             {
                 ["q_artist"] = artist,
                 ["q_track"] = song
-            });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
-            List<Track> tracks = new List<Track>();
-            foreach (var track in response.Cast<TrackSearch>().Results)
-                tracks.Add(track.Track);
-            return tracks;
-        }
-
-        /// <summary>
-        /// Search the Musixmatch song database for a track.
-        /// </summary>
-        /// <param name="artist">The song artist</param>
-        /// <param name="song">The song title</param>
-        /// <param name="album">The song album</param>
-        /// <returns>List of tracks</returns>
-        public List<Track> SongSearch(string artist, string song, string album)
-        {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSearch, new Dictionary<string, string>
-            {
-                ["q_artist"] = artist,
-                ["q_track"] = song,
-                ["q_album"] = album // Not documented but works ;)
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
@@ -206,6 +211,35 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
             return response.Cast<TrackLyricsGet>().Lyrics;
+        }
+
+        /// <summary>
+        /// Submit track subtitles by its Musixmatch id. Use Musixmatch (mxm) format!
+        /// TODO: I don't know what's wrong, but as the subtitle is submitted, they are immediately removed from Musixmatch, , but points remain.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="subtitles">Subtitle data in Musixmatch (mxm) format</param>
+        /// <returns>Lyrics</returns>
+        public void SubmitTrackLyricsSynced(int id, string subtitles)
+        {
+            var trackData = GetTrackById(id);
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitlePost, new Dictionary<string, string>
+            {
+                ["commontrack_id"] = trackData.CommontrackId.ToString(),
+                ["length"] = trackData.TrackLength.ToString(),
+                ["q_track"] = trackData.TrackName,
+                ["original_title"] = trackData.TrackName,
+                ["q_artist"] = trackData.ArtistName,
+                ["original_artist"] = trackData.ArtistName,
+                ["original_uri"] = trackData.TrackSpotifyId,
+                ["num_keypressed"] = "2048",
+                ["time_spent"] = "519852"
+            }, new Dictionary<string, string>()
+            {
+                ["subtitle_body"] = subtitles
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
         }
     }
 }
