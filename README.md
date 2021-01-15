@@ -55,7 +55,7 @@ however, if you don’t care what the paragraph above says, at least make sure y
 
 ## Usage
 Using the library is quite simple. 
-A complete list of samples is under development, until it's ready I'll leave a usage examples:
+A complete list of samples is under development, until it's ready I'll leave some usage examples:
 
 ### Tokens
 `MusixmatchToken` class represents the Musixmatch client token, that is used in all the client requests. 
