@@ -6,6 +6,9 @@
 **MusixmatchClientLib** is a .NET library designed to interact with Musixmatch client API easily. This project also contains an information about Musixmatch's hidden endpoints to work with. 
 
 ## TODO
+**General**
+- [ ] Wiki & API documentation *(coming soon)*
+
 **Officially implemented API methods**
 - [ ] chart.artists.get
 - [ ] chart.tracks.get
@@ -154,3 +157,5 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 Exceptions are WIP too, so right now you have to handle default exceptions with messages.
 Later there will be more, like `MusixmatchRequestException`
 
+## How to help
+Just star the project so that I understand that it is not useless, continue developing it, and become a little happier ^_^
