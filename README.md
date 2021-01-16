@@ -45,7 +45,7 @@ It is open to absolutely everyone, free of charge.
 *I apologize for such a long story.*
 In any case, you can get points for free without destroying the database of lyrics. 
 I do not recommend doing this, because it is against the rules for using Musixmatch, 
-however, if you don’t care what the paragraph above says, at least make sure you don’t do it:
+however, if you don’t care what the paragraph above says, at least make sure you don’t do the following:
 - Don't write bots to translate lyrics *(machine-translated texts are just awful)*
 - Don't write bots to recognize lyrics *(STT is shit when used with songs)*
 - Don't write bots to sync lyrics *(as above, STT is a bad idea)*
@@ -54,7 +54,7 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - Don't write bots to spam translations *(same as above)*
 - **Don't write bots at all**
 
-*There is a funny fact that the MusixmatchClientLib's functionality does not yet allow creating bots.*
+*There is a funny fact that the MusixmatchClientLib's functionality does not allow creating bots yet.*
 
 ## Usage
 Using the library is quite simple. 
@@ -155,7 +155,7 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 
 ### Exception handling
 Exceptions are WIP too, so right now you have to handle default exceptions with messages.
-Later there will be more, like `MusixmatchRequestException`
+Later you will find more exceptions like `MusixmatchRequestException`
 
 ## How to help
-Just star the project so that I understand that it is not useless, continue developing it, and become a little happier ^_^
+Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
