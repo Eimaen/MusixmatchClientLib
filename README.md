@@ -37,14 +37,14 @@
 ## A *really* earnest request *(call it a disclaimer)*
 All the information provided in this repository is **for educational purposes only**. 
 **Please do not use this to write bots or other automation applications.** 
-This is the platform that is good for it, that it is supported by people. 
+This platform is good for it is supported by people. 
 There is no point in the race for points, they will not give you anything. 
-Another thing is the database of lyrics, which has been replenished every day since the beginning of Musikhmatch's existence, and continues to grow to this day. 
+Another thing is the database of lyrics, which has been replenished every day since the beginning of Musixmatch's existence, and continues to grow to this day. 
 It is open to absolutely everyone, free of charge.
 
 *I apologize for such a long story.*
 In any case, you can get points for free without destroying the database of lyrics. 
-I do not recommend doing this, because it is against the rules for using Musihmatch, 
+I do not recommend doing this, because it is against the rules for using Musixmatch, 
 however, if you don’t care what the paragraph above says, at least make sure you don’t do it:
 - Don't write bots to translate lyrics *(machine-translated texts are just awful)*
 - Don't write bots to recognize lyrics *(STT is shit when used with songs)*
