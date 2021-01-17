@@ -18,8 +18,8 @@
 - [x] track.snippet.get
 - [x] track.subtitle.get
 - [ ] track.richsync.get
-- [ ] track.lyrics.translation.get
-- [ ] track.subtitle.translation.get
+- [ ] track.lyrics.translation.get *WIP*
+- [ ] track.subtitle.translation.get *WIP*
 - [ ] music.genres.get
 - [ ] matcher.lyrics.get
 - [ ] matcher.track.get
@@ -32,7 +32,11 @@
 - [ ] album.tracks.get
 
 **Unofficial API methods**
-- [x] track.subtitle.post
+- [x] track.subtitle.post *WIP*
+
+**Missions API**
+- [x] Get Missions
+- [ ] Get Tasks
 
 ## A *really* earnest request *(call it a disclaimer)*
 All the information provided in this repository is **for educational purposes only**. 
