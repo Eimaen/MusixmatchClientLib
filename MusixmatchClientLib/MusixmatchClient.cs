@@ -31,6 +31,10 @@ namespace MusixmatchClientLib
 
         private ApiRequestFactory requestFactory;
 
+        /// <summary>
+        /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
+        /// </summary>
+        /// <param name="userToken"></param>
         public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
 
         /// <summary>

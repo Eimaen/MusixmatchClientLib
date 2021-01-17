@@ -61,7 +61,9 @@ namespace MusixmatchClientLib.API
             TrackSearch,
             TrackSnippetGet,
             TrackSubtitleGet,
-            TrackSubtitlePost
+            TrackSubtitlePost,
+            RequestJwtToken,
+            MissionsGet
         }
 
         private static Dictionary<ApiMethod, string> Endpoints = new Dictionary<ApiMethod, string>()
@@ -73,9 +75,11 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsGet] = "track.lyrics.get",
             [ApiMethod.TrackSnippetGet] = "track.snippet.get",
             [ApiMethod.TrackSubtitlePost] = "track.subtitle.post",
+            [ApiMethod.RequestJwtToken] = "jwt.get",
+            [ApiMethod.MissionsGet] = "graphql"
         };
 
-        private static Dictionary<ApiMethod, string> RequestMethods = new Dictionary<ApiMethod, string>()
+        private static Dictionary<ApiMethod, string> RequestMethods = new Dictionary<ApiMethod, string>() // TODO: get this into CustomRequestParameters
         {
             [ApiMethod.TokenGet] = "GET",
             [ApiMethod.TrackSearch] = "GET",
@@ -84,6 +88,17 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsGet] = "GET",
             [ApiMethod.TrackSnippetGet] = "GET",
             [ApiMethod.TrackSubtitlePost] = "POST",
+            [ApiMethod.RequestJwtToken] = "GET",
+            [ApiMethod.MissionsGet] = "POST"
+        };
+
+        private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
+        {
+            [ApiMethod.MissionsGet] = new CustomRequestParameters
+            {
+                Endpoint = "https://missions-backend.musixmatch.com/",
+                IgnoreDefaultCast = true
+            }
         };
 
         public ApiRequestFactory(string userToken)
@@ -91,11 +106,17 @@ namespace MusixmatchClientLib.API
             UserToken = userToken;
         }
 
-        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments, Dictionary<string, string> data = null)
+        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments, Dictionary<string, string> data = null, CustomRequestParameters requestParameters = null)
         {
+            if (requestParameters == null)
+                if (CustomRequestParameters.ContainsKey(method))
+                    requestParameters = CustomRequestParameters[method];
+                else
+                    requestParameters = new CustomRequestParameters();
+
             string requestMethod = RequestMethods[method];
 
-            string endpoint = Endpoints[method];
+            string endpoint = requestParameters.Endpoint == string.Empty ? Endpoints[method] : requestParameters.Endpoint;
 
             additionalArguments.Add("format", "json");
             additionalArguments.Add("app_id", AppId);
@@ -108,18 +129,28 @@ namespace MusixmatchClientLib.API
             string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
             string response = Request(requestUrl, requestMethod, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
 
-            var responseParsed = JObject.Parse(response);
-
-            MusixmatchApiResponse apiResponse = new MusixmatchApiResponse
+            if (requestParameters.IgnoreDefaultCast)
             {
-                StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
-                TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
-                Body = responseParsed.SelectToken("$..body").ToString(),
-                Header = responseParsed.SelectToken("$..header").ToString()
-            };
+                return new MusixmatchApiResponse
+                {
+                    StatusCode = 0,
+                    TimeElapsed = 0,
+                    Body = response,
+                    Header = string.Empty
+                };
+            }
+            else
+            {
+                var responseParsed = JObject.Parse(response);
 
-            return apiResponse;
+                return new MusixmatchApiResponse
+                {
+                    StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
+                    TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
+                    Body = responseParsed.SelectToken("$..body").ToString(),
+                    Header = responseParsed.SelectToken("$..header").ToString()
+                };
+            }
         }
-
     }
 }
