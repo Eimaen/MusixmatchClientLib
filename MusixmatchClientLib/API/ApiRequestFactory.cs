@@ -96,7 +96,7 @@ namespace MusixmatchClientLib.API
         {
             [ApiMethod.MissionsGet] = new CustomRequestParameters
             {
-                Endpoint = "https://missions-backend.musixmatch.com/",
+                EndpointOverride = "https://missions-backend.musixmatch.com/",
                 IgnoreDefaultCast = true
             }
         };
@@ -116,7 +116,7 @@ namespace MusixmatchClientLib.API
 
             string requestMethod = RequestMethods[method];
 
-            string endpoint = requestParameters.Endpoint == string.Empty ? Endpoints[method] : requestParameters.Endpoint;
+            string endpoint = requestParameters.EndpointOverride ?? Endpoints[method];
 
             additionalArguments.Add("format", "json");
             additionalArguments.Add("app_id", AppId);
