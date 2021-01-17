@@ -234,5 +234,11 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
+
+        public string RequestJWTToken()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>();
+            return response.JwtToken;
+        }
     }
 }

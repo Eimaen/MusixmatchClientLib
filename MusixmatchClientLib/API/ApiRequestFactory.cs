@@ -62,8 +62,7 @@ namespace MusixmatchClientLib.API
             TrackSnippetGet,
             TrackSubtitleGet,
             TrackSubtitlePost,
-            RequestJwtToken,
-            MissionsGet
+            RequestJwtToken
         }
 
         private static Dictionary<ApiMethod, string> Endpoints = new Dictionary<ApiMethod, string>()
@@ -75,8 +74,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsGet] = "track.lyrics.get",
             [ApiMethod.TrackSnippetGet] = "track.snippet.get",
             [ApiMethod.TrackSubtitlePost] = "track.subtitle.post",
-            [ApiMethod.RequestJwtToken] = "jwt.get",
-            [ApiMethod.MissionsGet] = "graphql"
+            [ApiMethod.RequestJwtToken] = "jwt.get"
         };
 
         private static Dictionary<ApiMethod, string> RequestMethods = new Dictionary<ApiMethod, string>() // TODO: get this into CustomRequestParameters
@@ -88,17 +86,12 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsGet] = "GET",
             [ApiMethod.TrackSnippetGet] = "GET",
             [ApiMethod.TrackSubtitlePost] = "POST",
-            [ApiMethod.RequestJwtToken] = "GET",
-            [ApiMethod.MissionsGet] = "POST"
+            [ApiMethod.RequestJwtToken] = "GET"
         };
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
         {
-            [ApiMethod.MissionsGet] = new CustomRequestParameters
-            {
-                EndpointOverride = "https://missions-backend.musixmatch.com/",
-                IgnoreDefaultCast = true
-            }
+            
         };
 
         public ApiRequestFactory(string userToken)
@@ -106,7 +99,7 @@ namespace MusixmatchClientLib.API
             UserToken = userToken;
         }
 
-        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments, Dictionary<string, string> data = null, CustomRequestParameters requestParameters = null)
+        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null, CustomRequestParameters requestParameters = null)
         {
             if (requestParameters == null)
                 if (CustomRequestParameters.ContainsKey(method))
@@ -117,6 +110,9 @@ namespace MusixmatchClientLib.API
             string requestMethod = RequestMethods[method];
 
             string endpoint = requestParameters.EndpointOverride ?? Endpoints[method];
+
+            if (additionalArguments == null)
+                additionalArguments = new Dictionary<string, string>();
 
             additionalArguments.Add("format", "json");
             additionalArguments.Add("app_id", AppId);
