@@ -14,12 +14,17 @@ namespace MusixmatchClientLib.API
     {
         public static List<Mission> ParseMissions(string userToken, string userId, string jwtToken)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint
             request.Method = "POST";
             request.Headers = new WebHeaderCollection();
             request.Headers.Add(HttpRequestHeader.Authorization, jwtToken);
             request.CookieContainer = new CookieContainer();
-            string requestBody = $"{{\"operationName\":\"AvailableMissionsList\",\"variables\":{{\"userToken\":\"{userToken}\",\"appId\":\"web-desktop-app-v1.0\",\"userId\":\"{userId}\"}},\"query\":\"query AvailableMissionsList($appId: String, $userId: ID!, $userToken: String = null) {{\\n  getAvailableMissions(input: {{appId: $appId, userId: $userId, userToken: $userToken}}) {{\\n    items {{\\n      id\\n      badges {{\\n        image_url_large\\n        image_url_small\\n        name\\n        __typename\\n      }}\\n      categories\\n      description\\n      duration\\n      expiry\\n      lastUpdated\\n      missionId\\n      num_tasks_target\\n      title\\n      userProgress {{\\n        id\\n        deadline\\n        lastUpdated\\n        missionId\\n        num_tasks_completed\\n        status\\n        __typename\\n      }}\\n      __typename\\n    }}\\n    nextToken\\n    __typename\\n  }}\\n}}\\n\"}}";
+            string requestBody = $"{{\"operationName\":\"AvailableMissionsList\",\"variables\":{{\"userToken\":\"{userToken}\",\"appId\":\"web-desktop-app-v1.0\",\"userId\":\"{userId}\"}},\"query\":" +
+                $"\"query AvailableMissionsList($appId: String, $userId: ID!, $userToken: String = null) {{\\n  getAvailableMissions(input: {{appId: $appId, userId: $userId, userToken: $userToken}}) " +
+                $"{{\\n    items {{\\n      id\\n      badges {{\\n        image_url_large\\n        image_url_small\\n        name\\n        __typename\\n      }}\\n      categories\\n      " +
+                $"description\\n      duration\\n      expiry\\n      lastUpdated\\n      missionId\\n      num_tasks_target\\n      title\\n      userProgress {{\\n        id\\n        " +
+                $"deadline\\n        lastUpdated\\n        missionId\\n        num_tasks_completed\\n        status\\n        __typename\\n      }}\\n      __typename\\n    }}\\n    " +
+                $"nextToken\\n    __typename\\n  }}\\n}}\\n\"}}"; // So long...
             byte[] byteArray = Encoding.UTF8.GetBytes(requestBody);
             request.ContentType = "application/json";
             request.ContentLength = byteArray.Length;
