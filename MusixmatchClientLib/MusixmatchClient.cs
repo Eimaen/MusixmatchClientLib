@@ -1,5 +1,6 @@
 ﻿using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Model;
+using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Model.Types;
 using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Types;
@@ -15,19 +16,6 @@ namespace MusixmatchClientLib
     public class MusixmatchClient
     {
         private static string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MusixmatchClientLib");
-
-        private enum StatusCode // All the descriptions were taken from the official Musixmatch API documentation
-        {
-            Success = 200, // The request was successful.
-            BadSyntax = 400, // The request had bad syntax or was inherently impossible to be satisfied.
-            AuthFailed = 401, // Authentication failed, probably because of invalid/missing API key.
-            UsageLimitReached = 402, // The usage limit has been reached, either you exceeded per day requests limits or your balance is insufficient.
-            NotAuthorized = 403, // You are not authorized to perform this operation.
-            ResourceNotFound = 404, // The requested resource was not found.
-            MethodNotFound = 405, // The requested method was not found.
-            ServerError = 500, // Ops. Something were wrong.
-            ServerBusy = 503 // Our system is a bit busy at the moment and your request can’t be satisfied.
-        }
 
         private ApiRequestFactory requestFactory;
 
@@ -60,7 +48,7 @@ namespace MusixmatchClientLib
                 ["f_lyrics_language"] = parameters.Language
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -79,7 +67,7 @@ namespace MusixmatchClientLib
                 ["q"] = query
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -100,7 +88,7 @@ namespace MusixmatchClientLib
                 ["q_track"] = song
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -119,7 +107,7 @@ namespace MusixmatchClientLib
                 ["q_lyrics"] = lyrics
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -138,7 +126,7 @@ namespace MusixmatchClientLib
                 ["track_id"] = id.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackGet>().Track;
         }
 
@@ -154,7 +142,7 @@ namespace MusixmatchClientLib
                 ["track_id"] = id.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             var snippet = response.Cast<TrackSnippetGet>();
             return snippet.Snippet.Instrumental == 0 ? snippet.Snippet.SnippetBody : string.Empty;
         }
@@ -196,7 +184,7 @@ namespace MusixmatchClientLib
             }
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitleGet, parameters);
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackSubtitleGet>().Subtitle;
         }
 
@@ -213,7 +201,7 @@ namespace MusixmatchClientLib
                 ["part"] = "user,lyrics_verified_by"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackLyricsGet>().Lyrics;
         }
 
@@ -227,6 +215,7 @@ namespace MusixmatchClientLib
         public void SubmitTrackLyricsSynced(int id, string subtitles)
         {
             var trackData = GetTrackById(id);
+            Random random = new Random();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitlePost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
@@ -236,14 +225,14 @@ namespace MusixmatchClientLib
                 ["q_artist"] = trackData.ArtistName,
                 ["original_artist"] = trackData.ArtistName,
                 ["original_uri"] = trackData.TrackSpotifyId,
-                ["num_keypressed"] = "2048",
-                ["time_spent"] = "519852"
+                ["num_keypressed"] = random.Next(16, 2048).ToString(),
+                ["time_spent"] = random.Next(2048, 1048576).ToString()
             }, new Dictionary<string, string>()
             {
                 ["subtitle_body"] = subtitles
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new Exception($"Musixmatch request failed: {(StatusCode)response.StatusCode}");
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
     }
 }

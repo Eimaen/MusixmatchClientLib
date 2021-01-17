@@ -56,6 +56,7 @@
     <Compile Include="API\Model\Types\Lyrics.cs" />
     <Compile Include="API\Model\Types\MusicGenre.cs" />
     <Compile Include="API\Model\Types\Snippet.cs" />
+    <Compile Include="API\Model\Types\StatusCode.cs" />
     <Compile Include="API\Model\Types\Subtitle.cs" />
     <Compile Include="API\Model\Types\Track.cs" />
     <Compile Include="API\Model\TrackSnippetGet.cs" />
