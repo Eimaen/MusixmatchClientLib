@@ -66,7 +66,8 @@ namespace MusixmatchClientLib.API
             UserGet,
             SpotifyOauthTokenGet,
             TrackLyricsTranslationGet,
-            CrowdUserFeedbackGet
+            CrowdUserFeedbackGet,
+            TrackLyricsPost
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -121,6 +122,11 @@ namespace MusixmatchClientLib.API
             {
                 EndpointResource = "crowd.user.feedback.get"
             },
+            [ApiMethod.TrackLyricsPost] = new CustomRequestParameters
+            {
+                EndpointResource = "track.lyrics.post",
+                RequestMethod = "POST"
+            }
         };
 
         public ApiRequestFactory(string userToken)

@@ -209,11 +209,10 @@ namespace MusixmatchClientLib
 
         /// <summary>
         /// Submit track subtitles by its Musixmatch id. Use Musixmatch (mxm) format!
-        /// TODO: I don't know what's wrong, but as the subtitle is submitted, they are immediately removed from Musixmatch, , but points remain.
+        /// TODO: I don't know what's wrong, but as the subtitle is submitted, they are immediately removed from Musixmatch, but points are added.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="subtitles">Subtitle data in Musixmatch (mxm) format</param>
-        /// <returns>Lyrics</returns>
         public void SubmitTrackLyricsSynced(int id, string subtitles)
         {
             var trackData = GetTrackById(id);
@@ -238,7 +237,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Gets Musixmatch user information
+        /// Gets Musixmatch user information.
         /// </summary>
         /// <returns>User data</returns>
         public UserGet GetUserInfo()
@@ -262,7 +261,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Gets lyrics translation
+        /// Gets lyrics translation.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="language">Selected language in ISO format</param>
@@ -280,7 +279,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns a list of tasks to complete
+        /// Returns a list of tasks to complete.
         /// </summary>
         /// <returns>List of feedbacks</returns>
         public List<FeedbackList> GetCrowdFeedback()
@@ -293,6 +292,28 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
+        }
+
+        /// <summary>
+        /// Submit track lyrics by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="subtitles">Track lyrics</param>
+        public void SubmitTrackLyrics(int id, string lyrics)
+        {
+            var trackData = GetTrackById(id);
+            Random random = new Random();
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsPost, new Dictionary<string, string>
+            {
+                ["track_id"] = trackData.CommontrackId.ToString(),
+                ["q_track"] = trackData.TrackName,
+                ["q_artist"] = trackData.ArtistName
+            }, new Dictionary<string, string>()
+            {
+                ["lyrics_body"] = lyrics
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         #region Work In Progress
