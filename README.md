@@ -6,40 +6,44 @@
 **MusixmatchClientLib** is a .NET library designed to interact with Musixmatch client API easily. This project also contains an information about Musixmatch's hidden endpoints to work with. 
 
 ## TODO
+Definitions:
+- **W**: Work in progress
+- **H**: Hold
+
 **General**
-- [ ] Wiki & API documentation *WIP*
+- [ ] Wiki & API documentation | **W**
 
 **Officially implemented API methods**
-- [ ] chart.artists.get *Hold*
-- [ ] chart.tracks.get *Hold*
+- [ ] chart.artists.get | **H**
+- [ ] chart.tracks.get | **W**
 - [x] track.search
 - [x] track.get
 - [x] track.lyrics.get
 - [x] track.snippet.get
 - [x] track.subtitle.get
-- [ ] track.richsync.get *WIP*
+- [ ] track.richsync.get | **W**
 - [x] track.lyrics.translation.get 
-- [ ] track.subtitle.translation.get *WIP*
-- [ ] music.genres.get *Hold*
-- [ ] matcher.lyrics.get *Hold*
-- [ ] matcher.track.get *Hold*
-- [ ] matcher.subtitle.get *Hold*
-- [ ] artist.get *Hold*
-- [ ] artist.search *Hold*
-- [ ] artist.albums.get *Hold*
-- [ ] artist.related.get *Hold*
-- [ ] album.get *Hold*
-- [ ] album.tracks.get *Hold*
+- [ ] track.subtitle.translation.get | **W**
+- [ ] music.genres.get | **H**
+- [ ] matcher.lyrics.get | **H**
+- [ ] matcher.track.get | **H**
+- [ ] matcher.subtitle.get | **H**
+- [ ] artist.get | **H**
+- [ ] artist.search | **H**
+- [ ] artist.albums.get | **H**
+- [ ] artist.related.get | **H**
+- [ ] album.get | **H**
+- [ ] album.tracks.get | **H**
 
 **Unofficial API methods**
 - [x] track.subtitle.post
 - [x] track.lyrics.post
 - [x] crowd.user.feedback.get
-- [ ] track.lyrics.translation.get *WIP*
+- [ ] track.lyrics.translation.get | **W**
 
 **Missions API**
 - [x] Get missions
-- [ ] Get tasks *Hold*
+- [ ] Get tasks | **H**
 
 ## A *really* earnest request *(call it a disclaimer)*
 All the information provided in this repository is **for educational purposes only**. 
