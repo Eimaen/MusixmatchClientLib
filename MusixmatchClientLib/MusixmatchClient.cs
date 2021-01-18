@@ -316,6 +316,20 @@ namespace MusixmatchClientLib
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
+        public List<string> ChartTracksGet()
+        {
+            List<string> returnValue = new List<string>();
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartTracksGet, new Dictionary<string, string>
+            {
+                
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            foreach (var track in response.Cast<ChartTracksGet>().TrackList)
+                returnValue.Add(track.Track);
+            return returnValue;
+        }
+
         #region Work In Progress
         public string RequestMissionManager()
         {

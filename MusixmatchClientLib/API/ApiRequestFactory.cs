@@ -67,7 +67,8 @@ namespace MusixmatchClientLib.API
             SpotifyOauthTokenGet,
             TrackLyricsTranslationGet,
             CrowdUserFeedbackGet,
-            TrackLyricsPost
+            TrackLyricsPost,
+            ChartTracksGet
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -78,8 +79,7 @@ namespace MusixmatchClientLib.API
             },
             [ApiMethod.TrackSearch] = new CustomRequestParameters
             {
-                EndpointResource = "track.search",
-                RequestMethod = "SEARCH"
+                EndpointResource = "track.search"
             },
             [ApiMethod.TrackGet] = new CustomRequestParameters
             {
@@ -126,7 +126,11 @@ namespace MusixmatchClientLib.API
             {
                 EndpointResource = "track.lyrics.post",
                 RequestMethod = "POST"
-            }
+            },
+            [ApiMethod.ChartTracksGet] = new CustomRequestParameters
+            {
+                EndpointResource = "chart.tracks.get"
+            },
         };
 
         public ApiRequestFactory(string userToken)

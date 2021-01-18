@@ -47,12 +47,16 @@
     <Compile Include="API\ApiRequestFactory.cs" />
     <Compile Include="API\CustomRequestParameters.cs" />
     <Compile Include="API\MissionManager.cs" />
+    <Compile Include="API\Model\ChartTracksGet.cs" />
+    <Compile Include="API\Model\CrowdUserFeedbackGet.cs" />
     <Compile Include="API\Model\Exceptions\MusixmatchRequestException.cs" />
     <Compile Include="API\Model\JwtGet.cs" />
     <Compile Include="API\Model\MusixmatchApiResponse.cs" />
+    <Compile Include="API\Model\OauthTokenGet.cs" />
     <Compile Include="API\Model\TokenGet.cs" />
     <Compile Include="API\Model\TrackGet.cs" />
     <Compile Include="API\Model\TrackLyricsGet.cs" />
+    <Compile Include="API\Model\TrackLyricsTranslationGet.cs" />
     <Compile Include="API\Model\TrackSearch.cs" />
     <Compile Include="API\Model\TrackSubtitleGet.cs" />
     <Compile Include="API\Model\TrackSubtitlePost.cs" />
