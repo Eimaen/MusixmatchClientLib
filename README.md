@@ -7,36 +7,39 @@
 
 ## TODO
 **General**
-- [ ] Wiki & API documentation *(coming soon)*
+- [ ] Wiki & API documentation *WIP*
 
 **Officially implemented API methods**
-- [ ] chart.artists.get
-- [ ] chart.tracks.get
+- [ ] chart.artists.get *Hold*
+- [ ] chart.tracks.get *Hold*
 - [x] track.search
 - [x] track.get
 - [x] track.lyrics.get
 - [x] track.snippet.get
 - [x] track.subtitle.get
-- [ ] track.richsync.get
-- [ ] track.lyrics.translation.get *WIP*
+- [ ] track.richsync.get *WIP*
+- [x] track.lyrics.translation.get 
 - [ ] track.subtitle.translation.get *WIP*
-- [ ] music.genres.get
-- [ ] matcher.lyrics.get
-- [ ] matcher.track.get
-- [ ] matcher.subtitle.get
-- [ ] artist.get
-- [ ] artist.search
-- [ ] artist.albums.get
-- [ ] artist.related.get
-- [ ] album.get
-- [ ] album.tracks.get
+- [ ] music.genres.get *Hold*
+- [ ] matcher.lyrics.get *Hold*
+- [ ] matcher.track.get *Hold*
+- [ ] matcher.subtitle.get *Hold*
+- [ ] artist.get *Hold*
+- [ ] artist.search *Hold*
+- [ ] artist.albums.get *Hold*
+- [ ] artist.related.get *Hold*
+- [ ] album.get *Hold*
+- [ ] album.tracks.get *Hold*
 
 **Unofficial API methods**
-- [x] track.subtitle.post *WIP*
+- [x] track.subtitle.post
+- [x] track.lyrics.post
+- [x] crowd.user.feedback.get
+- [ ] track.lyrics.translation.get *WIP*
 
 **Missions API**
-- [x] Get Missions
-- [ ] Get Tasks
+- [x] Get missions
+- [ ] Get tasks *Hold*
 
 ## A *really* earnest request *(call it a disclaimer)*
 All the information provided in this repository is **for educational purposes only**. 
@@ -150,7 +153,7 @@ int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
 string snippet = client.GetTrackSnippet(trackId);
 ```
 
-**Submit track synced lyrics ***(WIP, do not use, currently just adds points and removes sync)***:**
+**Submit track synced lyrics:**
 ```C#
 // Submit track lyrics with time sync (in Musixmatch format)
 int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
