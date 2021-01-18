@@ -1,4 +1,5 @@
 ﻿using MusixmatchClientLib;
+using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Types;
 using System;
@@ -22,7 +23,7 @@ namespace MCLTest
                 File.WriteAllText("token.mxm", (tokenString = new MusixmatchToken().Token));
             MusixmatchToken token = new MusixmatchToken(tokenString);
             MusixmatchClient client = new MusixmatchClient(token);
-            Console.WriteLine(client.GetSyncedLyrics(client.SongSearch("Tristam - Till it's over").First().TrackId).SubtitleBody);
+            Console.WriteLine(client.GetUserInfo().UserData.UserId);
             Console.ReadKey();
         }
     }

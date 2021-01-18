@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MusixmatchClientLib.API.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,15 @@ namespace MusixmatchClientLib.API
 {
     public class MissionManager
     {
-        public static List<Mission> ParseMissions(string userToken, string userId, string jwtToken)
+        private string jwtToken { get; set; }
+
+        internal MissionManager(string userToken)
+        {
+            ApiRequestFactory requestFactory = new ApiRequestFactory(userToken);
+            jwtToken = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<JwtGet>().JwtToken;
+        }
+
+        public List<Mission> ParseMissions(string userToken, string userId, string jwtToken)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint
             request.Method = "POST";

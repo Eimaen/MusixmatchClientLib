@@ -8,7 +8,7 @@ namespace MusixmatchClientLib.API
 {
     class CustomRequestParameters
     {
-        public string EndpointOverride { get; set; } = null;
-        public bool IgnoreDefaultCast { get; set; } = false;
+        public string RequestMethod { get; set; } = "GET";
+        public string EndpointResource { get; set; } = "";
     }
 }

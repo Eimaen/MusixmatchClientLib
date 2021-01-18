@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model.Types
 {
-    enum StatusCode // All the descriptions were taken from the official Musixmatch API documentation
+    public enum StatusCode // All the descriptions were taken from the official Musixmatch API documentation
     {
+        Undefined = 0, // Not handled.
         Success = 200, // The request was successful.
         BadSyntax = 400, // The request had bad syntax or was inherently impossible to be satisfied.
         AuthFailed = 401, // Authentication failed, probably because of invalid/missing API key.

@@ -62,36 +62,65 @@ namespace MusixmatchClientLib.API
             TrackSnippetGet,
             TrackSubtitleGet,
             TrackSubtitlePost,
-            RequestJwtToken
+            RequestJwtToken,
+            UserGet,
+            SpotifyOauthTokenGet,
+            TrackLyricsTranslationGet,
+            CrowdUserFeedbackGet
         }
-
-        private static Dictionary<ApiMethod, string> Endpoints = new Dictionary<ApiMethod, string>()
-        {
-            [ApiMethod.TokenGet] = "token.get",
-            [ApiMethod.TrackSearch] = "track.search",
-            [ApiMethod.TrackGet] = "track.get",
-            [ApiMethod.TrackSubtitleGet] = "track.subtitle.get",
-            [ApiMethod.TrackLyricsGet] = "track.lyrics.get",
-            [ApiMethod.TrackSnippetGet] = "track.snippet.get",
-            [ApiMethod.TrackSubtitlePost] = "track.subtitle.post",
-            [ApiMethod.RequestJwtToken] = "jwt.get"
-        };
-
-        private static Dictionary<ApiMethod, string> RequestMethods = new Dictionary<ApiMethod, string>() // TODO: get this into CustomRequestParameters
-        {
-            [ApiMethod.TokenGet] = "GET",
-            [ApiMethod.TrackSearch] = "GET",
-            [ApiMethod.TrackGet] = "GET",
-            [ApiMethod.TrackSubtitleGet] = "GET",
-            [ApiMethod.TrackLyricsGet] = "GET",
-            [ApiMethod.TrackSnippetGet] = "GET",
-            [ApiMethod.TrackSubtitlePost] = "POST",
-            [ApiMethod.RequestJwtToken] = "GET"
-        };
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
         {
-            
+            [ApiMethod.TokenGet] = new CustomRequestParameters
+            {
+                EndpointResource = "token.get"
+            },
+            [ApiMethod.TrackSearch] = new CustomRequestParameters
+            {
+                EndpointResource = "track.search",
+                RequestMethod = "SEARCH"
+            },
+            [ApiMethod.TrackGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.get"
+            },
+            [ApiMethod.TrackSubtitleGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.subtitle.get"
+            },
+            [ApiMethod.TrackLyricsGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.lyrics.get"
+            },
+            [ApiMethod.TrackSnippetGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.snippet.get"
+            },
+            [ApiMethod.TrackSubtitlePost] = new CustomRequestParameters
+            {
+                EndpointResource = "track.subtitle.post",
+                RequestMethod = "POST"
+            },
+            [ApiMethod.RequestJwtToken] = new CustomRequestParameters
+            {
+                EndpointResource = "jwt.get"
+            },
+            [ApiMethod.UserGet] = new CustomRequestParameters
+            {
+                EndpointResource = "user.get"
+            },
+            [ApiMethod.SpotifyOauthTokenGet] = new CustomRequestParameters
+            {
+                EndpointResource = "spotify.oauthtoken.get"
+            },
+            [ApiMethod.TrackLyricsTranslationGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.lyrics.translation.get"
+            },
+            [ApiMethod.CrowdUserFeedbackGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.feedback.get"
+            },
         };
 
         public ApiRequestFactory(string userToken)
@@ -99,17 +128,17 @@ namespace MusixmatchClientLib.API
             UserToken = userToken;
         }
 
-        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null, CustomRequestParameters requestParameters = null)
+        public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null)
         {
-            if (requestParameters == null)
-                if (CustomRequestParameters.ContainsKey(method))
-                    requestParameters = CustomRequestParameters[method];
-                else
-                    requestParameters = new CustomRequestParameters();
+            CustomRequestParameters requestParameters;
 
-            string requestMethod = RequestMethods[method];
+            if (CustomRequestParameters.ContainsKey(method))
+                requestParameters = CustomRequestParameters[method];
+            else
+                requestParameters = new CustomRequestParameters();
 
-            string endpoint = requestParameters.EndpointOverride ?? Endpoints[method];
+            string endpoint = requestParameters.EndpointResource;
+            string requestMethod = requestParameters.RequestMethod;
 
             if (additionalArguments == null)
                 additionalArguments = new Dictionary<string, string>();
@@ -125,28 +154,15 @@ namespace MusixmatchClientLib.API
             string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
             string response = Request(requestUrl, requestMethod, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
 
-            if (requestParameters.IgnoreDefaultCast)
-            {
-                return new MusixmatchApiResponse
-                {
-                    StatusCode = 0,
-                    TimeElapsed = 0,
-                    Body = response,
-                    Header = string.Empty
-                };
-            }
-            else
-            {
-                var responseParsed = JObject.Parse(response);
+            var responseParsed = JObject.Parse(response);
 
-                return new MusixmatchApiResponse
-                {
-                    StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
-                    TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
-                    Body = responseParsed.SelectToken("$..body").ToString(),
-                    Header = responseParsed.SelectToken("$..header").ToString()
-                };
-            }
+            return new MusixmatchApiResponse
+            {
+                StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
+                TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
+                Body = responseParsed.SelectToken("$..body").ToString(),
+                Header = responseParsed.SelectToken("$..header").ToString()
+            };
         }
     }
 }

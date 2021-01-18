@@ -19,7 +19,7 @@ namespace MusixmatchClientLib.Auth
         private static string IssueNewToken()
         {
             ApiRequestFactory requestFactory = new ApiRequestFactory("van-darkholme-dungeon-master-performance-artist-deep-dark-fantasies");
-            return requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet, new Dictionary<string, string>()).Cast<TokenGet>().UserToken;
+            return requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<TokenGet>().UserToken;
         }
 
         public MusixmatchToken(string token) => Token = token;

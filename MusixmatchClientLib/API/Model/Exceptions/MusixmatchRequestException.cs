@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model.Exceptions
 {
-    class MusixmatchRequestException : Exception
+    public class MusixmatchRequestException : Exception
     {
         public StatusCode StatusCode { get; }
 

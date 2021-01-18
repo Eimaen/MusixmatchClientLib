@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MusixmatchClientLib.API.Model.CrowdUserFeedbackGet;
+using static MusixmatchClientLib.API.Model.OauthTokenGet;
 
 namespace MusixmatchClientLib
 {
@@ -235,10 +237,70 @@ namespace MusixmatchClientLib
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
-        public string RequestJWTToken()
+        /// <summary>
+        /// Gets Musixmatch user information
+        /// </summary>
+        /// <returns>User data</returns>
+        public UserGet GetUserInfo()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.UserGet);
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<UserGet>();
+        }
+
+        /// <summary>
+        /// Get spotify <see cref="Oauthtoken"/>. I have also noticed, that even with free spotify account this token acts like premium. Learn more at <see href="developer.spotify.com"/>.
+        /// </summary>
+        /// <returns>Spotify token info</returns>
+        public Oauthtoken GetSpotifyOauthToken()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.SpotifyOauthTokenGet);
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<OauthTokenGet>().Token;
+        }
+
+        /// <summary>
+        /// Gets lyrics translation
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">Selected language in ISO format</param>
+        /// <returns>String with translated lyrics</returns>
+        public string GetLyricsTranslation(int id, string language)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString(),
+                ["selected_language"] = language
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<TrackLyricsTranslationGet>().Lyrics.TranslatedLyrics.LyricsBody;
+        }
+
+        /// <summary>
+        /// Returns a list of tasks to complete
+        /// </summary>
+        /// <returns>List of feedbacks</returns>
+        public List<FeedbackList> GetCrowdFeedback()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
+            {
+                ["feedback_type"] = "feedback_type=lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,%20lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,%20lyrics_music_id,track_annotat",
+                ["part"] = "track"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
+        }
+
+        #region Work In Progress
+        public string RequestMissionManager()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>();
             return response.JwtToken;
         }
+        #endregion
     }
 }
