@@ -9,20 +9,21 @@
 Definitions:
 - **W**: Work in progress
 - **H**: Hold
-
-**General**
-- [ ] Wiki & API documentation | **W**
+- **I**: Implemented
+- **S**: Code-documented (Summary)
+- **T**: Tested
+- **D**: Wiki-documented
 
 **Officially implemented API methods**
 - [ ] chart.artists.get | **H**
-- [ ] chart.tracks.get | **W**
-- [x] track.search
-- [x] track.get
-- [x] track.lyrics.get
-- [x] track.snippet.get
-- [x] track.subtitle.get
+- [ ] chart.tracks.get | **WIS**
+- [x] track.search | **IST**
+- [x] track.get | **IST**
+- [x] track.lyrics.get | **IST**
+- [x] track.snippet.get | **IST**
+- [x] track.subtitle.get | **IST**
 - [ ] track.richsync.get | **W**
-- [x] track.lyrics.translation.get 
+- [x] track.lyrics.translation.get | **IS**
 - [ ] track.subtitle.translation.get | **W**
 - [ ] music.genres.get | **H**
 - [ ] matcher.lyrics.get | **H**
@@ -36,13 +37,12 @@ Definitions:
 - [ ] album.tracks.get | **H**
 
 **Unofficial API methods**
-- [x] track.subtitle.post
-- [x] track.lyrics.post
-- [x] crowd.user.feedback.get
-- [ ] track.lyrics.translation.get | **W**
+- [x] track.subtitle.post | **IS**
+- [x] track.lyrics.post | **IS**
+- [x] crowd.user.feedback.get | **IS**
 
 **Missions API**
-- [x] Get missions
+- [x] Get missions | **I**
 - [ ] Get tasks | **H**
 
 ## A *really* earnest request *(call it a disclaimer)*
