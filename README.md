@@ -2,6 +2,7 @@
 **Partial Musixmatch client API documentation and its C# implementation**
 
 [![CodeFactor](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib/badge?s=70546a2802f8bab8bf9f44f18eeff4177faa14e7)](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib)
+[![CircleCI](https://circleci.com/gh/Eimaen/MusixmatchClientLib.svg?style=shield&circle-token=161ae5a56e3c9352df1ca627e1b8c09e0d63e32f)](https://app.circleci.com/pipelines/github/Eimaen/MusixmatchClientLib)
 
 ----
 
