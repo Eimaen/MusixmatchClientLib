@@ -17,4 +17,4 @@ jobs:
           name: "Building the solution"
           command: dotnet publish -c Release -r win10-x64
       - store_artifacts:
-          path: .\bin\Release\netstandard2.0\win10-x64\publish\MusixmatchClientLib.dll
+          path: .\MusixmatchClientLib\bin\Release\netstandard2.0\win10-x64\publish\MusixmatchClientLib.dll
