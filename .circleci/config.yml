@@ -10,19 +10,11 @@ jobs:
       shell: powershell.exe
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ checksum "MusixmatchClientLib\MusixmatchClientLib.csproj" }}
       - run:
-          name: "Install project dependencies"
+          name: "Installing project dependencies"
           command: dotnet restore
-      - save_cache:
-          paths:
-            - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "MusixmatchClientLib\MusixmatchClientLib.csproj" }}
-
       - run:
-          name: "Build the solution"
+          name: "Building the solution"
           command: dotnet publish -c Release -r win10-x64
       - store_artifacts:
-          path: .\bin\Release\netcoreapp2.1\win10-x64\publish\MusixmatchClientLib.exe
+          path: .\bin\Release\netcoreapp2.1\win10-x64\publish\MusixmatchClientLib.dll
