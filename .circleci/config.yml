@@ -8,5 +8,16 @@
      executor: win/default     
     
      steps:
-       - checkout
-       - run: dotnet build
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "MusixmatchClientLib/MusixmatchClientLib.csproj" }}
+      - restore_dependencies:
+          name: "Install project dependencies"
+          command: dotnet restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "MusixmatchClientLib/MusixmatchClientLib.csproj" }}
+      - build:
+          name: "Build project"
+          command: dotnet build
