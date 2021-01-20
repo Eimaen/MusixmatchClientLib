@@ -1,23 +1,28 @@
- version: 2.1
+version: 2.1
 
- orbs:
-  win: circleci/windows@2.2.0
+orbs:
+  win: circleci/windows@1.0.0
 
- jobs:
-   build:
-     executor: win/default     
-    
-     steps:
+jobs:
+  build:
+    executor:
+      name: win/vs2019
+      shell: powershell.exe
+    steps:
+      - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-v1-{{ checksum "MusixmatchClientLib/MusixmatchClientLib.csproj" }}
-      - restore_dependencies:
+            - dotnet-packages-v1-{{ checksum "MusixmatchClientLib\MusixmatchClientLib.csproj" }}
+      - run:
           name: "Install project dependencies"
           command: dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "MusixmatchClientLib/MusixmatchClientLib.csproj" }}
-      - build:
-          name: "Build project"
-          command: dotnet build
+          key: dotnet-packages-v1-{{ checksum "MusixmatchClientLib\MusixmatchClientLib.csproj" }}
+
+      - run:
+          name: "Build the solution"
+          command: dotnet publish -c Release -r win10-x64
+      - store_artifacts:
+          path: .\bin\Release\netcoreapp2.1\win10-x64\publish\MusixmatchClientLib.exe
