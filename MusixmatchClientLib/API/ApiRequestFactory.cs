@@ -68,7 +68,8 @@ namespace MusixmatchClientLib.API
             TrackLyricsTranslationGet,
             CrowdUserFeedbackGet,
             TrackLyricsPost,
-            ChartTracksGet
+            ChartTracksGet,
+            CrowdPollsTracksSearch
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -131,6 +132,10 @@ namespace MusixmatchClientLib.API
             {
                 EndpointResource = "chart.tracks.get"
             },
+            [ApiMethod.CrowdPollsTracksSearch] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.polls.tracks.search"
+            }
         };
 
         public ApiRequestFactory(string userToken)
