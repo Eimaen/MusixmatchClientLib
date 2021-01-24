@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("MusixmatchClientLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("MusixmatchClientLib is a .NET library designed to interact with Musixmatch client API easily")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Eimaen")]
 [assembly: AssemblyProduct("MusixmatchClientLib")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCopyright("Copyright © Eimaen 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

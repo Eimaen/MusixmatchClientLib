@@ -10,6 +10,14 @@ namespace MusixmatchClientLib.Auth
 {
     public class MusixmatchToken
     {
+        private const string DyscontrolledGravity = // Camellia - Dyscontrolled Galaxy (nvm my taste in music has always been so bad)
+                          "We are ready to break your reality\n" + //              |\        //                                                    __     ____           __
+                          "The reason will turn into insanity\n" + // ---|\--------|-\\----- //    _________  ____________  __     _________  ____/ /__  / __/___ ______/ /_____  _____
+            "We blast theese beats to the ears at light speed\n" + // ---|/-------0---\|---- //   / ___/ __ \/ ___/ ___/ / / /    / ___/ __ \/ __  / _ \/ /_/ __ `/ ___/ __/ __ \/ ___/
+                                         "There is no gravity\n" + // --/|-------------|---- //  (__  ) /_/ / /  / /  / /_/ /    / /__/ /_/ / /_/ /  __/ __/ /_/ / /__/ /_/ /_/ / /
+                                                  "Here we go\n" + // -|-/-\----------0----- // /____/\____/_/  /_/   \__, ( )   \___/\____/\__,_/\___/_/  \__,_/\___/\__/\____/_/
+                                          "Dyscontrolled galaxy";  // --\|/----------------- //                      /____/|/  sorry, codefactor
+
         public string Token { get; private set; }
 
         /// <summary>
@@ -18,18 +26,18 @@ namespace MusixmatchClientLib.Auth
         /// <returns>New Musixmatch token</returns>
         private static string IssueNewToken()
         {
-            ApiRequestFactory requestFactory = new ApiRequestFactory("van-darkholme-dungeon-master-performance-artist-deep-dark-fantasies");
+            ApiRequestFactory requestFactory = new ApiRequestFactory("van-darkholme-dungeon-master-performance-artist-deep-dark-fantasies" /* TODO: change that stuff and remove dungeonci */);
             return requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<TokenGet>().UserToken;
         }
 
         public MusixmatchToken(string token) => Token = token;
-        
+
         public MusixmatchToken() => Token = IssueNewToken();
 
         /// <summary>
         /// Creates an url to authorize a token
         /// </summary>
         /// <returns>Auth url</returns>
-        public string GetAuthUrl() => $"https://oauth.musixmatch.com/credential/signin?app_id=web-desktop-app-v1.0&usertoken={Token}";
+        public string GetAuthUrl() => $"https://oauth.musixmatch.com/credential/signin?app_id=web-desktop-app-v1.0&usertoken={Token}&origin={DyscontrolledGravity}"; // origin might be something else, but not null or empty
     }
 }

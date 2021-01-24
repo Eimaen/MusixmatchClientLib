@@ -21,7 +21,7 @@ namespace MusixmatchClientLib.API
             jwtToken = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<JwtGet>().JwtToken;
         }
 
-        public List<Mission> ParseMissions(string userToken, string userId, string jwtToken)
+        public List<Mission> ParseMissions(string userToken, string userId)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint
             request.Method = "POST";
