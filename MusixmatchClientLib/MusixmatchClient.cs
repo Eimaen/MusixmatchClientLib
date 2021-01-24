@@ -305,7 +305,7 @@ namespace MusixmatchClientLib
             Random random = new Random();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsPost, new Dictionary<string, string>
             {
-                ["track_id"] = trackData.CommontrackId.ToString(),
+                ["commontrack_id"] = trackData.CommontrackId.ToString(),
                 ["q_track"] = trackData.TrackName,
                 ["q_artist"] = trackData.ArtistName
             }, new Dictionary<string, string>()
@@ -316,6 +316,11 @@ namespace MusixmatchClientLib
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
+        /// <summary>
+        /// Get trending tracks 
+        /// not working yet
+        /// </summary>
+        /// <returns>List of track ids</returns>
         public List<string> ChartTracksGet()
         {
             List<string> returnValue = new List<string>();
@@ -328,6 +333,25 @@ namespace MusixmatchClientLib
             foreach (var track in response.Cast<ChartTracksGet>().TrackList)
                 returnValue.Add(track.Track);
             return returnValue;
+        }
+
+        /// <summary>
+        /// Get tracks that need your contribution
+        /// not working yet
+        /// </summary>
+        /// <returns>List of tracks</returns>
+        public List<Track> GetPollTracks()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>
+            {
+                
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Track> tracks = new List<Track>();
+            foreach (var track in response.Cast<TrackSearch>().Results)
+                tracks.Add(track.Track);
+            return tracks;
         }
 
         #region Work In Progress
