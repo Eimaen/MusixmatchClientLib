@@ -14,13 +14,14 @@ Definitions:
 - **W**: Work in progress
 - **H**: Hold
 - **I**: Implemented
-- **S**: Code-documented (Summary)
+- **S**: Code-documented (summary)
 - **T**: Tested
 - **D**: Wiki-documented
+- **R**: Research in progress (for undocumented)
 
 **Officially implemented API methods**
 - [ ] chart.artists.get | **H**
-- [ ] chart.tracks.get | **WIS**
+- [x] chart.tracks.get | **IS**
 - [x] track.search | **IST**
 - [x] track.get | **IST**
 - [x] track.lyrics.get | **IST**
@@ -41,9 +42,12 @@ Definitions:
 - [ ] album.tracks.get | **H**
 
 **Unofficial API methods**
-- [x] track.subtitle.post | **IS**
-- [x] track.lyrics.post | **IS**
+- [x] track.subtitle.post | **IST**
+- [x] track.lyrics.post | **IST**
 - [x] crowd.user.feedback.get | **IS**
+- [x] crowd.polls.tracks.search | **I**
+- [x] token.get | **IST**
+- [ ] credentials.post | **H**
 
 **Missions API**
 - [x] Get missions | **I**
