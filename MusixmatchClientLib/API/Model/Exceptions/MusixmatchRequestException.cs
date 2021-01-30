@@ -20,6 +20,7 @@ namespace MusixmatchClientLib.API.Model.Exceptions
             [StatusCode.NotAuthorized] = "You are not authorized to perform this operation.",
             [StatusCode.ResourceNotFound] = "The requested resource was not found.",
             [StatusCode.MethodNotFound] = "The requested method was not found.",
+            [StatusCode.ConflictDetected] = "The data you have submitted is different from the server one.",
             [StatusCode.ServerError] = "Ops. Something were wrong.",
             [StatusCode.ServerBusy] = "Our system is a bit busy at the moment and your request can’t be satisfied."
         };

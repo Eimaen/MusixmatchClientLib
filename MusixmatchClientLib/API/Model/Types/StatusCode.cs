@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model.Types
 {
-    public enum StatusCode // All the descriptions were taken from the official Musixmatch API documentation
+    public enum StatusCode // NOT all the descriptions were taken from the official Musixmatch API documentation
     {
         Undefined = 0, // Not handled.
         Success = 200, // The request was successful.
@@ -16,6 +16,7 @@ namespace MusixmatchClientLib.API.Model.Types
         NotAuthorized = 403, // You are not authorized to perform this operation.
         ResourceNotFound = 404, // The requested resource was not found.
         MethodNotFound = 405, // The requested method was not found.
+        ConflictDetected = 409, // UNDOCUMENTED. The data you have submitted is different from the server one (for example, ai questions).
         ServerError = 500, // Ops. Something were wrong.
         ServerBusy = 503 // Our system is a bit busy at the moment and your request can’t be satisfied.
     }

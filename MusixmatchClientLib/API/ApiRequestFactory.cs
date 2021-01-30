@@ -16,9 +16,9 @@ namespace MusixmatchClientLib.API
         private const string AppId = @"web-desktop-app-v1.0";
         public string UserToken { get; private set; }
 
-        private CookieContainer cookieContainer = new CookieContainer();
+        private static CookieContainer cookieContainer = new CookieContainer();
 
-        private string Request(string _url, string _method = "GET", string _data = "")
+        public static string Request(string _url, string _method = "GET", string _data = "")
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_url);
             request.Method = _method;
@@ -55,6 +55,7 @@ namespace MusixmatchClientLib.API
 
         public enum ApiMethod
         {
+            None,
             TokenGet,
             TrackGet,
             TrackLyricsGet,
@@ -69,7 +70,13 @@ namespace MusixmatchClientLib.API
             CrowdUserFeedbackGet,
             TrackLyricsPost,
             ChartTracksGet,
-            CrowdPollsTracksSearch
+            CrowdPollsTracksSearch,
+            CrowdChartUsersGet,
+            CrowdUserSuggestionTranslationsGet,
+            CrowdUserSuggestionLyricsGet,
+            CrowdUserSuggestionSubtitlesGet,
+            CrowdUserSuggestionVotesGet,
+            AiQuestionPost
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -135,6 +142,27 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CrowdPollsTracksSearch] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.polls.tracks.search"
+            },
+            [ApiMethod.AiQuestionPost] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.ai.question.post",
+                RequestMethod = "POST"
+            },
+            [ApiMethod.CrowdUserSuggestionLyricsGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.suggestion.lyrics.get"
+            },
+            [ApiMethod.CrowdUserSuggestionSubtitlesGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.suggestion.subtitles.get"
+            },
+            [ApiMethod.CrowdUserSuggestionTranslationsGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.suggestion.translations.get"
+            },
+            [ApiMethod.CrowdUserSuggestionVotesGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.suggestion.votes.get"
             }
         };
 
