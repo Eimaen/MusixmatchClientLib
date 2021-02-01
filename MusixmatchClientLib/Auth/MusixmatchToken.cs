@@ -45,5 +45,11 @@ namespace MusixmatchClientLib.Auth
         /// </summary>
         /// <param name="accessToken">Google access token</param>
         public void Authenticate(string accessToken) => ApiRequestFactory.Request($"https://oauth.musixmatch.com/credential/signin?user_type=g2&app_id=web-desktop-app-v1.0&signin=1&origin={DyscontrolledGalaxy}&usertoken={Token}&access_token={accessToken}&code=&refresh_token=&override_host=");
+
+        /// <summary>
+        /// Logout from account on this token
+        /// </summary>
+        public void Deauthenticate() => new ApiRequestFactory(Token).SendRequestLegacy(ApiRequestFactory.ApiMethod.CredentialPost, null, "{\"credential_list\":[]}");
+
     }
 }

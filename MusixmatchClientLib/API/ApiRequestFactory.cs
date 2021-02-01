@@ -76,7 +76,8 @@ namespace MusixmatchClientLib.API
             CrowdUserSuggestionLyricsGet,
             CrowdUserSuggestionSubtitlesGet,
             CrowdUserSuggestionVotesGet,
-            AiQuestionPost
+            AiQuestionPost,
+            CredentialPost
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -163,6 +164,11 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CrowdUserSuggestionVotesGet] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.user.suggestion.votes.get"
+            },
+            [ApiMethod.CredentialPost] = new CustomRequestParameters
+            {
+                EndpointResource = "credential.post",
+                RequestMethod = "POST"
             }
         };
 
@@ -172,6 +178,12 @@ namespace MusixmatchClientLib.API
         }
 
         public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null)
+        {
+            string dataEncoded = GetArgumentString(data);
+            return SendRequestLegacy(method, additionalArguments, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+        }
+
+        public MusixmatchApiResponse SendRequestLegacy(ApiMethod method, Dictionary<string, string> additionalArguments = null, string data = null)
         {
             CustomRequestParameters requestParameters;
 
@@ -192,10 +204,9 @@ namespace MusixmatchClientLib.API
             // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
 
             string arguments = GetArgumentString(additionalArguments);
-            string dataEncoded = GetArgumentString(data);
 
             string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
-            string response = Request(requestUrl, requestMethod, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+            string response = Request(requestUrl, requestMethod, data);
 
             var responseParsed = JObject.Parse(response);
 
