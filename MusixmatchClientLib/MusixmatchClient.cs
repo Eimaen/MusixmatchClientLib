@@ -317,8 +317,8 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get trending tracks 
-        /// not working yet
+        /// Get trending tracks.
+        /// Not working yet.
         /// </summary>
         /// <returns>List of track ids</returns>
         public List<string> ChartTracksGet()
@@ -336,8 +336,8 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get tracks that need your contribution
-        /// not working yet
+        /// Get tracks that need your contribution. 
+        /// Not working yet. Use <see cref="GetContributeSuggestionsTracks"/> instead.
         /// </summary>
         /// <returns>List of tracks</returns>
         public List<Track> GetPollTracks()
@@ -352,6 +352,89 @@ namespace MusixmatchClientLib
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
             return tracks;
+        }
+
+        public enum ContributionType
+        {
+            Lyrics,
+            Sync,
+            Translation,
+            Vote
+        }
+
+        /// <summary>
+        /// Get tracks that need your contribution using scopes. See <see cref="ContributionType"/>.
+        /// </summary>
+        /// <returns>List of tracks</returns>
+        public List<Track> GetContributeSuggestionsTracks(ContributionType contributionType, string language = "")
+        {
+            ApiRequestFactory.ApiMethod apiMethod = ApiRequestFactory.ApiMethod.None;
+            switch (contributionType)
+            {
+                case ContributionType.Lyrics:
+                    apiMethod = ApiRequestFactory.ApiMethod.CrowdUserSuggestionLyricsGet;
+                    break;
+                case ContributionType.Sync:
+                    apiMethod = ApiRequestFactory.ApiMethod.CrowdUserSuggestionSubtitlesGet;
+                    break;
+                case ContributionType.Translation:
+                    apiMethod = ApiRequestFactory.ApiMethod.CrowdUserSuggestionTranslationsGet;
+                    break;
+                case ContributionType.Vote:
+                    apiMethod = ApiRequestFactory.ApiMethod.CrowdUserSuggestionVotesGet;
+                    break;
+            }
+            var response = requestFactory.SendRequest(apiMethod, new Dictionary<string, string>
+            {
+                ["language"] = language
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Track> tracks = new List<Track>();
+            foreach (var track in response.Cast<CrowdSuggestionGet>().Results)
+                tracks.Add(track.Track);
+            return tracks;
+        }
+        /// <summary>
+        /// Submit AI question data (track language).
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">ISO language abbreviation (lowercase)</param>
+        public void SubmitTrackLanguage(int id, string language)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
+            {
+                ["answer_id"] = "lyrics_ai_ugc_language",
+                ["track_id"] = id.ToString(),
+                ["selected_language"] = language,
+                ["question_id"] = "lyrics_ai_language_collect"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Submit AI question data (track mood).
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="energy">Track energy ratio (integer between 0 and 100)</param>
+        /// <param name="mood">Track mood ratio (integer between 0 and 100)</param>
+        public void SubmitTrackMood(int id, int energy, int mood)
+        {
+            if (energy > 100 || energy < 0)
+                throw new ArgumentException("Track energy is an integer between 0 and 100");
+            if (mood > 100 || mood < 0)
+                throw new ArgumentException("Track mood is an integer between 0 and 100");
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
+            {
+                ["answer_id"] = "lyrics_ai_mood_analysis_v3_value",
+                ["track_id"] = id.ToString(),
+                ["energy_ratio"] = energy.ToString(),
+                ["mood_ratio"] = mood.ToString(),
+                ["question_id"] = "lyrics_ai_mood_analysis_v3"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         #region Work In Progress
