@@ -1,4 +1,5 @@
-﻿using MusixmatchClientLib.API.Model;
+﻿using MusixmatchClientLib.API.Contexts;
+using MusixmatchClientLib.API.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,7 @@ namespace MusixmatchClientLib.API
 {
     class ApiRequestFactory
     {
-        private const string ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/";
-        private const string AppId = @"web-desktop-app-v1.0";
+        private static MusixmatchApiContext context = MusixmatchApiContext.Get(ApiContext.Windows);
         public string UserToken { get; private set; }
 
         private static CookieContainer defaultCookieContainer = new CookieContainer();
@@ -204,13 +204,13 @@ namespace MusixmatchClientLib.API
                 additionalArguments = new Dictionary<string, string>();
 
             additionalArguments.Add("format", "json");
-            additionalArguments.Add("app_id", AppId);
+            additionalArguments.Add("app_id", context.AppId);
             additionalArguments.Add("usertoken", UserToken);
             // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
 
             string arguments = GetArgumentString(additionalArguments);
 
-            string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
+            string requestUrl = $"{context.ApiUrl}{endpoint}{arguments}";
             string response = RequestFilter(requestUrl, requestMethod, data);
 
             var responseParsed = JObject.Parse(response);
