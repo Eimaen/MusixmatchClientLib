@@ -19,6 +19,7 @@ namespace MusixmatchClientLib.Sample
             CookieContainer container = new CookieContainer();
             client.SetRequestProcessor((string url, string method, string data) =>
             {
+                Console.WriteLine(url);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = method;
                 request.CookieContainer = container;
