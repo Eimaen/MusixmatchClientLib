@@ -16,13 +16,16 @@ namespace MusixmatchClientLib.API
         private const string AppId = @"web-desktop-app-v1.0";
         public string UserToken { get; private set; }
 
-        private static CookieContainer cookieContainer = new CookieContainer();
+        private static CookieContainer defaultCookieContainer = new CookieContainer();
 
-        public static string Request(string _url, string _method = "GET", string _data = "")
+        /// <summary>
+        /// Function to be used to process requests (useful when debugging your application or using proxy).
+        /// </summary>
+        public Func<string, string, string, string> RequestProcessor = new Func<string, string, string, string>((string _url, string _method, string _data) =>
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_url);
             request.Method = _method;
-            request.CookieContainer = cookieContainer;
+            request.CookieContainer = defaultCookieContainer;
             if (_method == "POST")
             {
                 byte[] byteArray = Encoding.UTF8.GetBytes(_data);
@@ -32,7 +35,7 @@ namespace MusixmatchClientLib.API
                     dataStream.Write(byteArray, 0, byteArray.Length);
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            cookieContainer.Add(response.Cookies);
+            defaultCookieContainer.Add(response.Cookies);
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
@@ -40,7 +43,9 @@ namespace MusixmatchClientLib.API
                     return reader.ReadToEnd();
                 }
             }
-        }
+        });
+
+        public string RequestFilter(string _url, string _method = "GET", string _data = "") => RequestProcessor(_url, _method, _data);
 
         private string GetArgumentString(Dictionary<string, string> arguments)
         {
@@ -206,7 +211,7 @@ namespace MusixmatchClientLib.API
             string arguments = GetArgumentString(additionalArguments);
 
             string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
-            string response = Request(requestUrl, requestMethod, data);
+            string response = RequestFilter(requestUrl, requestMethod, data);
 
             var responseParsed = JObject.Parse(response);
 

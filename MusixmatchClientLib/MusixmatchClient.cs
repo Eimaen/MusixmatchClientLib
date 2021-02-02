@@ -27,6 +27,8 @@ namespace MusixmatchClientLib
         /// <param name="userToken"></param>
         public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
 
+        public void SetRequestProcessor(Func<string, string, string, string> requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
+
         /// <summary>
         /// Search the Musixmatch song database for a track.
         /// </summary>
@@ -154,10 +156,14 @@ namespace MusixmatchClientLib
         /// </summary>
         public enum SubtitleFormat
         {
-            Lrc, 
-            Dfxp, // Xml representation
-            Stledu, // I dont know what is it
-            Musixmatch // Secret one
+            /// <summary>LRC format.</summary>
+            Lrc,
+            /// <summary>Some kind of XML representation.</summary>
+            Dfxp,
+            /// <summary>Stledu format, unknown for me xd.</summary>
+            Stledu,
+            /// <summary>JSON representation, used by Musixmatch desktop client and is not documented in an official API sheet.</summary>
+            Musixmatch
         }
 
         /// <summary>
@@ -279,14 +285,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns a list of tasks to complete.
+        /// Returns a list of reported feedbacks.
         /// </summary>
         /// <returns>List of feedbacks</returns>
         public List<FeedbackList> GetCrowdFeedback()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
             {
-                ["feedback_type"] = "feedback_type=lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,%20lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,%20lyrics_music_id,track_annotat",
+                ["feedback_type"] = "lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,lyrics_music_id,track_annotat",
                 ["part"] = "track"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
