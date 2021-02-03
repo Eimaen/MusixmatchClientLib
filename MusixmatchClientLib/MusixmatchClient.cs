@@ -553,6 +553,95 @@ namespace MusixmatchClientLib
             return artists;
         }
 
+        /// <summary>
+        /// Look for artists in the database by query.
+        /// </summary>
+        /// <param name="query">Query</param>
+        /// <returns>List of artists</returns>
+        public List<Artist> ArtistSearch(string query)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistSearch, new Dictionary<string, string>
+            {
+                ["q_artist"] = query
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Artist> artists = new List<Artist>();
+            foreach (var artist in response.Cast<ArtistSearch>().Results)
+                artists.Add(artist.Artist);
+            return artists;
+        }
+
+        /// <summary>
+        /// Get artist by his Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch id</param>
+        /// <returns>Artist</returns>
+        public Artist GetArtistById(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistGet, new Dictionary<string, string>
+            {
+                ["artist_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<ArtistGet>().Artist;
+        }
+
+        /// <summary>
+        /// Get albums by artist
+        /// </summary>
+        /// <param name="id">Artist id</param>
+        /// <returns>List of albums</returns>
+        public List<Album> GetArtistAlbums(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistAlbumsGet, new Dictionary<string, string>
+            {
+                ["artist_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Album> albums = new List<Album>();
+            foreach (var album in response.Cast<ArtistAlbumsGet>().Results)
+                albums.Add(album.Album);
+            return albums;
+        }
+
+        /// <summary>
+        /// Get album by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch album id</param>
+        /// <returns>Album</returns>
+        public Album GetAlbumById(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AlbumGet, new Dictionary<string, string>
+            {
+                ["album_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<AlbumGet>().Album;
+        }
+
+        /// <summary>
+        /// Get tracks from chosen album
+        /// </summary>
+        /// <param name="id">Musixmatch album id</param>
+        /// <returns>List of tracks</returns>
+        public List<Track> GetAlbumTracks(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AlbumTracksGet, new Dictionary<string, string>
+            {
+                ["album_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Track> tracks = new List<Track>();
+            foreach (var track in response.Cast<AlbumTracksGet>().Results)
+                tracks.Add(track.Track);
+            return tracks;
+        }
+
         #region Work In Progress
         public string RequestMissionManager()
         {
