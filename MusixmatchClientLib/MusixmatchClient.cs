@@ -443,6 +443,25 @@ namespace MusixmatchClientLib
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
+        /// <summary>
+        /// Returns user top for a country
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        /// <returns>List of top users</returns>
+        public List<User> GetUserWeeklyTop(string country = "")
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdChartUsersGet, new Dictionary<string, string>
+            {
+                ["country"] = country
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<User> users = new List<User>();
+            foreach (var user in response.Cast<CrowdChartUsersGet>().Results)
+                users.Add(user.User);
+            return users;
+        }
+
         #region Work In Progress
         public string RequestMissionManager()
         {

@@ -11,7 +11,19 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken();
+            MusixmatchToken token;
+            if (!File.Exists("tempToken.txt"))
+            {
+                // Initialize a new token 
+                token = new MusixmatchToken();
+
+                // Save token to prevent cooldown by IP
+                File.WriteAllText("tempToken.txt", token.Token);
+            }
+            else
+                token = new MusixmatchToken(File.ReadAllText("tempToken.txt"));
+
+            // Create a new client using our token
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
@@ -41,6 +53,16 @@ namespace MusixmatchClientLib.Sample
                     }
                 }
             });
+
+            // Authenticate using Musixmatch account credentials
+            // token.AuthenticateMusixmatch("", "");
+
+            // Important note: Only user-related requests need authentication, most "GET" requests you may make without auth.
+            // Also do not create a new token every time you run your application. It makes a huge cooldown and theese tokens are never removed (I guess so).
+
+            // Get my country's top rated users
+            foreach (var user in client.GetUserWeeklyTop("BY"))
+                Console.WriteLine(user.UserName);
 
             // Search for a song named "Nasty * Nasty * Spell" by Camellia
             var tracks = client.SongSearch(new TrackSearchParameters
