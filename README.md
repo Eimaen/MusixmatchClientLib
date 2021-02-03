@@ -30,7 +30,7 @@ Definitions:
 - [x] track.lyrics.get | **IST**
 - [x] track.snippet.get | **IST**
 - [x] track.subtitle.get | **IST**
-- [ ] track.richsync.get | **W**
+- [x] track.richsync.get | **IST**
 - [x] track.lyrics.translation.get | **IS**
 - [ ] track.subtitle.translation.get | **W**
 - [ ] music.genres.get | **H**
@@ -58,7 +58,6 @@ Definitions:
 - [x] crowd.user.suggestion.votes.get | **IST**
 - [x] ai.question.post | **WRIST**
 - [x] crowd.chart.users.get | **IST**
-- [x] track.richsync.get | **IST**
 - [x] track.richsync.post | **IS**
 - [x] crowd.score.get | **WIST**
 
