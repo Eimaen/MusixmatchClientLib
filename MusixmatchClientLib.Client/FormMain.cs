@@ -29,8 +29,9 @@ namespace MusixmatchClientLib.Client
             try
             {
                 var user = client.GetUserInfo();
-                labelUsername.Text = user.UserData.Profile.Name;
-                pbProfile.Load(user.UserData.Profile.UserPicture.Replace("=s50", ""));
+                var userProfile = client.GetUserScore();
+                labelUsername.Text = userProfile.UserName;
+                pbProfile.Load(userProfile.UserProfilePhoto.Replace("=s50", ""));
             }
             catch (Exception ex){
                 MessageBox.Show(ex.Message);

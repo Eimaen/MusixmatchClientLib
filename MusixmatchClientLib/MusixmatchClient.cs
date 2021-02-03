@@ -519,6 +519,40 @@ namespace MusixmatchClientLib
             return response.Cast<CrowdScoreGet>().User;
         }
 
+        /// <summary>
+        /// Get all the genres supported by Musixmatch database
+        /// </summary>
+        /// <returns>List of genres</returns>
+        public List<MusicGenre> GetMusicGenres()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.MusicGenresGet, new Dictionary<string, string>());
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<MusicGenre> genres = new List<MusicGenre>();
+            foreach (var genre in response.Cast<MusicGenresGet>().Results)
+                genres.Add(genre.MusicGenre);
+            return genres;
+        }
+
+        /// <summary>
+        /// Get top artists by the given country
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        /// <returns>List of artists</returns>
+        public List<Artist> GetChartArtists(string country = "")
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartArtistsGet, new Dictionary<string, string>
+            {
+                ["country"] = country
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Artist> artists = new List<Artist>();
+            foreach (var artist in response.Cast<ChartArtistsGet>().Results)
+                artists.Add(artist.Artist);
+            return artists;
+        }
+
         #region Work In Progress
         public string RequestMissionManager()
         {

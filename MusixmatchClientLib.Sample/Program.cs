@@ -65,8 +65,8 @@ namespace MusixmatchClientLib.Sample
             // Also do not create a new token every time you run your application. It makes a huge cooldown and theese tokens are never removed (I guess so).
 
             // Get my country's top rated users
-            foreach (var user in client.GetUserWeeklyTop("BY"))
-                Console.WriteLine(user.UserName);
+            foreach (var user in client.GetUserWeeklyTop())
+                Console.WriteLine($"{user.UserName} // {user.Score} points // {user.WeeklyScore} weekly // Moderator: {user.Moderator}");
 
             // Search for a song named "Nasty * Nasty * Spell" by Camellia
             var tracks = client.SongSearch(new TrackSearchParameters
