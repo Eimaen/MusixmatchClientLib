@@ -31,7 +31,7 @@ namespace MusixmatchClientLib.Sample
             CookieContainer container = new CookieContainer();
             client.SetRequestProcessor((string url, string method, string data) =>
             {
-                Console.WriteLine(url);
+                // Console.WriteLine(url);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = method;
                 request.CookieContainer = container;
@@ -56,6 +56,10 @@ namespace MusixmatchClientLib.Sample
 
             // Authenticate using Musixmatch account credentials
             // token.AuthenticateMusixmatch("", "");
+
+            // Get user score and profile
+            var userProfile = client.GetUserScore();
+            Console.WriteLine($"{userProfile.UserName} // {userProfile.Score} points // {userProfile.WeeklyScore} weekly // Moderator: {userProfile.Moderator}");
 
             // Important note: Only user-related requests need authentication, most "GET" requests you may make without auth.
             // Also do not create a new token every time you run your application. It makes a huge cooldown and theese tokens are never removed (I guess so).

@@ -462,6 +462,63 @@ namespace MusixmatchClientLib
             return users;
         }
 
+        /// <summary>
+        /// Get track richsync by its Musixmatch id.
+        /// Body has a <see href="https://developer.musixmatch.com/documentation/api-reference/track-richsync-get">specific format</see>.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Richsync</returns>
+        public Richsync GetTrackRichsyncRaw(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<TrackRichsyncGet>().Richsync;
+        }
+
+        /// <summary>
+        /// Submit track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="richsync">Raw richsync</param>
+        public void SubmitTrackRichsyncRaw(int id, string richsync)
+        {
+            var trackData = GetTrackById(id);
+            Random random = new Random();
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncPost, new Dictionary<string, string>
+            {
+                ["commontrack_id"] = trackData.CommontrackId.ToString(),
+                ["length"] = trackData.TrackLength.ToString(),
+                ["q_track"] = trackData.TrackName,
+                ["original_title"] = trackData.TrackName,
+                ["q_artist"] = trackData.ArtistName,
+                ["original_artist"] = trackData.ArtistName,
+                ["original_uri"] = trackData.TrackSpotifyId,
+                ["num_keypressed"] = random.Next(16, 2048).ToString(),
+                ["time_spent"] = random.Next(2048, 1048576).ToString()
+            }, new Dictionary<string, string>()
+            {
+                ["richsync_body"] = richsync
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Get current user score
+        /// </summary>
+        /// <returns>User</returns>
+        public User GetUserScore()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdScoreGet, new Dictionary<string, string>());
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<CrowdScoreGet>().User;
+        }
+
         #region Work In Progress
         public string RequestMissionManager()
         {

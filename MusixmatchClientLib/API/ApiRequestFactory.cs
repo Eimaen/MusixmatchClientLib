@@ -83,7 +83,9 @@ namespace MusixmatchClientLib.API
             CrowdUserSuggestionVotesGet,
             AiQuestionPost,
             CredentialPost,
-
+            TrackRichsyncGet,
+            TrackRichsyncPost,
+            CrowdScoreGet
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -179,6 +181,19 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CrowdChartUsersGet] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.chart.users.get"
+            },
+            [ApiMethod.TrackRichsyncGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.richsync.get"
+            },
+            [ApiMethod.TrackRichsyncPost] = new CustomRequestParameters
+            {
+                EndpointResource = "track.richsync.post",
+                RequestMethod = "POST"
+            },
+            [ApiMethod.CrowdScoreGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.score.get"
             }
         };
 
