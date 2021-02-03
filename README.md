@@ -23,7 +23,7 @@ Definitions:
 - [x] Custom request function | **I**
 
 **Officially implemented API methods**
-- [ ] chart.artists.get | **H**
+- [x] chart.artists.get | **IS**
 - [x] chart.tracks.get | **IST**
 - [x] track.search | **IST**
 - [x] track.get | **IST**
@@ -33,7 +33,7 @@ Definitions:
 - [x] track.richsync.get | **IST**
 - [x] track.lyrics.translation.get | **IS**
 - [ ] track.subtitle.translation.get | **W**
-- [ ] music.genres.get | **H**
+- [x] music.genres.get | **IS**
 - [ ] matcher.lyrics.get | **H**
 - [ ] matcher.track.get | **H**
 - [ ] matcher.subtitle.get | **H**
