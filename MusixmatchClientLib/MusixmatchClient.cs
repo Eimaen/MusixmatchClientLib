@@ -27,6 +27,8 @@ namespace MusixmatchClientLib
         /// <param name="userToken"></param>
         public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
 
+        public void SetRequestProcessor(Func<string, string, string, string> requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
+
         /// <summary>
         /// Search the Musixmatch song database for a track.
         /// </summary>
@@ -154,10 +156,14 @@ namespace MusixmatchClientLib
         /// </summary>
         public enum SubtitleFormat
         {
-            Lrc, 
-            Dfxp, // Xml representation
-            Stledu, // I dont know what is it
-            Musixmatch // Secret one
+            /// <summary>LRC format.</summary>
+            Lrc,
+            /// <summary>Some kind of XML representation.</summary>
+            Dfxp,
+            /// <summary>Stledu format, unknown for me xd.</summary>
+            Stledu,
+            /// <summary>JSON representation, used by Musixmatch desktop client and is not documented in an official API sheet.</summary>
+            Musixmatch
         }
 
         /// <summary>
@@ -279,14 +285,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns a list of tasks to complete.
+        /// Returns a list of reported feedbacks.
         /// </summary>
         /// <returns>List of feedbacks</returns>
         public List<FeedbackList> GetCrowdFeedback()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
             {
-                ["feedback_type"] = "feedback_type=lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,%20lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,%20lyrics_music_id,track_annotat",
+                ["feedback_type"] = "lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,lyrics_music_id,track_annotat",
                 ["part"] = "track"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
@@ -435,6 +441,116 @@ namespace MusixmatchClientLib
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Returns user top for a country
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        /// <returns>List of top users</returns>
+        public List<User> GetUserWeeklyTop(string country = "")
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdChartUsersGet, new Dictionary<string, string>
+            {
+                ["country"] = country
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<User> users = new List<User>();
+            foreach (var user in response.Cast<CrowdChartUsersGet>().Results)
+                users.Add(user.User);
+            return users;
+        }
+
+        /// <summary>
+        /// Get track richsync by its Musixmatch id.
+        /// Body has a <see href="https://developer.musixmatch.com/documentation/api-reference/track-richsync-get">specific format</see>.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Richsync</returns>
+        public Richsync GetTrackRichsyncRaw(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<TrackRichsyncGet>().Richsync;
+        }
+
+        /// <summary>
+        /// Submit track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="richsync">Raw richsync</param>
+        public void SubmitTrackRichsyncRaw(int id, string richsync)
+        {
+            var trackData = GetTrackById(id);
+            Random random = new Random();
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncPost, new Dictionary<string, string>
+            {
+                ["commontrack_id"] = trackData.CommontrackId.ToString(),
+                ["length"] = trackData.TrackLength.ToString(),
+                ["q_track"] = trackData.TrackName,
+                ["original_title"] = trackData.TrackName,
+                ["q_artist"] = trackData.ArtistName,
+                ["original_artist"] = trackData.ArtistName,
+                ["original_uri"] = trackData.TrackSpotifyId,
+                ["num_keypressed"] = random.Next(16, 2048).ToString(),
+                ["time_spent"] = random.Next(2048, 1048576).ToString()
+            }, new Dictionary<string, string>()
+            {
+                ["richsync_body"] = richsync
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Get current user score
+        /// </summary>
+        /// <returns>User</returns>
+        public User GetUserScore()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdScoreGet, new Dictionary<string, string>());
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<CrowdScoreGet>().User;
+        }
+
+        /// <summary>
+        /// Get all the genres supported by Musixmatch database
+        /// </summary>
+        /// <returns>List of genres</returns>
+        public List<MusicGenre> GetMusicGenres()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.MusicGenresGet, new Dictionary<string, string>());
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<MusicGenre> genres = new List<MusicGenre>();
+            foreach (var genre in response.Cast<MusicGenresGet>().Results)
+                genres.Add(genre.MusicGenre);
+            return genres;
+        }
+
+        /// <summary>
+        /// Get top artists by the given country
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        /// <returns>List of artists</returns>
+        public List<Artist> GetChartArtists(string country = "")
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartArtistsGet, new Dictionary<string, string>
+            {
+                ["country"] = country
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            List<Artist> artists = new List<Artist>();
+            foreach (var artist in response.Cast<ChartArtistsGet>().Results)
+                artists.Add(artist.Artist);
+            return artists;
         }
 
         #region Work In Progress

@@ -1,4 +1,5 @@
-﻿using MusixmatchClientLib.API.Model;
+﻿using MusixmatchClientLib.API.Contexts;
+using MusixmatchClientLib.API.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,19 @@ namespace MusixmatchClientLib.API
 {
     class ApiRequestFactory
     {
-        private const string ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/";
-        private const string AppId = @"web-desktop-app-v1.0";
+        private static MusixmatchApiContext context = MusixmatchApiContext.Get(ApiContext.Windows);
         public string UserToken { get; private set; }
 
-        private static CookieContainer cookieContainer = new CookieContainer();
+        private static CookieContainer defaultCookieContainer = new CookieContainer();
 
-        public static string Request(string _url, string _method = "GET", string _data = "")
+        /// <summary>
+        /// Function to be used to process requests (useful when debugging your application or using proxy).
+        /// </summary>
+        public Func<string, string, string, string> RequestProcessor = new Func<string, string, string, string>((string _url, string _method, string _data) =>
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_url);
             request.Method = _method;
-            request.CookieContainer = cookieContainer;
+            request.CookieContainer = defaultCookieContainer;
             if (_method == "POST")
             {
                 byte[] byteArray = Encoding.UTF8.GetBytes(_data);
@@ -32,7 +35,7 @@ namespace MusixmatchClientLib.API
                     dataStream.Write(byteArray, 0, byteArray.Length);
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            cookieContainer.Add(response.Cookies);
+            defaultCookieContainer.Add(response.Cookies);
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
@@ -40,7 +43,9 @@ namespace MusixmatchClientLib.API
                     return reader.ReadToEnd();
                 }
             }
-        }
+        });
+
+        public string RequestFilter(string _url, string _method = "GET", string _data = "") => RequestProcessor(_url, _method, _data);
 
         private string GetArgumentString(Dictionary<string, string> arguments)
         {
@@ -76,7 +81,13 @@ namespace MusixmatchClientLib.API
             CrowdUserSuggestionLyricsGet,
             CrowdUserSuggestionSubtitlesGet,
             CrowdUserSuggestionVotesGet,
-            AiQuestionPost
+            AiQuestionPost,
+            CredentialPost,
+            TrackRichsyncGet,
+            TrackRichsyncPost,
+            CrowdScoreGet,
+            ChartArtistsGet,
+            MusicGenresGet
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -163,6 +174,36 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CrowdUserSuggestionVotesGet] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.user.suggestion.votes.get"
+            },
+            [ApiMethod.CredentialPost] = new CustomRequestParameters
+            {
+                EndpointResource = "credential.post",
+                RequestMethod = "POST"
+            },
+            [ApiMethod.CrowdChartUsersGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.chart.users.get"
+            },
+            [ApiMethod.TrackRichsyncGet] = new CustomRequestParameters
+            {
+                EndpointResource = "track.richsync.get"
+            },
+            [ApiMethod.TrackRichsyncPost] = new CustomRequestParameters
+            {
+                EndpointResource = "track.richsync.post",
+                RequestMethod = "POST"
+            },
+            [ApiMethod.CrowdScoreGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.score.get"
+            },
+            [ApiMethod.ChartArtistsGet] = new CustomRequestParameters
+            {
+                EndpointResource = "chart.artsts.get"
+            },
+            [ApiMethod.MusicGenresGet] = new CustomRequestParameters
+            {
+                EndpointResource = "music.genres.get"
             }
         };
 
@@ -172,6 +213,12 @@ namespace MusixmatchClientLib.API
         }
 
         public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null)
+        {
+            string dataEncoded = GetArgumentString(data);
+            return SendRequestLegacy(method, additionalArguments, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+        }
+
+        public MusixmatchApiResponse SendRequestLegacy(ApiMethod method, Dictionary<string, string> additionalArguments = null, string data = null)
         {
             CustomRequestParameters requestParameters;
 
@@ -187,15 +234,14 @@ namespace MusixmatchClientLib.API
                 additionalArguments = new Dictionary<string, string>();
 
             additionalArguments.Add("format", "json");
-            additionalArguments.Add("app_id", AppId);
+            additionalArguments.Add("app_id", context.AppId);
             additionalArguments.Add("usertoken", UserToken);
             // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
 
             string arguments = GetArgumentString(additionalArguments);
-            string dataEncoded = GetArgumentString(data);
 
-            string requestUrl = $"{ApiUrl}{endpoint}{arguments}";
-            string response = Request(requestUrl, requestMethod, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+            string requestUrl = $"{context.ApiUrl}{endpoint}{arguments}";
+            string response = RequestFilter(requestUrl, requestMethod, data);
 
             var responseParsed = JObject.Parse(response);
 

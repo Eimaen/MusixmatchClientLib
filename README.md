@@ -19,18 +19,21 @@ Definitions:
 - **D**: Wiki-documented
 - **R**: Research in progress (for undocumented)
 
+**Core**
+- [x] Custom request function | **I**
+
 **Officially implemented API methods**
-- [ ] chart.artists.get | **H**
-- [x] chart.tracks.get | **IS**
+- [x] chart.artists.get | **IS**
+- [x] chart.tracks.get | **IST**
 - [x] track.search | **IST**
 - [x] track.get | **IST**
 - [x] track.lyrics.get | **IST**
 - [x] track.snippet.get | **IST**
 - [x] track.subtitle.get | **IST**
-- [ ] track.richsync.get | **W**
+- [x] track.richsync.get | **IST**
 - [x] track.lyrics.translation.get | **IS**
 - [ ] track.subtitle.translation.get | **W**
-- [ ] music.genres.get | **H**
+- [x] music.genres.get | **IS**
 - [ ] matcher.lyrics.get | **H**
 - [ ] matcher.track.get | **H**
 - [ ] matcher.subtitle.get | **H**
@@ -45,13 +48,26 @@ Definitions:
 - [x] track.subtitle.post | **IST**
 - [x] track.lyrics.post | **IST**
 - [x] crowd.user.feedback.get | **IS**
-- [x] crowd.polls.tracks.search | **I**
+- [x] crowd.polls.tracks.search | **IS**
 - [x] token.get | **IST**
-- [ ] credentials.post | **H**
+- [x] credentials.post | **IST**
+- [x] track.lyrics.post | **IST**
+- [x] crowd.user.suggestion.lyrics.get | **IST**
+- [x] crowd.user.suggestion.subtitles.get | **IST**
+- [x] crowd.user.suggestion.translations.get | **IST**
+- [x] crowd.user.suggestion.votes.get | **IST**
+- [x] ai.question.post | **WRIST**
+- [x] crowd.chart.users.get | **IST**
+- [x] track.richsync.post | **IS**
+- [x] crowd.score.get | **WIST**
 
 **Missions API**
-- [x] Get missions | **I**
+- [x] Get missions | **IT**
 - [ ] Get tasks | **H**
+
+**Project**
+- [ ] Write samples for all the functions | **H**
+- [ ] Create wiki | **H**
 
 ## A *really* earnest request *(call it a disclaimer)*
 All the information provided in this repository is **for educational purposes only**. 
@@ -173,8 +189,7 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 ```
 
 ### Exception handling
-Exceptions are WIP too, so right now you have to handle default exceptions with messages.
-Later you will find more exceptions like `MusixmatchRequestException`
+Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
 
 ## How to help
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
