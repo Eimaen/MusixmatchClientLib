@@ -16,13 +16,25 @@ namespace MusixmatchClientLib.API.Model.Types
         [JsonProperty("artist_name")]
         public string ArtistName;
 
+        [JsonProperty("artist_country")]
+        public string ArtistCountry;
+
         [JsonProperty("artist_alias_list")]
-        public List<object> ArtistAliasList;
+        public List<ArtistAliasList> ArtistAliasList;
 
         [JsonProperty("artist_rating")]
         public int ArtistRating;
 
+        [JsonProperty("artist_twitter_url")]
+        public string ArtistTwitterUrl;
+
         [JsonProperty("updated_time")]
         public DateTime UpdatedTime;
+    }
+
+    public class ArtistAliasList
+    {
+        [JsonProperty("artist_alias")]
+        public string ArtistAlias;
     }
 }

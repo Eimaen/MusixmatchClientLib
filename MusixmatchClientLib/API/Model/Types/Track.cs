@@ -13,13 +13,7 @@ namespace MusixmatchClientLib.API.Model.Types
         public MusicGenre MusicGenre;
     }
 
-    public class PrimaryGenres
-    {
-        [JsonProperty("music_genre_list")]
-        public List<MusicGenreList> MusicGenreList;
-    }
-
-    public class SecondaryGenres
+    public class MusicGenreLayout
     {
         [JsonProperty("music_genre_list")]
         public List<MusicGenreList> MusicGenreList;
@@ -142,9 +136,9 @@ namespace MusixmatchClientLib.API.Model.Types
         public DateTime UpdatedTime;
 
         [JsonProperty("primary_genres")]
-        public PrimaryGenres PrimaryGenres;
+        public MusicGenreLayout PrimaryGenres;
 
         [JsonProperty("secondary_genres")]
-        public SecondaryGenres SecondaryGenres;
+        public MusicGenreLayout SecondaryGenres;
     }
 }
