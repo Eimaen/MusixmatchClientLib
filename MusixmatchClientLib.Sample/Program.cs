@@ -11,82 +11,196 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token;
-            if (!File.Exists("tempToken.txt"))
-            {
-                // Initialize a new token 
-                token = new MusixmatchToken();
-
-                // Save token to prevent cooldown by IP
-                File.WriteAllText("tempToken.txt", token.Token);
-            }
-            else
-                token = new MusixmatchToken(File.ReadAllText("tempToken.txt"));
-
-            // Create a new client using our token
+            MusixmatchToken token = new MusixmatchToken("210123f3312aa5830ea3094a9ca2ae36ebf87840002377cca15cb3");
             MusixmatchClient client = new MusixmatchClient(token);
 
-            // Example usage of request processor functions
-            // The one below is used as a default function to process requests and requires cloudflare cookie handling
-            CookieContainer container = new CookieContainer();
-            client.SetRequestProcessor((string url, string method, string data) =>
+            var lyrics = client.GetSyncedLyrics(client.SongSearch("REDALiCE - ALiVE")[0].TrackId);
+
+            foreach (var line in lyrics)
+                Console.WriteLine($"[{line.LyricsTime}] {line.Text}");
+
+            return;
+
+            #region User Score & Info
+
+            var score = client.GetUserWeeklyTop()[0];
+
+            ConsoleColor color;
+
+            switch (score.RankName)
             {
-                // Console.WriteLine(url);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = method;
-                request.CookieContainer = container;
-                if (method == "POST")
-                {
-                    byte[] byteArray = Encoding.UTF8.GetBytes(data);
-                    request.ContentType = "application/x-www-form-urlencoded";
-                    request.ContentLength = byteArray.Length;
-                    using (Stream dataStream = request.GetRequestStream())
-                        dataStream.Write(byteArray, 0, byteArray.Length);
-                }
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                container.Add(response.Cookies);
-                using (Stream stream = response.GetResponseStream())
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
-            });
-
-            // Authenticate using Musixmatch account credentials
-            // token.AuthenticateMusixmatch("", "");
-
-            // Get user score and profile
-            var userProfile = client.GetUserScore();
-            Console.WriteLine($"{userProfile.UserName} // {userProfile.Score} points // {userProfile.WeeklyScore} weekly // Moderator: {userProfile.Moderator}");
-
-            // Important note: Only user-related requests need authentication, most "GET" requests you may make without auth.
-            // Also do not create a new token every time you run your application. It makes a huge cooldown and theese tokens are never removed (I guess so).
-
-            // Get my country's top rated users
-            foreach (var user in client.GetUserWeeklyTop())
-                Console.WriteLine($"{user.UserName} // {user.Score} points // {user.WeeklyScore} weekly // Moderator: {user.Moderator}");
-
-            // Search for a song named "Nasty * Nasty * Spell" by Camellia
-            var tracks = client.SongSearch(new TrackSearchParameters
-            {
-                Artist = "Camellia",
-                Title = "Nasty * Nasty * Spell",
-                Album = "Blackmagik Blazing"
-            });
-
-            if (tracks.Count > 0)
-            {
-                // If the track count is greater than zero, get lyrics for the first result and display them
-                var track = tracks[0];
-                Console.WriteLine($"Lyrics for \"{track.ArtistName} - {track.TrackName}\":\n");
-                Console.WriteLine(client.GetTrackLyrics(track.TrackId).LyricsBody);
+                case "newbie":
+                    color = ConsoleColor.Cyan;
+                    break;
+                case "insider":
+                    color = ConsoleColor.Green;
+                    break;
+                case "master":
+                    color = ConsoleColor.Red;
+                    break;
+                case "hero":
+                    color = ConsoleColor.Magenta;
+                    break;
+                case "king":
+                    color = ConsoleColor.Yellow;
+                    break;
+                default:
+                    color = ConsoleColor.Gray;
+                    break;
             }
-            else
-            {
-                Console.WriteLine("Track search failed: No results matching the query found.");
-            }
+
+            #region User Info
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("You are logged in as: ");
+            Console.ForegroundColor = color;
+            Console.WriteLine(score.UserName);
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("Ranking: ");
+            Console.ForegroundColor = color;
+            Console.WriteLine($"{score.Score}, {score.RankLevel}LVL ({score.RankName})");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("Weekly points: ");
+            Console.ForegroundColor = color;
+            Console.WriteLine($"+{score.WeeklyScore}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("Counters: ");
+
+            #region Counters
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsAiMoodAnalysisV3Value: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsAiMoodAnalysisV3Value}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsAiPhrasesNotRelatedNo: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsAiPhrasesNotRelatedNo}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsAiPhrasesNotRelatedSkip: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsAiPhrasesNotRelatedSkip}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsAiPhrasesNotRelatedYes: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsAiPhrasesNotRelatedYes}");
+            
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsAiUgcLanguage: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsAiUgcLanguage}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsChanged: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsChanged}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsFavouriteAdded: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsFavouriteAdded}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsImplicitlyOk: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsImplicitlyOk}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsKo: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsKo}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsMissing: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsMissing}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsMusicId: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsMusicId}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsOk: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsOk}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsRankingChange: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsRankingChange}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsReportCompletelyWrong: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsReportCompletelyWrong}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsReportContainMistakes: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsReportContainMistakes}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsReportIncompleteLyrics: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsReportIncompleteLyrics}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsRichsyncAdded: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsRichsyncAdded}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  LyricsSubtitleAdded: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.LyricsSubtitleAdded}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  TrackCompleteMetadata: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.TrackCompleteMetadata}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  TrackInfluencerBonusModeratorVote: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.TrackInfluencerBonusModeratorVote}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  TrackStructure: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.TrackStructure}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  TrackTranslation: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.TrackTranslation}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  TranslationOk: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.TranslationOk}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  VoteBonuses: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.VoteBonuses}");
+
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("  VoteMaluses: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{score.Counters.VoteMaluses}");
+
+            #endregion
+
+            #endregion
+
+            #endregion
         }
     }
 }

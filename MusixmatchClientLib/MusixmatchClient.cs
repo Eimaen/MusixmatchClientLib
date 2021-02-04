@@ -4,6 +4,7 @@ using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Model.Types;
 using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Types;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -172,7 +173,7 @@ namespace MusixmatchClientLib
         /// <param name="id">Musixmatch track id</param>
         /// <param name="format">Subtitle format</param>
         /// <returns>Subtitle</returns>
-        public Subtitle GetSyncedLyrics(int id, SubtitleFormat format = SubtitleFormat.Lrc)
+        public Subtitle GetSyncedLyricsRaw(int id, SubtitleFormat format = SubtitleFormat.Lrc)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string> { ["track_id"] = id.ToString() };
             switch (format)
@@ -640,6 +641,28 @@ namespace MusixmatchClientLib
             foreach (var track in response.Cast<AlbumTracksGet>().Results)
                 tracks.Add(track.Track);
             return tracks;
+        }
+
+        /// <summary>
+        /// Get synced lyrics in MusixmatchClientLib format as an array of <see cref="LyricsLine"/>s.
+        /// </summary>
+        /// <param name="id">Musximatch track id</param>
+        /// <returns>Array of LyricsLines</returns>
+        public List<LyricsLine> GetSyncedLyrics(int id)
+        {
+            List<LyricsLine> lyrics = new List<LyricsLine>();
+            
+            var synced = GetSyncedLyricsRaw(id, SubtitleFormat.Musixmatch);
+            var formatted = JsonConvert.DeserializeObject<List<MusixmatchSubtitleFormat>>(synced.SubtitleBody);
+
+            foreach (var subtitle in formatted)
+                lyrics.Add(new LyricsLine
+                {
+                    Text = subtitle.Text,
+                    LyricsTime = TimeSpan.FromSeconds(subtitle.Time.Total)
+                });
+
+            return lyrics;
         }
 
         #region Work In Progress
