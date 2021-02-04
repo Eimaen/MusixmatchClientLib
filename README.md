@@ -3,7 +3,7 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib/badge?s=70546a2802f8bab8bf9f44f18eeff4177faa14e7)](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib)
 [![CircleCI](https://circleci.com/gh/Eimaen/MusixmatchClientLib.svg?style=shield&circle-token=161ae5a56e3c9352df1ca627e1b8c09e0d63e32f)](https://app.circleci.com/pipelines/github/Eimaen/MusixmatchClientLib)
-[![DungeonCI](https://img.shields.io/static/v1?label=dungeonci&message=slave&color=critical)](https://www.google.com/search?q=Van+Darkholme)
+[![DungeonCI](https://img.shields.io/static/v1?label=dungeonci&message=master&color=success)](https://www.google.com/search?q=Van+Darkholme)
 
 ----
 
@@ -163,8 +163,7 @@ string lyricsBody = lyrics.Instrumental != 1 ? lyrics.LyricsBody : "This track i
 ```C#
 // Search for the track and get synced lyrics
 int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
-Subtitle lyrics = client.GetSyncedLyrics(trackId, MusixmatchClient.SubtitleFormat.Lrc); // Throws ResourceNotFound if the track has no subtitles, check that first
-string subtitleBody = lyrics.SubtitleBody;
+List<LyricsLine> lyrics = client.GetSyncedLyrics(trackId); // Throws ResourceNotFound if the track has no subtitles, check that first
 ```
 
 **Get track by id:**
@@ -190,6 +189,9 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 
 ### Exception handling
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
+
+### Warning
+The docs are (a bit) outdated. Check sample project for new usage.
 
 ## How to help
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*

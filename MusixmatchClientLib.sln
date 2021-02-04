@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusixmatchClientLib.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusixmatchClientLib.Sample", "MusixmatchClientLib.Sample\MusixmatchClientLib.Sample.csproj", "{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusixmatchClientLib.Client", "MusixmatchClientLib.Client\MusixmatchClientLib.Client.csproj", "{266D25A8-672A-42DE-B274-87C0B67E3CE9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +26,6 @@ Global
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{266D25A8-672A-42DE-B274-87C0B67E3CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{266D25A8-672A-42DE-B274-87C0B67E3CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{266D25A8-672A-42DE-B274-87C0B67E3CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
