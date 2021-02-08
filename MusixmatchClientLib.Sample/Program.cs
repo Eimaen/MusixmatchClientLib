@@ -17,10 +17,11 @@ namespace MusixmatchClientLib.Sample
 
             #region User Score & Info
 
-            var score = client.GetUserWeeklyTop()[0];
+            // My country's weekly top
+            var score = client.GetUserWeeklyTop("BY")[0];
 
+            // Change color for the username to look cool
             ConsoleColor color;
-
             switch (score.RankName)
             {
                 case "newbie":
@@ -193,12 +194,6 @@ namespace MusixmatchClientLib.Sample
             #endregion
 
             #endregion
-
-            #endregion
-
-            #region Lyrics Fetching
-
-            
 
             #endregion
         }

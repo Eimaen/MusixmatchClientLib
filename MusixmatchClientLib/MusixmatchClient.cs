@@ -48,8 +48,6 @@ namespace MusixmatchClientLib
                 ["f_has_lyrics"] = parameters.HasLyrics ? "1" : "",
                 ["f_has_subtitle"] = parameters.HasSubtitles ? "1" : "",
                 [sortDecrypted.Key] = sortDecrypted.Value,
-                ["page"] = parameters.PageNumber.ToString(),
-                ["page_size"] = parameters.PageSize.ToString(),
                 ["f_lyrics_language"] = parameters.Language
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)

@@ -36,8 +36,6 @@ namespace MusixmatchClientLib.Types
         public string Language { get; set; } = "";
         public bool HasLyrics { get; set; } = true;
         public bool HasSubtitles { get; set; } = false;
-        public int PageSize { get; set; } = 10;
-        public int PageNumber { get; set; } = 1;
         public SortStrategy Sort { get; set; } = SortStrategy.TrackRatingDesc;
     }
 }
