@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.Sample
         {
             MusixmatchToken token = new MusixmatchToken("210123f3312aa5830ea3094a9ca2ae36ebf87840002377cca15cb3");
             MusixmatchClient client = new MusixmatchClient(token);
-
+          
             #region User Score & Info
 
             // My country's weekly top
@@ -22,6 +22,7 @@ namespace MusixmatchClientLib.Sample
 
             // Change color for the username to look cool
             ConsoleColor color;
+          
             switch (score.RankName)
             {
                 case "newbie":
