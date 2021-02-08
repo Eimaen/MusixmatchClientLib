@@ -469,7 +469,7 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <returns>Richsync</returns>
-        public Richsync GetTrackRichsyncRaw(int id)
+        public RichsyncRawResponse GetTrackRichsyncRaw(int id)
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncGet, new Dictionary<string, string>
             {

@@ -9,6 +9,6 @@ namespace MusixmatchClientLib.API.Model
     public class TrackRichsyncGet : MusixmatchApiResponse
     {
         [JsonProperty("richsync")]
-        public Richsync Richsync;
+        public RichsyncRawResponse Richsync;
     }
 }

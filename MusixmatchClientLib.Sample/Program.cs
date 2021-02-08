@@ -1,4 +1,5 @@
 ﻿using MusixmatchClientLib.Auth;
+using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
 using System.IO;
@@ -13,13 +14,6 @@ namespace MusixmatchClientLib.Sample
         {
             MusixmatchToken token = new MusixmatchToken("210123f3312aa5830ea3094a9ca2ae36ebf87840002377cca15cb3");
             MusixmatchClient client = new MusixmatchClient(token);
-
-            var lyrics = client.GetSyncedLyrics(client.SongSearch("REDALiCE - ALiVE")[0].TrackId);
-
-            foreach (var line in lyrics)
-                Console.WriteLine($"[{line.LyricsTime}] {line.Text}");
-
-            return;
 
             #region User Score & Info
 
@@ -199,6 +193,12 @@ namespace MusixmatchClientLib.Sample
             #endregion
 
             #endregion
+
+            #endregion
+
+            #region Lyrics Fetching
+
+            
 
             #endregion
         }
