@@ -1,4 +1,5 @@
 ﻿using MusixmatchClientLib.Auth;
+using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
 using System.IO;
@@ -13,20 +14,15 @@ namespace MusixmatchClientLib.Sample
         {
             MusixmatchToken token = new MusixmatchToken("210123f3312aa5830ea3094a9ca2ae36ebf87840002377cca15cb3");
             MusixmatchClient client = new MusixmatchClient(token);
-
-            var lyrics = client.GetSyncedLyrics(client.SongSearch("REDALiCE - ALiVE")[0].TrackId);
-
-            foreach (var line in lyrics)
-                Console.WriteLine($"[{line.LyricsTime}] {line.Text}");
-
-            return;
-
+          
             #region User Score & Info
 
-            var score = client.GetUserWeeklyTop()[0];
+            // My country's weekly top
+            var score = client.GetUserWeeklyTop("BY")[0];
 
+            // Change color for the username to look cool
             ConsoleColor color;
-
+          
             switch (score.RankName)
             {
                 case "newbie":

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MusixmatchClientLib.API.Model.Types
 {
-    public class Richsync
+    public class RichsyncRawResponse
     {
         [JsonProperty("richsync_id")]
         public int RichsyncId;
