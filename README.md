@@ -37,12 +37,12 @@ Definitions:
 - [ ] matcher.lyrics.get | **H**
 - [ ] matcher.track.get | **H**
 - [ ] matcher.subtitle.get | **H**
-- [ ] artist.get | **H**
-- [ ] artist.search | **H**
-- [ ] artist.albums.get | **H**
-- [ ] artist.related.get | **H**
-- [ ] album.get | **H**
-- [ ] album.tracks.get | **H**
+- [x] artist.get | **IST**
+- [x] artist.search | **IST**
+- [x] artist.albums.get | **IST**
+- [ ] artist.related.get | **W**
+- [x] album.get | **IST**
+- [x] album.tracks.get | **IST**
 
 **Unofficial API methods**
 - [x] track.subtitle.post | **IST**
@@ -89,7 +89,8 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - Don't write bots to spam translations *(same as above)*
 - **Don't write bots at all**
 
-*There is a funny fact that the MusixmatchClientLib's functionality does not allow creating bots yet.*
+Now you have possibility to create Musixmatch bots with this library, but, if you want to use that as a bot, read the text above.
+If you are looking for some point-gaining information, it can be found in the `MusixmatchClientLib.Exploits`. They'll just get you some points ;D
 
 ## Usage
 Using the library is quite simple. 
