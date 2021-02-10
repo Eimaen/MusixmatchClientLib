@@ -2,9 +2,11 @@
 using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace MusixmatchClientLib.Sample
 {
@@ -12,13 +14,40 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken("210123f3312aa5830ea3094a9ca2ae36ebf87840002377cca15cb3");
+            MusixmatchToken token = new MusixmatchToken();
             MusixmatchClient client = new MusixmatchClient(token);
-          
+
+            // Example usage of request processor functions
+            // The one below is used as a default function to process requests and requires cloudflare cookie handling
+            CookieContainer container = new CookieContainer();
+            client.SetRequestProcessor((string url, string method, string data) =>
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = method;
+                request.CookieContainer = container;
+                if (method == "POST")
+                {
+                    byte[] byteArray = Encoding.UTF8.GetBytes(data);
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.ContentLength = byteArray.Length;
+                    using (Stream dataStream = request.GetRequestStream())
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                }
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                container.Add(response.Cookies);
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
+            });
+
             #region User Score & Info
 
             // My country's weekly top
-            var score = client.GetUserWeeklyTop("BY")[0];
+            var score = client.GetUserWeeklyTop("DE")[0];
 
             // Change color for the username to look cool
             ConsoleColor color;
