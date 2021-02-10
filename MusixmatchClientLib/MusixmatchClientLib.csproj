@@ -6,6 +6,7 @@
     <Authors>Eimaen</Authors>
     <PackageProjectUrl>https://github.com/Eimaen/MusixmatchClientLib</PackageProjectUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
