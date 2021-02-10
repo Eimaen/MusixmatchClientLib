@@ -15,6 +15,6 @@ jobs:
           command: dotnet restore
       - run:
           name: "Building the solution"
-          command: dotnet publish -c Release -r x86
+          command: dotnet publish -c Release -r win-x86
       - store_artifacts:
-          path: .\MusixmatchClientLib\bin\Release\netstandard2.0\x86\publish\MusixmatchClientLib.dll
+          path: .\MusixmatchClientLib\bin\Release\netstandard2.0\win-x86\publish\MusixmatchClientLib.dll
