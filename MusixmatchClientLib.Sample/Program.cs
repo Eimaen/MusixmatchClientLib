@@ -47,7 +47,7 @@ namespace MusixmatchClientLib.Sample
             #region User Score & Info
 
             // My country's weekly top
-            var score = client.GetUserWeeklyTop("DE")[0];
+            var score = client.GetUserWeeklyTop("BY")[0];
 
             // Change color for the username to look cool
             ConsoleColor color;
