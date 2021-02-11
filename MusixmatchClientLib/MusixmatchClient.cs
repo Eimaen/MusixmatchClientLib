@@ -19,6 +19,11 @@ namespace MusixmatchClientLib
     public class MusixmatchClient
     {
         private ApiRequestFactory requestFactory;
+        
+        /// <summary>
+        /// Current musixmatch token.
+        /// </summary>
+        public MusixmatchToken Token { get => new MusixmatchToken(requestFactory.UserToken); }
 
         /// <summary>
         /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
@@ -620,11 +625,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Artist id</param>
         /// <returns>List of albums</returns>
-        public List<Album> GetArtistAlbums(int id)
+        public List<Album> GetArtistAlbums(int id, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistAlbumsGet, new Dictionary<string, string>
             {
-                ["artist_id"] = id.ToString()
+                ["artist_id"] = id.ToString(),
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -655,11 +664,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Musixmatch album id</param>
         /// <returns>List of tracks</returns>
-        public List<Track> GetAlbumTracks(int id)
+        public List<Track> GetAlbumTracks(int id, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AlbumTracksGet, new Dictionary<string, string>
             {
-                ["album_id"] = id.ToString()
+                ["album_id"] = id.ToString(),
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
