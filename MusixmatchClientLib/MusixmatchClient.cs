@@ -705,10 +705,10 @@ namespace MusixmatchClientLib
         }
 
         #region Work In Progress
-        public string RequestMissionManager()
+        public MissionManager RequestMissionManager()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>();
-            return response.JwtToken;
+            return new MissionManager(response.JwtToken);
         }
         #endregion
     }
