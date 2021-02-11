@@ -44,6 +44,11 @@ namespace MusixmatchClientLib.Sample
                 }
             });
 
+            // Work in progress
+            var missions = client.RequestMissionManager().ParseMissions(client.Token.Token, client.GetUserInfo().UserData.UserId);
+            foreach (var mission in missions)
+                Console.WriteLine($"Mission: {mission.Title} ({mission.Description}) [id: {mission.Id}]");
+
             #region User Score & Info
 
             // My country's weekly top
