@@ -18,8 +18,6 @@ namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
-        private static string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MusixmatchClientLib");
-
         private ApiRequestFactory requestFactory;
 
         /// <summary>
@@ -341,12 +339,15 @@ namespace MusixmatchClientLib
         /// Not working yet.
         /// </summary>
         /// <returns>List of track ids</returns>
-        public List<string> ChartTracksGet()
+        public List<string> ChartTracksGet(PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             List<string> returnValue = new List<string>();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartTracksGet, new Dictionary<string, string>
             {
-                
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -462,11 +463,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of top users</returns>
-        public List<User> GetUserWeeklyTop(string country = "")
+        public List<User> GetUserWeeklyTop(string country = "", PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdChartUsersGet, new Dictionary<string, string>
             {
-                ["country"] = country
+                ["country"] = country,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -553,11 +558,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of artists</returns>
-        public List<Artist> GetChartArtists(string country = "")
+        public List<Artist> GetChartArtists(string country = "", PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartArtistsGet, new Dictionary<string, string>
             {
-                ["country"] = country
+                ["country"] = country,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -572,11 +581,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="query">Query</param>
         /// <returns>List of artists</returns>
-        public List<Artist> ArtistSearch(string query)
+        public List<Artist> ArtistSearch(string query, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistSearch, new Dictionary<string, string>
             {
-                ["q_artist"] = query
+                ["q_artist"] = query,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
