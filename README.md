@@ -70,6 +70,7 @@ Definitions:
 - [ ] Create wiki | **H**
 
 ## A *really* earnest request *(call it a disclaimer)*
+
 All the information provided in this repository is **for educational purposes only**. 
 **Please do not use this to write bots or other automation applications.** 
 This platform is good for it is supported by people. 
@@ -90,7 +91,11 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - **Don't write bots at all**
 
 Now you have possibility to create Musixmatch bots with this library, but, if you want to use that as a bot, read the text above.
-If you are looking for some point-gaining information, it can be found in the `MusixmatchClientLib.Exploits`. They'll just get you some points ;D
+If you are looking for some point-gaining information, it can be found in the `MusixmatchClientLib.Exploits`. They'll just get you some points.
+I've contacted Musixmatch over *typeform* telling them about their vulnerabilities, but they didn't fix them, and they didn't even reply to my message. 
+**They are not interested**. So, I can not stop you now.
+
+Anyway, breaking ToS is bannable.
 
 ## Usage
 Using the library is quite simple. 
