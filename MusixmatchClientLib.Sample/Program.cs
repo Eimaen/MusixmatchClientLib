@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken("2101239491e04a620fbd4a06c4713725a8e3d4a9aa34b0b77efbca");
+            MusixmatchToken token = new MusixmatchToken();
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
