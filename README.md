@@ -90,10 +90,8 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - Don't write bots to spam translations *(same as above)*
 - **Don't write bots at all**
 
-Now you have possibility to create Musixmatch bots with this library, but, if you want to use that as a bot, read the text above.
-If you are looking for some point-gaining information, it can be found in the `MusixmatchClientLib.Exploits`. They'll just get you some points.
-I've contacted Musixmatch over *typeform* telling them about their vulnerabilities, but they didn't fix them, and they didn't even reply to my message. 
-**They are not interested**. So, I can not stop you now.
+I've contacted Musixmatch over Typeform telling them about their vulnerabilities, but they didn't fix them, and they didn't even reply to my message. 
+They are not interested :sad_face:
 
 Anyway, breaking ToS is bannable.
 
@@ -151,8 +149,6 @@ List<track> tracks = client.SongSearch(new TrackSearchParameters
     HasLyrics = false, // Only search for tracks with lyrics
     HasSubtitles = false, // Only search for tracks with synced lyrics
     Language = "", // Only search for tracks with lyrics in specified language
-    PageNumber = 1, // Pagination parameter. Represents page number.
-    PageSize = 1, // Pagination parameter. Represents page size. Recommended to set to 1 for one-track search.
     Sort = TrackSearchParameters.SortStrategy.TrackRatingDesc // List sorting strategy 
 });
 ```
