@@ -15,7 +15,7 @@ namespace MusixmatchClientLib.API.Contexts
             },
             [ApiContext.iOS] = new MusixmatchApiContext
             {
-                ApiUrl = @"https://apicp.musixmatch.com/ws/1.1/",
+                ApiUrl = @"https://apic.musixmatch.com/ws/1.1/",
                 AppId = @"mac-ios-v2.0"
             }
         };

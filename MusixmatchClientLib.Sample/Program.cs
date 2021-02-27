@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken();
+            MusixmatchToken token = new MusixmatchToken("2101239491e04a620fbd4a06c4713725a8e3d4a9aa34b0b77efbca");
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
@@ -43,11 +43,6 @@ namespace MusixmatchClientLib.Sample
                     }
                 }
             });
-
-            // Work in progress
-            var missions = client.RequestMissionManager().ParseMissions(client.Token.Token, client.GetUserInfo().UserData.UserId);
-            foreach (var mission in missions)
-                Console.WriteLine($"Mission: {mission.Title} ({mission.Description}) [id: {mission.Id}]");
 
             #region User Score & Info
 
