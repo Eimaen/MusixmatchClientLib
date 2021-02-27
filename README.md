@@ -47,11 +47,11 @@ Definitions:
 **Unofficial API methods**
 - [x] track.subtitle.post | **IST**
 - [x] track.lyrics.post | **IST**
+- [ ] track.translation.post | **W**
 - [x] crowd.user.feedback.get | **IS**
 - [x] crowd.polls.tracks.search | **IS**
 - [x] token.get | **IST**
 - [x] credentials.post | **IST**
-- [x] track.lyrics.post | **IST**
 - [x] crowd.user.suggestion.lyrics.get | **IST**
 - [x] crowd.user.suggestion.subtitles.get | **IST**
 - [x] crowd.user.suggestion.translations.get | **IST**
