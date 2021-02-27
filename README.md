@@ -47,11 +47,11 @@ Definitions:
 **Unofficial API methods**
 - [x] track.subtitle.post | **IST**
 - [x] track.lyrics.post | **IST**
+- [ ] track.translation.post | **W**
 - [x] crowd.user.feedback.get | **IS**
 - [x] crowd.polls.tracks.search | **IS**
 - [x] token.get | **IST**
 - [x] credentials.post | **IST**
-- [x] track.lyrics.post | **IST**
 - [x] crowd.user.suggestion.lyrics.get | **IST**
 - [x] crowd.user.suggestion.subtitles.get | **IST**
 - [x] crowd.user.suggestion.translations.get | **IST**
@@ -70,6 +70,7 @@ Definitions:
 - [ ] Create wiki | **H**
 
 ## A *really* earnest request *(call it a disclaimer)*
+
 All the information provided in this repository is **for educational purposes only**. 
 **Please do not use this to write bots or other automation applications.** 
 This platform is good for it is supported by people. 
@@ -89,8 +90,10 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - Don't write bots to spam translations *(same as above)*
 - **Don't write bots at all**
 
-Now you have possibility to create Musixmatch bots with this library, but, if you want to use that as a bot, read the text above.
-If you are looking for some point-gaining information, it can be found in the `MusixmatchClientLib.Exploits`. They'll just get you some points ;D
+I've contacted Musixmatch over Typeform telling them about their vulnerabilities, but they didn't fix them, and they didn't even reply to my message. 
+They are not interested :sad_face:
+
+Anyway, breaking ToS is bannable.
 
 ## Usage
 Using the library is quite simple. 
@@ -146,8 +149,6 @@ List<track> tracks = client.SongSearch(new TrackSearchParameters
     HasLyrics = false, // Only search for tracks with lyrics
     HasSubtitles = false, // Only search for tracks with synced lyrics
     Language = "", // Only search for tracks with lyrics in specified language
-    PageNumber = 1, // Pagination parameter. Represents page number.
-    PageSize = 1, // Pagination parameter. Represents page size. Recommended to set to 1 for one-track search.
     Sort = TrackSearchParameters.SortStrategy.TrackRatingDesc // List sorting strategy 
 });
 ```

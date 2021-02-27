@@ -15,15 +15,11 @@ namespace MusixmatchClientLib.API
     {
         private string jwtToken { get; set; }
 
-        internal MissionManager(string userToken)
-        {
-            ApiRequestFactory requestFactory = new ApiRequestFactory(userToken);
-            jwtToken = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<JwtGet>().JwtToken;
-        }
+        internal MissionManager(string jwtToken) => this.jwtToken = jwtToken;
 
         public List<Mission> ParseMissions(string userToken, string userId)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint (if it exists)
             request.Method = "POST";
             request.Headers = new WebHeaderCollection();
             request.Headers.Add(HttpRequestHeader.Authorization, jwtToken);

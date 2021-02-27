@@ -18,9 +18,12 @@ namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
-        private static string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MusixmatchClientLib");
-
         private ApiRequestFactory requestFactory;
+        
+        /// <summary>
+        /// Current musixmatch token.
+        /// </summary>
+        public MusixmatchToken Token { get => new MusixmatchToken(requestFactory.UserToken); }
 
         /// <summary>
         /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
@@ -33,10 +36,13 @@ namespace MusixmatchClientLib
         /// <summary>
         /// Search the Musixmatch song database for a track.
         /// </summary>
-        /// <param name="query">Search query, any word in the song title or artist name or lyrics</param>
+        /// <param name="parameters">Search parameters</param>
+        /// <param name="paginationParameters">Pagination parameters</param>
         /// <returns>List of tracks</returns>
-        public List<Track> SongSearch(TrackSearchParameters parameters)
+        public List<Track> SongSearch(TrackSearchParameters parameters, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var sortDecrypted = TrackSearchParameters.StrategyDecryptions[TrackSearchParameters.SortStrategy.TrackRatingAsc];
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSearch, new Dictionary<string, string>
             {
@@ -48,7 +54,9 @@ namespace MusixmatchClientLib
                 ["f_has_lyrics"] = parameters.HasLyrics ? "1" : "",
                 ["f_has_subtitle"] = parameters.HasSubtitles ? "1" : "",
                 [sortDecrypted.Key] = sortDecrypted.Value,
-                ["f_lyrics_language"] = parameters.Language
+                ["f_lyrics_language"] = parameters.Language,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -62,12 +70,17 @@ namespace MusixmatchClientLib
         /// Search the Musixmatch song database for a track.
         /// </summary>
         /// <param name="query">Search query, any word in the song title or artist name or lyrics</param>
+        /// <param name="paginationParameters">Pagination parameters</param>
         /// <returns>List of tracks</returns>
-        public List<Track> SongSearch(string query)
+        public List<Track> SongSearch(string query, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSearch, new Dictionary<string, string>
             {
-                ["q"] = query
+                ["q"] = query,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -82,13 +95,18 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="artist">The song artist</param>
         /// <param name="song">The song title</param>
+        /// <param name="paginationParameters">Pagination parameters</param>
         /// <returns>List of tracks</returns>
-        public List<Track> SongSearch(string artist, string song)
+        public List<Track> SongSearch(string artist, string song, PaginationParameters paginationParameters)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSearch, new Dictionary<string, string>
             {
                 ["q_artist"] = artist,
-                ["q_track"] = song
+                ["q_track"] = song,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -326,12 +344,15 @@ namespace MusixmatchClientLib
         /// Not working yet.
         /// </summary>
         /// <returns>List of track ids</returns>
-        public List<string> ChartTracksGet()
+        public List<string> ChartTracksGet(PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             List<string> returnValue = new List<string>();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartTracksGet, new Dictionary<string, string>
             {
-                
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -447,11 +468,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of top users</returns>
-        public List<User> GetUserWeeklyTop(string country = "")
+        public List<User> GetUserWeeklyTop(string country = "", PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdChartUsersGet, new Dictionary<string, string>
             {
-                ["country"] = country
+                ["country"] = country,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -538,11 +563,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of artists</returns>
-        public List<Artist> GetChartArtists(string country = "")
+        public List<Artist> GetChartArtists(string country = "", PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ChartArtistsGet, new Dictionary<string, string>
             {
-                ["country"] = country
+                ["country"] = country,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -557,11 +586,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="query">Query</param>
         /// <returns>List of artists</returns>
-        public List<Artist> ArtistSearch(string query)
+        public List<Artist> ArtistSearch(string query, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistSearch, new Dictionary<string, string>
             {
-                ["q_artist"] = query
+                ["q_artist"] = query,
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -592,11 +625,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Artist id</param>
         /// <returns>List of albums</returns>
-        public List<Album> GetArtistAlbums(int id)
+        public List<Album> GetArtistAlbums(int id, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.ArtistAlbumsGet, new Dictionary<string, string>
             {
-                ["artist_id"] = id.ToString()
+                ["artist_id"] = id.ToString(),
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -627,11 +664,15 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Musixmatch album id</param>
         /// <returns>List of tracks</returns>
-        public List<Track> GetAlbumTracks(int id)
+        public List<Track> GetAlbumTracks(int id, PaginationParameters paginationParameters = null)
         {
+            if (paginationParameters == null)
+                paginationParameters = new PaginationParameters();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AlbumTracksGet, new Dictionary<string, string>
             {
-                ["album_id"] = id.ToString()
+                ["album_id"] = id.ToString(),
+                ["page"] = paginationParameters.Page.ToString(),
+                ["page_size"] = paginationParameters.PageSize.ToString()
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -664,10 +705,10 @@ namespace MusixmatchClientLib
         }
 
         #region Work In Progress
-        public string RequestMissionManager()
+        public MissionManager RequestMissionManager()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>();
-            return response.JwtToken;
+            return new MissionManager(response.JwtToken);
         }
         #endregion
     }
