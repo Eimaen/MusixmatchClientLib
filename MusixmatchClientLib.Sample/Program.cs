@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken();
+            MusixmatchToken token = new MusixmatchToken("210203b2f9c1fb510bf3a0e0903223a1ca3c221c01206b1eea7b35");
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
@@ -44,10 +44,24 @@ namespace MusixmatchClientLib.Sample
                 }
             });
 
+            var list = new List<API.Model.Types.TranslationPost>();
+            list.Add(new API.Model.Types.TranslationPost
+            {
+                Translation = "Этой строки не существует",
+                SourceLine = "This line does not exist",
+                Language = "ru",
+                OriginalIndex = "",
+                Position = 0
+            });
+
+            client.SubmitTrackTranslationsRaw(client.SongSearch("MORGENSHTERN - ICE")[0].TrackId, list);
+
+            return;
+
             #region User Score & Info
 
             // My country's weekly top
-            var score = client.GetUserWeeklyTop("BY")[0];
+            var score = client.GetUserScore();
 
             // Change color for the username to look cool
             ConsoleColor color;

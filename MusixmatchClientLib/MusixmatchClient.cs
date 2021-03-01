@@ -321,7 +321,7 @@ namespace MusixmatchClientLib
         /// Submit track lyrics by its Musixmatch id.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
-        /// <param name="subtitles">Track lyrics</param>
+        /// <param name="lyrics">Track lyrics</param>
         public void SubmitTrackLyrics(int id, string lyrics)
         {
             var trackData = GetTrackById(id);
@@ -702,6 +702,29 @@ namespace MusixmatchClientLib
                 });
 
             return lyrics;
+        }
+
+        /// <summary>
+        /// Submit track translation by Musixmatch track id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="translation">List of <see cref="TranslationPost"/>s.</param>
+        /// <param name="timeSpent">Time spent on the translation in milliseconds.</param>
+        public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = ushort.MaxValue)
+        {
+            var trackData = GetTrackById(id);
+            Random random = new Random();
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationPost, new Dictionary<string, string>
+            {
+                ["commontrack_id"] = trackData.CommontrackId.ToString(),
+                ["track_id"] = trackData.TrackId.ToString()
+            }, new Dictionary<string, string>()
+            {
+                ["translations_list"] = JsonConvert.SerializeObject(translation),
+                ["time_spent"] = timeSpent.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         #region Work In Progress
