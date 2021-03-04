@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken("210203b2f9c1fb510bf3a0e0903223a1ca3c221c01206b1eea7b35");
+            MusixmatchToken token = new MusixmatchToken();
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
@@ -61,7 +61,7 @@ namespace MusixmatchClientLib.Sample
             #region User Score & Info
 
             // My country's weekly top
-            var score = client.GetUserScore();
+            var score = client.GetUserWeeklyTop("BY")[0];
 
             // Change color for the username to look cool
             ConsoleColor color;
