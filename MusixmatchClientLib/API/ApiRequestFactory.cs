@@ -72,6 +72,7 @@ namespace MusixmatchClientLib.API
             UserGet,
             SpotifyOauthTokenGet,
             TrackLyricsTranslationGet,
+            TrackLyricsTranslationPost,
             CrowdUserFeedbackGet,
             TrackLyricsPost,
             ChartTracksGet,
@@ -141,6 +142,11 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsTranslationGet] = new CustomRequestParameters
             {
                 EndpointResource = "track.lyrics.translation.get"
+            },
+            [ApiMethod.TrackLyricsTranslationPost] = new CustomRequestParameters
+            {
+                EndpointResource = "track.lyrics.translation.post",
+                RequestMethod = "POST"
             },
             [ApiMethod.CrowdUserFeedbackGet] = new CustomRequestParameters
             {

@@ -44,10 +44,24 @@ namespace MusixmatchClientLib.Sample
                 }
             });
 
+            var list = new List<API.Model.Types.TranslationPost>();
+            list.Add(new API.Model.Types.TranslationPost
+            {
+                Translation = "Этой строки не существует",
+                SourceLine = "This line does not exist",
+                Language = "ru",
+                OriginalIndex = "",
+                Position = 0
+            });
+
+            client.SubmitTrackTranslationsRaw(client.SongSearch("MORGENSHTERN - ICE")[0].TrackId, list);
+
+            return;
+
             #region User Score & Info
 
             // My country's weekly top
-            var score = client.GetUserWeeklyTop("DE")[0];
+            var score = client.GetUserWeeklyTop("BY")[0];
 
             // Change color for the username to look cool
             ConsoleColor color;

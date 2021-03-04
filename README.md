@@ -197,3 +197,9 @@ The docs are (a bit) outdated. Check sample project for new usage.
 
 ## How to help
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
+
+## Musixmatch?
+If you work at Musixmatch and don't like what I'm doing, please, contact me:
+- discord: *エイマエン#1134*
+- telegram: *@eimaen*
+- email: *stdcpp.h@gmail.com*
