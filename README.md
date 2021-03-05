@@ -9,6 +9,8 @@
 
 **MusixmatchClientLib** is a .NET library designed to interact with Musixmatch client API easily. This project also contains an information about Musixmatch's hidden endpoints to work with. 
 
+## Lol, someone from their team starred the project, there was a hope that `MusixmatchClientLib.Exploits` would have to be removed 🥳
+
 ## TODO
 Definitions:
 - **W**: Work in progress
@@ -48,6 +50,7 @@ Definitions:
 - [x] track.subtitle.post | **IST**
 - [x] track.lyrics.post | **IST**
 - [ ] track.translation.post | **W**
+      (while I was testing out this crap, they managed to ban my account)
 - [x] crowd.user.feedback.get | **IS**
 - [x] crowd.polls.tracks.search | **IS**
 - [x] token.get | **IST**
@@ -64,12 +67,13 @@ Definitions:
 **Missions API**
 - [x] Get missions | **IT**
 - [ ] Get tasks | **H**
+      (account banned, missions are not yet available)
 
 **Project**
 - [ ] Write samples for all the functions | **H**
 - [ ] Create wiki | **H**
 
-## A *really* earnest request *(call it a disclaimer)*
+## A *really* earnest request
 
 All the information provided in this repository is **for educational purposes only**. 
 **Please do not use this to write bots or other automation applications.** 
@@ -89,11 +93,6 @@ however, if you don’t care what the paragraph above says, at least make sure y
 - Don't write bots to spam lyrics *(oh my god why)*
 - Don't write bots to spam translations *(same as above)*
 - **Don't write bots at all**
-
-I've contacted Musixmatch over Typeform telling them about their vulnerabilities, but they didn't fix them, and they didn't even reply to my message. 
-They are not interested :sad_face:
-
-Anyway, breaking ToS is bannable.
 
 ## Usage
 Using the library is quite simple. 
