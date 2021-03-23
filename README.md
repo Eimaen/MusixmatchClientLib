@@ -9,8 +9,6 @@
 
 **MusixmatchClientLib** is a .NET library designed to interact with Musixmatch client API easily. This project also contains an information about Musixmatch's hidden endpoints to work with. 
 
-## Lol, someone from their team starred the project, there was a hope that `MusixmatchClientLib.Exploits` would have to be removed 🥳
-
 ## TODO
 Definitions:
 - **W**: Work in progress
@@ -20,6 +18,7 @@ Definitions:
 - **T**: Tested
 - **D**: Wiki-documented
 - **R**: Research in progress (for undocumented)
+- **U**: Ignored (useless)
 
 **Core**
 - [x] Custom request function | **I**
@@ -36,21 +35,20 @@ Definitions:
 - [x] track.lyrics.translation.get | **IS**
 - [ ] track.subtitle.translation.get | **W**
 - [x] music.genres.get | **IS**
-- [ ] matcher.lyrics.get | **H**
-- [ ] matcher.track.get | **H**
-- [ ] matcher.subtitle.get | **H**
+- [ ] matcher.lyrics.get | **HU**
+- [ ] matcher.track.get | **HU**
+- [ ] matcher.subtitle.get | **HU**
 - [x] artist.get | **IST**
 - [x] artist.search | **IST**
 - [x] artist.albums.get | **IST**
-- [ ] artist.related.get | **W**
+- [ ] artist.related.get | **H**
 - [x] album.get | **IST**
 - [x] album.tracks.get | **IST**
 
 **Unofficial API methods**
 - [x] track.subtitle.post | **IST**
 - [x] track.lyrics.post | **IST**
-- [ ] track.translation.post | **W**
-      (while I was testing out this crap, they managed to ban my account)
+- [ ] track.translation.post | **H**
 - [x] crowd.user.feedback.get | **IS**
 - [x] crowd.polls.tracks.search | **IS**
 - [x] token.get | **IST**
@@ -66,8 +64,7 @@ Definitions:
 
 **Missions API**
 - [x] Get missions | **IT**
-- [ ] Get tasks | **H**
-      (account banned, missions are not yet available)
+- [ ] Get tasks | **W**
 
 **Project**
 - [ ] Write samples for all the functions | **H**
@@ -198,7 +195,4 @@ The docs are (a bit) outdated. Check sample project for new usage.
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
 
 ## Musixmatch?
-If you work at Musixmatch and don't like what I'm doing, please, contact me:
-- discord: *エイマエン#1134*
-- telegram: *@eimaen*
-- email: *stdcpp.h@gmail.com*
+Eima**en** is still waiting for `MusixmatchClientLib.Exploits` fixes! 
