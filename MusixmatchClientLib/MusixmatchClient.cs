@@ -460,7 +460,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns user top for a country
+        /// Returns user top for a country.
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of top users</returns>
@@ -487,7 +487,7 @@ namespace MusixmatchClientLib
         /// Body has a <see href="https://developer.musixmatch.com/documentation/api-reference/track-richsync-get">specific format</see>.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
-        /// <returns>Richsync</returns>
+        /// <returns>Raw richsync response</returns>
         public RichsyncRawResponse GetTrackRichsyncRaw(int id)
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncGet, new Dictionary<string, string>
@@ -497,6 +497,17 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackRichsyncGet>().Richsync;
+        }
+
+        /// <summary>
+        /// Get track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Richsync</returns>
+        public Richsync GetTrackRichsync(int id)
+        {
+            RichsyncRawResponse richsyncRawResponse = GetTrackRichsyncRaw(id);
+            return new Richsync(richsyncRawResponse.RichsyncBody);
         }
 
         /// <summary>
@@ -528,7 +539,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get current user score
+        /// Submit track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="richsync">Richsync</param>
+        public void SubmitTrackRichsync(int id, Richsync richsync) => SubmitTrackRichsyncRaw(id, richsync.ToString());
+
+        /// <summary>
+        /// Get current user score.
         /// </summary>
         /// <returns>User</returns>
         public User GetUserScore()
@@ -540,7 +558,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get all the genres supported by Musixmatch database
+        /// Get all the genres supported by Musixmatch database.
         /// </summary>
         /// <returns>List of genres</returns>
         public List<MusicGenre> GetMusicGenres()
@@ -686,7 +704,6 @@ namespace MusixmatchClientLib
         public List<LyricsLine> GetSyncedLyrics(int id)
         {
             List<LyricsLine> lyrics = new List<LyricsLine>();
-
             var synced = GetSyncedLyricsRaw(id, SubtitleFormat.Musixmatch);
             var formatted = JsonConvert.DeserializeObject<List<MusixmatchSubtitleFormat>>(synced.SubtitleBody);
 
@@ -706,10 +723,9 @@ namespace MusixmatchClientLib
         /// <param name="id">Musixmatch track id</param>
         /// <param name="translation">List of <see cref="TranslationPost"/>s.</param>
         /// <param name="timeSpent">Time spent on the translation in milliseconds.</param>
-        public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = ushort.MaxValue)
+        public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = int.MaxValue)
         {
             var trackData = GetTrackById(id);
-            Random random = new Random();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationPost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),

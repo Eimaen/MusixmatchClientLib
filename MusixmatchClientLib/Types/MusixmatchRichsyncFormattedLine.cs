@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MusixmatchClientLib.Types
 {
-    public class MusixmatchRichsyncFormat
+    public class MusixmatchRichsyncFormattedLine
     {
         [JsonProperty("ts")]
         public double TimeStart;
