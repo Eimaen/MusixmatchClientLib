@@ -10,6 +10,11 @@ namespace MusixmatchClientLib.Types
         public List<RichsyncCharacter> Characters { get; set; }
 
         /// <summary>
+        /// Create an empty <see cref="Richsync"/>.
+        /// </summary>
+        public Richsync() { }
+
+        /// <summary>
         /// Create <see cref="Richsync"/> object from musixmatch richsync serialized string.
         /// </summary>
         /// <param name="mrf">Musixmatch serialized richsync</param>
