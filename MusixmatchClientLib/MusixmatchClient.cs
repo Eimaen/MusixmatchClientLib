@@ -1,25 +1,21 @@
 ﻿using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Exceptions;
+using MusixmatchClientLib.API.Model.Requests;
 using MusixmatchClientLib.API.Model.Types;
+using MusixmatchClientLib.API.Processors;
 using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static MusixmatchClientLib.API.Model.CrowdUserFeedbackGet;
-using static MusixmatchClientLib.API.Model.OauthTokenGet;
 
 namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
         private ApiRequestFactory requestFactory;
-        
+
         /// <summary>
         /// Current musixmatch token.
         /// </summary>
@@ -31,7 +27,7 @@ namespace MusixmatchClientLib
         /// <param name="userToken"></param>
         public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
 
-        public void SetRequestProcessor(Func<string, string, string, string> requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
+        public void SetRequestProcessor(RequestProcessor requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
 
         /// <summary>
         /// Search the Musixmatch song database for a track.
@@ -275,7 +271,7 @@ namespace MusixmatchClientLib
         /// Get spotify <see cref="Oauthtoken"/>. I have also noticed, that even with free spotify account this token acts like premium. Learn more at <see href="developer.spotify.com"/>.
         /// </summary>
         /// <returns>Spotify token info</returns>
-        public Oauthtoken GetSpotifyOauthToken()
+        public OauthTokenGet.Oauthtoken GetSpotifyOauthToken()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.SpotifyOauthTokenGet);
             if ((StatusCode)response.StatusCode != StatusCode.Success)
@@ -305,7 +301,7 @@ namespace MusixmatchClientLib
         /// Returns a list of reported feedbacks.
         /// </summary>
         /// <returns>List of feedbacks</returns>
-        public List<FeedbackList> GetCrowdFeedback()
+        public List<CrowdUserFeedbackGet.FeedbackList> GetCrowdFeedback()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
             {
@@ -370,7 +366,7 @@ namespace MusixmatchClientLib
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>
             {
-                
+
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -690,7 +686,7 @@ namespace MusixmatchClientLib
         public List<LyricsLine> GetSyncedLyrics(int id)
         {
             List<LyricsLine> lyrics = new List<LyricsLine>();
-            
+
             var synced = GetSyncedLyricsRaw(id, SubtitleFormat.Musixmatch);
             var formatted = JsonConvert.DeserializeObject<List<MusixmatchSubtitleFormat>>(synced.SubtitleBody);
 

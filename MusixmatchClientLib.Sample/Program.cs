@@ -1,4 +1,5 @@
-﻿using MusixmatchClientLib.Auth;
+﻿using MusixmatchClientLib.API.Processors;
+using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
@@ -19,30 +20,7 @@ namespace MusixmatchClientLib.Sample
 
             // Example usage of request processor functions
             // The one below is used as a default function to process requests and requires cloudflare cookie handling
-            CookieContainer container = new CookieContainer();
-            client.SetRequestProcessor((string url, string method, string data) =>
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = method;
-                request.CookieContainer = container;
-                if (method == "POST")
-                {
-                    byte[] byteArray = Encoding.UTF8.GetBytes(data);
-                    request.ContentType = "application/x-www-form-urlencoded";
-                    request.ContentLength = byteArray.Length;
-                    using (Stream dataStream = request.GetRequestStream())
-                        dataStream.Write(byteArray, 0, byteArray.Length);
-                }
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                container.Add(response.Cookies);
-                using (Stream stream = response.GetResponseStream())
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
-            });
+            client.SetRequestProcessor(new DefaultRequestProcessor());
 
             var list = new List<API.Model.Types.TranslationPost>();
             list.Add(new API.Model.Types.TranslationPost
