@@ -38,7 +38,7 @@ namespace MusixmatchClientLib.Types
                 {
                     var characterp = new RichsyncCharacter
                     {
-                        Character = character.Char[0],
+                        Character = character.Char,
                         TimeOffset = TimeSpan.FromSeconds(character.Offset),
                         TimeStart = TimeSpan.FromSeconds(character.Offset).Add(linep.TimeStart)
                     };
@@ -63,7 +63,7 @@ namespace MusixmatchClientLib.Types
                 foreach (var character in line.Characters)
                     charOffsets.Add(new MusixmatchRichsyncFormattedLine.SingleCharOffset
                     {
-                        Char = character.Character.ToString(),
+                        Char = character.Character,
                         Offset = character.TimeOffset.TotalSeconds
                     });
 

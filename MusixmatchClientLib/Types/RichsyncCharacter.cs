@@ -6,6 +6,6 @@ namespace MusixmatchClientLib.Types
     {
         public TimeSpan TimeStart;
         public TimeSpan TimeOffset;
-        public char Character;
+        public string Character;
     }
 }
