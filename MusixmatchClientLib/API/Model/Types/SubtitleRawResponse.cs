@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MusixmatchClientLib.API.Model.Types
 {
-    public class Subtitle
+    public class SubtitleRawResponse
     {
         [JsonProperty("subtitle_id")]
         public int SubtitleId;

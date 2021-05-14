@@ -185,7 +185,7 @@ namespace MusixmatchClientLib
         /// <param name="id">Musixmatch track id</param>
         /// <param name="format">Subtitle format</param>
         /// <returns>Subtitle</returns>
-        public Subtitle GetSyncedLyricsRaw(int id, SubtitleFormat format = SubtitleFormat.Lrc)
+        public SubtitleRawResponse GetTrackSubtitlesRaw(int id, SubtitleFormat format = SubtitleFormat.Lrc)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string> { ["track_id"] = id.ToString() };
             switch (format)
@@ -210,20 +210,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get track lyrics by its Musixmatch id.
+        /// Get synced lyrics in MusixmatchClientLib format as an array of <see cref="LyricsLine"/>s.
         /// </summary>
-        /// <param name="id">Musixmatch track id</param>
-        /// <returns>Lyrics</returns>
-        public Lyrics GetTrackLyrics(int id)
+        /// <param name="id">Musximatch track id</param>
+        /// <returns>Array of LyricsLines</returns>
+        public Subtitles GetTrackSubtitles(int id)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsGet, new Dictionary<string, string>
-            {
-                ["track_id"] = id.ToString(),
-                ["part"] = "user,lyrics_verified_by"
-            });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
-            return response.Cast<TrackLyricsGet>().Lyrics;
+            var synced = GetTrackSubtitlesRaw(id, SubtitleFormat.Musixmatch);
+            return new Subtitles(synced.SubtitleBody);
         }
 
         /// <summary>
@@ -232,7 +226,7 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="subtitles">Subtitle data in Musixmatch (mxm) format</param>
-        public void SubmitTrackLyricsSynced(int id, string subtitles)
+        public void SubmitTrackSubtitlesRaw(int id, string subtitles)
         {
             var trackData = GetTrackById(id);
             Random random = new Random();
@@ -254,6 +248,13 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
+
+        /// <summary>
+        /// Submit track subtitles by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="subtitles">Subtitle data</param>
+        public void SubmitTrackSubtitles(int id, Subtitles subtitles) => SubmitTrackSubtitlesRaw(id, subtitles.ToString());
 
         /// <summary>
         /// Gets Musixmatch user information.
@@ -311,6 +312,23 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
+        }
+
+        /// <summary>
+        /// Get track lyrics by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Lyrics</returns>
+        public Lyrics GetTrackLyrics(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString(),
+                ["part"] = "user,lyrics_verified_by"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<TrackLyricsGet>().Lyrics;
         }
 
         /// <summary>
@@ -694,27 +712,6 @@ namespace MusixmatchClientLib
             foreach (var track in response.Cast<AlbumTracksGet>().Results)
                 tracks.Add(track.Track);
             return tracks;
-        }
-
-        /// <summary>
-        /// Get synced lyrics in MusixmatchClientLib format as an array of <see cref="LyricsLine"/>s.
-        /// </summary>
-        /// <param name="id">Musximatch track id</param>
-        /// <returns>Array of LyricsLines</returns>
-        public List<LyricsLine> GetSyncedLyrics(int id)
-        {
-            List<LyricsLine> lyrics = new List<LyricsLine>();
-            var synced = GetSyncedLyricsRaw(id, SubtitleFormat.Musixmatch);
-            var formatted = JsonConvert.DeserializeObject<List<MusixmatchSubtitleFormat>>(synced.SubtitleBody);
-
-            foreach (var subtitle in formatted)
-                lyrics.Add(new LyricsLine
-                {
-                    Text = subtitle.Text,
-                    LyricsTime = TimeSpan.FromSeconds(subtitle.Time.Total)
-                });
-
-            return lyrics;
         }
 
         /// <summary>

@@ -6,6 +6,6 @@ namespace MusixmatchClientLib.API.Model.Requests
     public class TrackSubtitleGet : MusixmatchApiResponse
     {
         [JsonProperty("subtitle")]
-        public Subtitle Subtitle;
+        public SubtitleRawResponse Subtitle;
     }
 }

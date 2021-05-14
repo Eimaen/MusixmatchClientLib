@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace MusixmatchClientLib.Types
 {
-    public class MusixmatchSubtitleFormat
+    public class MusixmatchSubtitleFormattedLine
     {
         [JsonProperty("text")]
         public string Text;
@@ -23,6 +24,10 @@ namespace MusixmatchClientLib.Types
 
             [JsonProperty("hundredths")]
             public int Hundredths;
+
+            public static LineTime FromTimeSpan(TimeSpan time) => new LineTime { Total = time.TotalSeconds, Minutes = time.Minutes, Seconds = time.Seconds, Hundredths = time.Milliseconds / 10 };
         }
+
+        public static MusixmatchSubtitleFormattedLine FromLyricsLine(LyricsLine line) => new MusixmatchSubtitleFormattedLine { Text = line.Text, Time = LineTime.FromTimeSpan(line.LyricsTime) };
     }
 }
