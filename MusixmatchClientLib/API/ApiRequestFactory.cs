@@ -259,12 +259,13 @@ namespace MusixmatchClientLib.API
             }
 
             var responseParsed = JObject.Parse(response);
+            var debug = responseParsed.SelectToken("$..debug", false);
 
             return new MusixmatchApiResponse
             {
                 StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
                 TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
-                Verbose = responseParsed.SelectToken("$..debug", false).Value<List<string>>(),
+                Verbose = (debug != null ? new List<string>(responseParsed.SelectToken("$..debug", false).Values<string>()) : null),
                 Body = responseParsed.SelectToken("$..body").ToString(),
                 Header = responseParsed.SelectToken("$..header").ToString()
             };
