@@ -15,26 +15,12 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken();
+            MusixmatchToken token = new MusixmatchToken("21051485878e43c3dea9cdaf4997340124f378a07a51f00837e4e4");
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
             // The one below is used as a default function to process requests and requires cloudflare cookie handling
             client.SetRequestProcessor(new DefaultRequestProcessor());
-
-            var list = new List<API.Model.Types.TranslationPost>();
-            list.Add(new API.Model.Types.TranslationPost
-            {
-                Translation = "Этой строки не существует",
-                SourceLine = "This line does not exist",
-                Language = "ru",
-                OriginalIndex = "",
-                Position = 0
-            });
-
-            client.SubmitTrackTranslationsRaw(client.SongSearch("MORGENSHTERN - ICE")[0].TrackId, list);
-
-            return;
 
             #region User Score & Info
 
