@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MusixmatchClientLib.API
+﻿namespace MusixmatchClientLib.API
 {
+    public enum RequestMethod
+    {
+        GET,
+        POST
+    }
+
     class CustomRequestParameters
     {
-        public string RequestMethod { get; set; } = "GET";
+        public RequestMethod RequestMethod { get; set; } = RequestMethod.GET;
         public string EndpointResource { get; set; } = "";
     }
 }

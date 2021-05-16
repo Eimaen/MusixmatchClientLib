@@ -1,4 +1,5 @@
-﻿using MusixmatchClientLib.Auth;
+﻿using MusixmatchClientLib.API.Processors;
+using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
@@ -14,49 +15,12 @@ namespace MusixmatchClientLib.Sample
     {
         static void Main(string[] args)
         {
-            MusixmatchToken token = new MusixmatchToken();
+            MusixmatchToken token = new MusixmatchToken("21051485878e43c3dea9cdaf4997340124f378a07a51f00837e4e4");
             MusixmatchClient client = new MusixmatchClient(token);
 
             // Example usage of request processor functions
             // The one below is used as a default function to process requests and requires cloudflare cookie handling
-            CookieContainer container = new CookieContainer();
-            client.SetRequestProcessor((string url, string method, string data) =>
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = method;
-                request.CookieContainer = container;
-                if (method == "POST")
-                {
-                    byte[] byteArray = Encoding.UTF8.GetBytes(data);
-                    request.ContentType = "application/x-www-form-urlencoded";
-                    request.ContentLength = byteArray.Length;
-                    using (Stream dataStream = request.GetRequestStream())
-                        dataStream.Write(byteArray, 0, byteArray.Length);
-                }
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                container.Add(response.Cookies);
-                using (Stream stream = response.GetResponseStream())
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
-            });
-
-            var list = new List<API.Model.Types.TranslationPost>();
-            list.Add(new API.Model.Types.TranslationPost
-            {
-                Translation = "Этой строки не существует",
-                SourceLine = "This line does not exist",
-                Language = "ru",
-                OriginalIndex = "",
-                Position = 0
-            });
-
-            client.SubmitTrackTranslationsRaw(client.SongSearch("MORGENSHTERN - ICE")[0].TrackId, list);
-
-            return;
+            client.SetRequestProcessor(new DefaultRequestProcessor());
 
             #region User Score & Info
 

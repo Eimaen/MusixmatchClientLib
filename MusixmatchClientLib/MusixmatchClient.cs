@@ -1,25 +1,22 @@
 ﻿using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Exceptions;
+using MusixmatchClientLib.API.Model.Requests;
 using MusixmatchClientLib.API.Model.Types;
+using MusixmatchClientLib.API.Processors;
 using MusixmatchClientLib.Auth;
 using MusixmatchClientLib.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static MusixmatchClientLib.API.Model.CrowdUserFeedbackGet;
-using static MusixmatchClientLib.API.Model.OauthTokenGet;
 
 namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
         private ApiRequestFactory requestFactory;
-        
+
         /// <summary>
         /// Current musixmatch token.
         /// </summary>
@@ -31,7 +28,7 @@ namespace MusixmatchClientLib
         /// <param name="userToken"></param>
         public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
 
-        public void SetRequestProcessor(Func<string, string, string, string> requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
+        public void SetRequestProcessor(RequestProcessor requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
 
         /// <summary>
         /// Search the Musixmatch song database for a track.
@@ -189,7 +186,7 @@ namespace MusixmatchClientLib
         /// <param name="id">Musixmatch track id</param>
         /// <param name="format">Subtitle format</param>
         /// <returns>Subtitle</returns>
-        public Subtitle GetSyncedLyricsRaw(int id, SubtitleFormat format = SubtitleFormat.Lrc)
+        public SubtitleRawResponse GetTrackSubtitlesRaw(int id, SubtitleFormat format = SubtitleFormat.Lrc)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string> { ["track_id"] = id.ToString() };
             switch (format)
@@ -214,20 +211,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get track lyrics by its Musixmatch id.
+        /// Get synced lyrics in MusixmatchClientLib format as an array of <see cref="LyricsLine"/>s.
         /// </summary>
-        /// <param name="id">Musixmatch track id</param>
-        /// <returns>Lyrics</returns>
-        public Lyrics GetTrackLyrics(int id)
+        /// <param name="id">Musximatch track id</param>
+        /// <returns>Array of LyricsLines</returns>
+        public Subtitles GetTrackSubtitles(int id)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsGet, new Dictionary<string, string>
-            {
-                ["track_id"] = id.ToString(),
-                ["part"] = "user,lyrics_verified_by"
-            });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
-            return response.Cast<TrackLyricsGet>().Lyrics;
+            var synced = GetTrackSubtitlesRaw(id, SubtitleFormat.Musixmatch);
+            return new Subtitles(synced.SubtitleBody);
         }
 
         /// <summary>
@@ -236,7 +227,7 @@ namespace MusixmatchClientLib
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="subtitles">Subtitle data in Musixmatch (mxm) format</param>
-        public void SubmitTrackLyricsSynced(int id, string subtitles)
+        public void SubmitTrackSubtitlesRaw(int id, string subtitles)
         {
             var trackData = GetTrackById(id);
             Random random = new Random();
@@ -260,6 +251,13 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
+        /// Submit track subtitles by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="subtitles">Subtitle data</param>
+        public void SubmitTrackSubtitles(int id, Subtitles subtitles) => SubmitTrackSubtitlesRaw(id, subtitles.ToString());
+
+        /// <summary>
         /// Gets Musixmatch user information.
         /// </summary>
         /// <returns>User data</returns>
@@ -275,7 +273,7 @@ namespace MusixmatchClientLib
         /// Get spotify <see cref="Oauthtoken"/>. I have also noticed, that even with free spotify account this token acts like premium. Learn more at <see href="developer.spotify.com"/>.
         /// </summary>
         /// <returns>Spotify token info</returns>
-        public Oauthtoken GetSpotifyOauthToken()
+        public OauthTokenGet.Oauthtoken GetSpotifyOauthToken()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.SpotifyOauthTokenGet);
             if ((StatusCode)response.StatusCode != StatusCode.Success)
@@ -305,7 +303,7 @@ namespace MusixmatchClientLib
         /// Returns a list of reported feedbacks.
         /// </summary>
         /// <returns>List of feedbacks</returns>
-        public List<FeedbackList> GetCrowdFeedback()
+        public List<CrowdUserFeedbackGet.FeedbackList> GetCrowdFeedback()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
             {
@@ -315,6 +313,23 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
+        }
+
+        /// <summary>
+        /// Get track lyrics by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Lyrics</returns>
+        public Lyrics GetTrackLyrics(int id)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString(),
+                ["part"] = "user,lyrics_verified_by"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<TrackLyricsGet>().Lyrics;
         }
 
         /// <summary>
@@ -370,7 +385,7 @@ namespace MusixmatchClientLib
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>
             {
-                
+
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
@@ -464,7 +479,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns user top for a country
+        /// Returns user top for a country.
         /// </summary>
         /// <param name="country">Country ISO code</param>
         /// <returns>List of top users</returns>
@@ -491,7 +506,7 @@ namespace MusixmatchClientLib
         /// Body has a <see href="https://developer.musixmatch.com/documentation/api-reference/track-richsync-get">specific format</see>.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
-        /// <returns>Richsync</returns>
+        /// <returns>Raw richsync response</returns>
         public RichsyncRawResponse GetTrackRichsyncRaw(int id)
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncGet, new Dictionary<string, string>
@@ -501,6 +516,17 @@ namespace MusixmatchClientLib
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackRichsyncGet>().Richsync;
+        }
+
+        /// <summary>
+        /// Get track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <returns>Richsync</returns>
+        public Richsync GetTrackRichsync(int id)
+        {
+            RichsyncRawResponse richsyncRawResponse = GetTrackRichsyncRaw(id);
+            return new Richsync(richsyncRawResponse.RichsyncBody);
         }
 
         /// <summary>
@@ -532,7 +558,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get current user score
+        /// Submit track richsync by its Musixmatch id.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="richsync">Richsync</param>
+        public void SubmitTrackRichsync(int id, Richsync richsync) => SubmitTrackRichsyncRaw(id, richsync.ToString());
+
+        /// <summary>
+        /// Get current user score.
         /// </summary>
         /// <returns>User</returns>
         public User GetUserScore()
@@ -544,7 +577,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get all the genres supported by Musixmatch database
+        /// Get all the genres supported by Musixmatch database.
         /// </summary>
         /// <returns>List of genres</returns>
         public List<MusicGenre> GetMusicGenres()
@@ -683,37 +716,14 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get synced lyrics in MusixmatchClientLib format as an array of <see cref="LyricsLine"/>s.
-        /// </summary>
-        /// <param name="id">Musximatch track id</param>
-        /// <returns>Array of LyricsLines</returns>
-        public List<LyricsLine> GetSyncedLyrics(int id)
-        {
-            List<LyricsLine> lyrics = new List<LyricsLine>();
-            
-            var synced = GetSyncedLyricsRaw(id, SubtitleFormat.Musixmatch);
-            var formatted = JsonConvert.DeserializeObject<List<MusixmatchSubtitleFormat>>(synced.SubtitleBody);
-
-            foreach (var subtitle in formatted)
-                lyrics.Add(new LyricsLine
-                {
-                    Text = subtitle.Text,
-                    LyricsTime = TimeSpan.FromSeconds(subtitle.Time.Total)
-                });
-
-            return lyrics;
-        }
-
-        /// <summary>
         /// Submit track translation by Musixmatch track id.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="translation">List of <see cref="TranslationPost"/>s.</param>
         /// <param name="timeSpent">Time spent on the translation in milliseconds.</param>
-        public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = ushort.MaxValue)
+        public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = int.MaxValue)
         {
             var trackData = GetTrackById(id);
-            Random random = new Random();
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationPost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
@@ -722,6 +732,51 @@ namespace MusixmatchClientLib
             {
                 ["translations_list"] = JsonConvert.SerializeObject(translation),
                 ["time_spent"] = timeSpent.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Update user's profile and leaderboard country.
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        public void UpdateUserProfileCountry(string country)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
+            {
+
+            }, new Dictionary<string, string>
+            {
+                ["profile"] = $"{{\"country\":\"{country.ToUpper()}\"}}"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Update user's profile favourite artists.
+        /// </summary>
+        /// <param name="artistIds">List of artist ids to favourite</param>
+        public void UpdateUserProfileFavouriteArtists(List<int> artistIds)
+        {
+            string artistString = "[]";
+
+            if (artistIds.Count != 0)
+            {
+                StringBuilder artistStringBuilder = new StringBuilder("[");
+                foreach (var artistId in artistIds)
+                    artistStringBuilder.Append(artistId.ToString() + ',');
+                artistStringBuilder[artistStringBuilder.Length - 1] = ']';
+                artistString = artistStringBuilder.ToString();
+            }
+
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
+            {
+
+            }, new Dictionary<string, string>
+            {
+                ["profile"] = $"{{\"favourite_artists\":{artistString}}}"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);

@@ -1,13 +1,9 @@
-﻿using MusixmatchClientLib.API.Model;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using static MusixmatchClientLib.API.MissionManager.MissionResponse;
 
 namespace MusixmatchClientLib.API
 {
@@ -17,7 +13,7 @@ namespace MusixmatchClientLib.API
 
         internal MissionManager(string jwtToken) => this.jwtToken = jwtToken;
 
-        public List<Mission> ParseMissions(string userToken, string userId)
+        public List<MissionResponse.Mission> ParseMissions(string userToken, string userId)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint (if it exists)
             request.Method = "POST";
