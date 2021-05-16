@@ -9,6 +9,7 @@ using MusixmatchClientLib.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MusixmatchClientLib
 {
@@ -731,6 +732,51 @@ namespace MusixmatchClientLib
             {
                 ["translations_list"] = JsonConvert.SerializeObject(translation),
                 ["time_spent"] = timeSpent.ToString()
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Update user's profile and leaderboard country.
+        /// </summary>
+        /// <param name="country">Country ISO code</param>
+        public void UpdateUserProfileCountry(string country)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
+            {
+
+            }, new Dictionary<string, string>
+            {
+                ["profile"] = $"{{\"country\":\"{country.ToUpper()}\"}}"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+        }
+
+        /// <summary>
+        /// Update user's profile favourite artists.
+        /// </summary>
+        /// <param name="artistIds">List of artist ids to favourite</param>
+        public void UpdateUserProfileFavouriteArtists(List<int> artistIds)
+        {
+            string artistString = "[]";
+
+            if (artistIds.Count != 0)
+            {
+                StringBuilder artistStringBuilder = new StringBuilder("[");
+                foreach (var artistId in artistIds)
+                    artistStringBuilder.Append(artistId.ToString() + ',');
+                artistStringBuilder[artistStringBuilder.Length - 1] = ']';
+                artistString = artistStringBuilder.ToString();
+            }
+
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
+            {
+
+            }, new Dictionary<string, string>
+            {
+                ["profile"] = $"{{\"favourite_artists\":{artistString}}}"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);

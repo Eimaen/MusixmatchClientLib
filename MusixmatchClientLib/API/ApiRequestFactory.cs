@@ -68,7 +68,8 @@ namespace MusixmatchClientLib.API
             AlbumTracksGet,
             ArtistAlbumsGet,
             ArtistGet,
-            ArtistSearch
+            ArtistSearch,
+            CrowdUserProfilePost
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -210,6 +211,11 @@ namespace MusixmatchClientLib.API
             [ApiMethod.ArtistSearch] = new CustomRequestParameters
             {
                 EndpointResource = "artist.search"
+            },
+            [ApiMethod.CrowdUserProfilePost] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.profile.post",
+                RequestMethod = RequestMethod.POST
             }
         };
 
