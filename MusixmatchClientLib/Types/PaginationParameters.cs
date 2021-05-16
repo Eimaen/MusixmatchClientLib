@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MusixmatchClientLib.Types
+﻿namespace MusixmatchClientLib.Types
 {
     public class PaginationParameters
     {

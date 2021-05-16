@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MusixmatchClientLib.Types
 {
-    public class MusixmatchRichsyncFormat
+    public class MusixmatchRichsyncFormattedLine
     {
         [JsonProperty("ts")]
         public double TimeStart;

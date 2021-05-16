@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API.Model.Types
 {
-    public class Subtitle
+    public class SubtitleRawResponse
     {
         [JsonProperty("subtitle_id")]
         public int SubtitleId;

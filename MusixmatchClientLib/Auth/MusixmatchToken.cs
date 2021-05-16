@@ -1,10 +1,5 @@
 ﻿using MusixmatchClientLib.API;
-using MusixmatchClientLib.API.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MusixmatchClientLib.API.Model.Requests;
 
 namespace MusixmatchClientLib.Auth
 {

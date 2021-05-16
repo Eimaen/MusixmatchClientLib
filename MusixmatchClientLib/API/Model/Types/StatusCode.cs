@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MusixmatchClientLib.API.Model.Types
+﻿namespace MusixmatchClientLib.API.Model.Types
 {
     public enum StatusCode // NOT all the descriptions were taken from the official Musixmatch API documentation
     {

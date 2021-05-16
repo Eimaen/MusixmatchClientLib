@@ -1,13 +1,12 @@
 ﻿using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model;
+using MusixmatchClientLib.API.Processors;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
 {
@@ -19,33 +18,9 @@ namespace MusixmatchClientLib.API
         private static CookieContainer defaultCookieContainer = new CookieContainer();
 
         /// <summary>
-        /// Function to be used to process requests (useful when debugging your application or using proxy).
+        /// Class to be used to process requests (useful when debugging your application or using proxy).
         /// </summary>
-        public Func<string, string, string, string> RequestProcessor = new Func<string, string, string, string>((string _url, string _method, string _data) =>
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_url);
-            request.Method = _method;
-            request.CookieContainer = defaultCookieContainer;
-            if (_method == "POST")
-            {
-                byte[] byteArray = Encoding.UTF8.GetBytes(_data);
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.ContentLength = byteArray.Length;
-                using (Stream dataStream = request.GetRequestStream())
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-            }
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            defaultCookieContainer.Add(response.Cookies);
-            using (Stream stream = response.GetResponseStream())
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        });
-
-        public string RequestFilter(string _url, string _method = "GET", string _data = "") => RequestProcessor(_url, _method, _data);
+        public RequestProcessor RequestProcessor = new DefaultRequestProcessor();
 
         private string GetArgumentString(Dictionary<string, string> arguments)
         {
@@ -93,7 +68,8 @@ namespace MusixmatchClientLib.API
             AlbumTracksGet,
             ArtistAlbumsGet,
             ArtistGet,
-            ArtistSearch
+            ArtistSearch,
+            CrowdUserProfilePost
         }
 
         private static Dictionary<ApiMethod, CustomRequestParameters> CustomRequestParameters = new Dictionary<ApiMethod, CustomRequestParameters>()
@@ -125,7 +101,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackSubtitlePost] = new CustomRequestParameters
             {
                 EndpointResource = "track.subtitle.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.RequestJwtToken] = new CustomRequestParameters
             {
@@ -146,7 +122,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsTranslationPost] = new CustomRequestParameters
             {
                 EndpointResource = "track.lyrics.translation.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.CrowdUserFeedbackGet] = new CustomRequestParameters
             {
@@ -155,7 +131,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackLyricsPost] = new CustomRequestParameters
             {
                 EndpointResource = "track.lyrics.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.ChartTracksGet] = new CustomRequestParameters
             {
@@ -168,7 +144,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.AiQuestionPost] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.ai.question.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.CrowdUserSuggestionLyricsGet] = new CustomRequestParameters
             {
@@ -189,7 +165,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CredentialPost] = new CustomRequestParameters
             {
                 EndpointResource = "credential.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.CrowdChartUsersGet] = new CustomRequestParameters
             {
@@ -202,7 +178,7 @@ namespace MusixmatchClientLib.API
             [ApiMethod.TrackRichsyncPost] = new CustomRequestParameters
             {
                 EndpointResource = "track.richsync.post",
-                RequestMethod = "POST"
+                RequestMethod = RequestMethod.POST
             },
             [ApiMethod.CrowdScoreGet] = new CustomRequestParameters
             {
@@ -235,6 +211,11 @@ namespace MusixmatchClientLib.API
             [ApiMethod.ArtistSearch] = new CustomRequestParameters
             {
                 EndpointResource = "artist.search"
+            },
+            [ApiMethod.CrowdUserProfilePost] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.user.profile.post",
+                RequestMethod = RequestMethod.POST
             }
         };
 
@@ -259,7 +240,6 @@ namespace MusixmatchClientLib.API
                 requestParameters = new CustomRequestParameters();
 
             string endpoint = requestParameters.EndpointResource;
-            string requestMethod = requestParameters.RequestMethod;
 
             if (additionalArguments == null)
                 additionalArguments = new Dictionary<string, string>();
@@ -272,14 +252,26 @@ namespace MusixmatchClientLib.API
             string arguments = GetArgumentString(additionalArguments);
 
             string requestUrl = $"{context.ApiUrl}{endpoint}{arguments}";
-            string response = RequestFilter(requestUrl, requestMethod, data);
+
+            string response = string.Empty;
+            switch (requestParameters.RequestMethod)
+            {
+                case RequestMethod.GET:
+                    response = RequestProcessor.Get(requestUrl);
+                    break;
+                case RequestMethod.POST:
+                    response = RequestProcessor.Post(requestUrl, data);
+                    break;
+            }
 
             var responseParsed = JObject.Parse(response);
+            var debug = responseParsed.SelectToken("$..debug", false);
 
             return new MusixmatchApiResponse
             {
                 StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
                 TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
+                Verbose = (debug != null ? new List<string>(responseParsed.SelectToken("$..debug", false).Values<string>()) : null),
                 Body = responseParsed.SelectToken("$..body").ToString(),
                 Header = responseParsed.SelectToken("$..header").ToString()
             };
