@@ -1,13 +1,6 @@
 ﻿using MusixmatchClientLib.API.Processors;
 using MusixmatchClientLib.Auth;
-using MusixmatchClientLib.Exploits;
-using MusixmatchClientLib.Types;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading;
 
 namespace MusixmatchClientLib.Sample
 {

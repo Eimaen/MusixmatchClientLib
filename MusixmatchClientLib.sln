@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusixmatchClientLib.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusixmatchClientLib.Sample", "MusixmatchClientLib.Sample\MusixmatchClientLib.Sample.csproj", "{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusixmatchClientLib.Exploits", "MusixmatchClientLib.Exploits\MusixmatchClientLib.Exploits.csproj", "{43A9AE14-C92C-49C5-8D9D-289C0FC8073C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -29,10 +27,6 @@ Global
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Debug|x86.Build.0 = Debug|x86
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Release|x86.ActiveCfg = Release|x86
 		{9FE0348C-0AE5-4EBF-A5BA-7CE4B3290D73}.Release|x86.Build.0 = Release|x86
-		{43A9AE14-C92C-49C5-8D9D-289C0FC8073C}.Debug|x86.ActiveCfg = Debug|x86
-		{43A9AE14-C92C-49C5-8D9D-289C0FC8073C}.Debug|x86.Build.0 = Debug|x86
-		{43A9AE14-C92C-49C5-8D9D-289C0FC8073C}.Release|x86.ActiveCfg = Release|x86
-		{43A9AE14-C92C-49C5-8D9D-289C0FC8073C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
