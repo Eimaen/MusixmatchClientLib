@@ -63,8 +63,7 @@ Definitions:
 - [x] crowd.score.get | **WIST**
 
 **Missions API**
-- [x] Get missions | **IT**
-- [ ] Get tasks | **W**
+Nope, I don't know anything about GraphQL. If you do, please, code that part for me ^\_^.
 
 **Project**
 - [ ] Write samples for all the functions | **H**
@@ -189,10 +188,7 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
 
 ### Warning
-The docs are (a bit) outdated. Check sample project for new usage.
+The docs are **outdated**. Check sample project for new usage.
 
 ## How to help
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
-
-## Musixmatch?
-Eima**en** is still waiting for `MusixmatchClientLib.Exploits` fixes! 
