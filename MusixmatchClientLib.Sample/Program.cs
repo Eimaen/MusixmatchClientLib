@@ -1,6 +1,5 @@
 ﻿using MusixmatchClientLib.API.Processors;
 using MusixmatchClientLib.Auth;
-using MusixmatchClientLib.Exploits;
 using MusixmatchClientLib.Types;
 using System;
 using System.Collections.Generic;
