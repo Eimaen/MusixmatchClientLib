@@ -33,7 +33,7 @@ namespace MusixmatchClientLib.Types
                 Lines.Add(LyricsLine.FromMusixmatchSubtitle(line));
         }
 
-        private List<MusixmatchSubtitleFormattedLine> GetMusixmatchSubtitles()
+        public List<MusixmatchSubtitleFormattedLine> GetMusixmatchSubtitles()
         {
             List<MusixmatchSubtitleFormattedLine> lines = new List<MusixmatchSubtitleFormattedLine>();
             foreach (var line in Lines)
