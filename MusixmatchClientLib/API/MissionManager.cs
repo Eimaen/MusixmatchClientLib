@@ -7,12 +7,14 @@ using System.Text;
 
 namespace MusixmatchClientLib.API
 {
+    // [ Circus-P - Last of Me ] You can keep the last of me, I don't care, I am obsolete 🎵
     public class MissionManager
     {
         private string jwtToken { get; set; }
 
         internal MissionManager(string jwtToken) => this.jwtToken = jwtToken;
 
+        [Obsolete("This class has to be rewritten with GraphQL support.")] 
         public List<MissionResponse.Mission> ParseMissions(string userToken, string userId)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint (if it exists)
@@ -44,6 +46,7 @@ namespace MusixmatchClientLib.API
             }
         }
 
+        [Obsolete("This class has to be rewritten with GraphQL support.")]
         public class MissionResponse
         {
             [JsonProperty("data")]

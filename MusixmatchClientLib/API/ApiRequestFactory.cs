@@ -1,5 +1,6 @@
 ﻿using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model;
+using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Processors;
 using Newtonsoft.Json.Linq;
 using System;
@@ -265,10 +266,14 @@ namespace MusixmatchClientLib.API
             }
 
             var responseParsed = JObject.Parse(response);
+            var statusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(); // I guess, that value always exists
+
+            if (statusCode != 200)
+                throw new MusixmatchRequestException((Model.Types.StatusCode)statusCode);
 
             return new MusixmatchApiResponse
             {
-                StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
+                StatusCode = statusCode,
                 TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
                 Body = responseParsed.SelectToken("$..body").ToString(),
                 Header = responseParsed.SelectToken("$..header").ToString()
