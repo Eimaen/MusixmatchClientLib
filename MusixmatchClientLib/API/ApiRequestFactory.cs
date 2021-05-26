@@ -269,7 +269,7 @@ namespace MusixmatchClientLib.API
             return new MusixmatchApiResponse
             {
                 StatusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(),
-                TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>()
+                TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
                 Body = responseParsed.SelectToken("$..body").ToString(),
                 Header = responseParsed.SelectToken("$..header").ToString()
             };
