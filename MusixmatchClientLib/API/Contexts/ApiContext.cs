@@ -2,10 +2,9 @@
 {
     public enum ApiContext
     {
-        Windows,
-        Linux,
-        Mac,
-        Android,
-        iOS
+        Desktop,
+        Android, // TODO: do
+        iOS,
+        CommunityOld
     }
 }

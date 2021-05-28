@@ -6,7 +6,7 @@ namespace MusixmatchClientLib.API.Contexts
     {
         private static Dictionary<ApiContext, MusixmatchApiContext> Clients = new Dictionary<ApiContext, MusixmatchApiContext>
         {
-            [ApiContext.Windows] = new MusixmatchApiContext
+            [ApiContext.Desktop] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/",
                 AppId = @"web-desktop-app-v1.0"
@@ -15,6 +15,11 @@ namespace MusixmatchClientLib.API.Contexts
             {
                 ApiUrl = @"https://apic.musixmatch.com/ws/1.1/",
                 AppId = @"mac-ios-v2.0"
+            },
+            [ApiContext.CommunityOld] = new MusixmatchApiContext
+            {
+                ApiUrl = @"https://musixmatch.com/ws/1.1/",
+                AppId = @"community-app-v1.0"
             }
         };
 

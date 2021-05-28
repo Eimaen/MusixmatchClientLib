@@ -75,7 +75,7 @@ namespace MusixmatchClientLib.Sample.Forms
 
         private void btnProceed_Click(object sender, EventArgs e)
         {
-
+            Globals.MusixmatchClient = MusixmatchClient;
         }
 
         private void btnLoginGoogle_Click(object sender, EventArgs e)

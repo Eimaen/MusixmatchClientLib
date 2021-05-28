@@ -13,7 +13,7 @@ namespace MusixmatchClientLib.API
 {
     class ApiRequestFactory
     {
-        private static MusixmatchApiContext context = MusixmatchApiContext.Get(ApiContext.Windows);
+        private static MusixmatchApiContext context = MusixmatchApiContext.Get(ApiContext.Desktop);
         public string UserToken { get; private set; }
 
         private static CookieContainer defaultCookieContainer = new CookieContainer();
