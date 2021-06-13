@@ -1,13 +1,10 @@
 # MusixmatchClientLib
-**Partial Musixmatch client API documentation and its C# implementation**
+**Not partial Musixmatch client API documentation and its C# implementation**
 
 [![CodeFactor](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib/badge?s=70546a2802f8bab8bf9f44f18eeff4177faa14e7)](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib)
-[![CircleCI](https://circleci.com/gh/Eimaen/MusixmatchClientLib.svg?style=shield&circle-token=161ae5a56e3c9352df1ca627e1b8c09e0d63e32f)](https://app.circleci.com/pipelines/github/Eimaen/MusixmatchClientLib)
 [![DungeonCI](https://img.shields.io/static/v1?label=dungeonci&message=master&color=success)](https://www.google.com/search?q=Van+Darkholme)
 
 ----
-
-**MusixmatchClientLib** is a .NET library designed to interact with Musixmatch client API easily. This project also contains an information about Musixmatch's hidden endpoints to work with. 
 
 ## TODO
 Definitions:
@@ -189,7 +186,7 @@ client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
 
 ### Warning
-The docs are (a bit) outdated. Check sample project for new usage.
+The docs are really outdated, this project is WIP and I refactor it literally on every commit. If you want to use it as a dependency, fork it first ;)
 
 ## How to help
 Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
