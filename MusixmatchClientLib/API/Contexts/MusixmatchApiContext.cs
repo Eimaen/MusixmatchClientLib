@@ -6,6 +6,7 @@ namespace MusixmatchClientLib.API.Contexts
     {
         private static Dictionary<ApiContext, MusixmatchApiContext> Clients = new Dictionary<ApiContext, MusixmatchApiContext>
         {
+            // TODO: android context check
             [ApiContext.Desktop] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/",

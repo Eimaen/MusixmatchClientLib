@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace MusixmatchClientLib.API.Model.Requests
 {
-    public class CrowdUserFeedbackGet : MusixmatchApiResponse
+    public class CrowdFeedbackGet : MusixmatchApiResponse
     {
         [JsonProperty("feedback_list")]
         public List<FeedbackList> Feedbacks;

@@ -26,7 +26,7 @@ namespace MusixmatchClientLib
         /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
         /// </summary>
         /// <param name="userToken"></param>
-        public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token);
+        public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
 
         public void SetRequestProcessor(RequestProcessor requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
 
@@ -300,19 +300,35 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Returns a list of reported feedbacks.
+        /// Returns a list of user feedbacks (activity).  
         /// </summary>
         /// <returns>List of feedbacks</returns>
-        public List<CrowdUserFeedbackGet.FeedbackList> GetCrowdFeedback()
+        public List<FeedbackList> GetCrowdUserFeedback()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserFeedbackGet, new Dictionary<string, string>
             {
                 ["feedback_type"] = "lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,lyrics_music_id,track_annotat",
-                ["part"] = "track"
+                ["part"] = "user,track"
             });
             if ((StatusCode)response.StatusCode != StatusCode.Success)
                 throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
+        }
+
+        /// <summary>
+        /// Returns a list of community activity.
+        /// </summary>
+        /// <returns>List of feedbacks</returns>
+        // TODO: scopes (!!!)
+        public List<FeedbackList> GetCrowdFeedback()
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdFeedbackGet, new Dictionary<string, string>
+            {
+                ["part"] = "user,track"
+            });
+            if ((StatusCode)response.StatusCode != StatusCode.Success)
+                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            return response.Cast<CrowdFeedbackGet>().Feedbacks;
         }
 
         /// <summary>

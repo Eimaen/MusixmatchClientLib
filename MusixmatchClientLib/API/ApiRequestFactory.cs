@@ -13,7 +13,8 @@ namespace MusixmatchClientLib.API
 {
     class ApiRequestFactory
     {
-        private static MusixmatchApiContext context = MusixmatchApiContext.Get(ApiContext.Desktop);
+        public MusixmatchApiContext Context { get; private set; } = MusixmatchApiContext.Get(ApiContext.Desktop);
+
         public string UserToken { get; private set; }
 
         private static CookieContainer defaultCookieContainer = new CookieContainer();
@@ -50,6 +51,7 @@ namespace MusixmatchClientLib.API
             TrackLyricsTranslationGet,
             TrackLyricsTranslationPost,
             CrowdUserFeedbackGet,
+            CrowdFeedbackGet,
             TrackLyricsPost,
             ChartTracksGet,
             CrowdPollsTracksSearch,
@@ -128,6 +130,10 @@ namespace MusixmatchClientLib.API
             [ApiMethod.CrowdUserFeedbackGet] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.user.feedback.get"
+            },
+            [ApiMethod.CrowdFeedbackGet] = new CustomRequestParameters
+            {
+                EndpointResource = "crowd.feedback.get"
             },
             [ApiMethod.TrackLyricsPost] = new CustomRequestParameters
             {
@@ -220,9 +226,10 @@ namespace MusixmatchClientLib.API
             }
         };
 
-        public ApiRequestFactory(string userToken)
+        public ApiRequestFactory(string userToken, ApiContext context = ApiContext.Desktop)
         {
             UserToken = userToken;
+            Context = MusixmatchApiContext.Get(context);
         }
 
         public MusixmatchApiResponse SendRequest(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null)
@@ -246,13 +253,13 @@ namespace MusixmatchClientLib.API
                 additionalArguments = new Dictionary<string, string>();
 
             additionalArguments.Add("format", "json");
-            additionalArguments.Add("app_id", context.AppId);
+            additionalArguments.Add("app_id", Context.AppId);
             additionalArguments.Add("usertoken", UserToken);
             // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
 
             string arguments = GetArgumentString(additionalArguments);
 
-            string requestUrl = $"{context.ApiUrl}{endpoint}{arguments}";
+            string requestUrl = $"{Context.ApiUrl}{endpoint}{arguments}";
 
             string response = string.Empty;
             switch (requestParameters.RequestMethod)
