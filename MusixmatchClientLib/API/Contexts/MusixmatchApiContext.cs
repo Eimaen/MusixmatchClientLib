@@ -22,6 +22,8 @@ namespace MusixmatchClientLib.API.Contexts
                 ApiUrl = @"https://musixmatch.com/ws/1.1/",
                 AppId = @"community-app-v1.0"
             }
+            // AppId = @"api-php"
+            // TODO: research
         };
 
         /// <summary>
