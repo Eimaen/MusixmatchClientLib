@@ -16,6 +16,8 @@ namespace MusixmatchClientLib.API
 
         private static CookieContainer defaultCookieContainer = new CookieContainer();
 
+        public bool AssertOnError { get; set; }
+
         /// <summary>
         /// Class to be used to process requests (useful when debugging your application or using proxy).
         /// </summary>
@@ -272,7 +274,7 @@ namespace MusixmatchClientLib.API
             var responseParsed = JObject.Parse(response);
             var statusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(); // I guess, that value always exists
 
-            if (statusCode != 200)
+            if (statusCode != 200 && AssertOnError)
                 throw new MusixmatchRequestException((Model.Types.StatusCode)statusCode);
 
             return new MusixmatchApiResponse

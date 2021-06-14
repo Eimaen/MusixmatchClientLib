@@ -18,6 +18,15 @@ namespace MusixmatchClientLib
         private ApiRequestFactory requestFactory;
 
         /// <summary>
+        /// Indicates whether an exception will be thrown when an error occurs on the API side.
+        /// </summary>
+        public bool AssertOnRequestException
+        {
+            get => requestFactory.AssertOnError;
+            set => requestFactory.AssertOnError = value;
+        }
+
+        /// <summary>
         /// Current musixmatch token.
         /// </summary>
         public MusixmatchToken Token { get => new MusixmatchToken(requestFactory.UserToken); }
@@ -55,8 +64,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -79,8 +86,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -105,8 +110,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -124,8 +127,6 @@ namespace MusixmatchClientLib
             {
                 ["q_lyrics"] = lyrics
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -143,8 +144,6 @@ namespace MusixmatchClientLib
             {
                 ["track_id"] = id.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackGet>().Track;
         }
 
@@ -159,8 +158,6 @@ namespace MusixmatchClientLib
             {
                 ["track_id"] = id.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             var snippet = response.Cast<TrackSnippetGet>();
             return snippet.Snippet.Instrumental == 0 ? snippet.Snippet.SnippetBody : string.Empty;
         }
@@ -205,8 +202,6 @@ namespace MusixmatchClientLib
                     break;
             }
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitleGet, parameters);
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackSubtitleGet>().Subtitle;
         }
 
@@ -246,8 +241,6 @@ namespace MusixmatchClientLib
             {
                 ["subtitle_body"] = subtitles
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -264,8 +257,6 @@ namespace MusixmatchClientLib
         public UserGet GetUserInfo()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.UserGet);
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<UserGet>();
         }
 
@@ -276,8 +267,6 @@ namespace MusixmatchClientLib
         public OauthTokenGet.Oauthtoken GetSpotifyOauthToken()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.SpotifyOauthTokenGet);
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<OauthTokenGet>().Token;
         }
 
@@ -294,8 +283,6 @@ namespace MusixmatchClientLib
                 ["track_id"] = id.ToString(),
                 ["selected_language"] = language
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackLyricsTranslationGet>().Lyrics.TranslatedLyrics.LyricsBody;
         }
 
@@ -310,8 +297,6 @@ namespace MusixmatchClientLib
                 ["feedback_type"] = "lyrics_missing,lyrics_ok,lyrics_ko,lyrics_generic_ko,lyrics_changed,lyrics_subtitle_added,lyrics_favourite_added,lyrics_music_id,track_annotat",
                 ["part"] = "user,track"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdUserFeedbackGet>().Feedbacks;
         }
 
@@ -326,8 +311,6 @@ namespace MusixmatchClientLib
             {
                 ["part"] = "user,track"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdFeedbackGet>().Feedbacks;
         }
 
@@ -343,8 +326,6 @@ namespace MusixmatchClientLib
                 ["track_id"] = id.ToString(),
                 ["part"] = "user,lyrics_verified_by"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackLyricsGet>().Lyrics;
         }
 
@@ -366,8 +347,6 @@ namespace MusixmatchClientLib
             {
                 ["lyrics_body"] = lyrics
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -385,8 +364,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             foreach (var track in response.Cast<ChartTracksGet>().TrackList)
                 returnValue.Add(track.Track);
             return returnValue;
@@ -399,12 +376,7 @@ namespace MusixmatchClientLib
         /// <returns>List of tracks</returns>
         public List<Track> GetPollTracks()
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>
-            {
-
-            });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>());
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -445,8 +417,6 @@ namespace MusixmatchClientLib
             {
                 ["language"] = language
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<CrowdSuggestionGet>().Results)
                 tracks.Add(track.Track);
@@ -466,8 +436,6 @@ namespace MusixmatchClientLib
                 ["selected_language"] = language,
                 ["question_id"] = "lyrics_ai_language_collect"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -490,8 +458,6 @@ namespace MusixmatchClientLib
                 ["mood_ratio"] = mood.ToString(),
                 ["question_id"] = "lyrics_ai_mood_analysis_v3"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -509,8 +475,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<User> users = new List<User>();
             foreach (var user in response.Cast<CrowdChartUsersGet>().Results)
                 users.Add(user.User);
@@ -529,8 +493,6 @@ namespace MusixmatchClientLib
             {
                 ["track_id"] = id.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<TrackRichsyncGet>().Richsync;
         }
 
@@ -569,8 +531,6 @@ namespace MusixmatchClientLib
             {
                 ["richsync_body"] = richsync
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -587,8 +547,6 @@ namespace MusixmatchClientLib
         public User GetUserScore()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdScoreGet, new Dictionary<string, string>());
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<CrowdScoreGet>().User;
         }
 
@@ -599,8 +557,6 @@ namespace MusixmatchClientLib
         public List<MusicGenre> GetMusicGenres()
         {
             var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.MusicGenresGet, new Dictionary<string, string>());
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<MusicGenre> genres = new List<MusicGenre>();
             foreach (var genre in response.Cast<MusicGenresGet>().Results)
                 genres.Add(genre.MusicGenre);
@@ -622,8 +578,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Artist> artists = new List<Artist>();
             foreach (var artist in response.Cast<ChartArtistsGet>().Results)
                 artists.Add(artist.Artist);
@@ -645,8 +599,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Artist> artists = new List<Artist>();
             foreach (var artist in response.Cast<ArtistSearch>().Results)
                 artists.Add(artist.Artist);
@@ -664,8 +616,6 @@ namespace MusixmatchClientLib
             {
                 ["artist_id"] = id.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<ArtistGet>().Artist;
         }
 
@@ -684,8 +634,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Album> albums = new List<Album>();
             foreach (var album in response.Cast<ArtistAlbumsGet>().Results)
                 albums.Add(album.Album);
@@ -703,8 +651,6 @@ namespace MusixmatchClientLib
             {
                 ["album_id"] = id.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             return response.Cast<AlbumGet>().Album;
         }
 
@@ -723,8 +669,6 @@ namespace MusixmatchClientLib
                 ["page"] = paginationParameters.Page.ToString(),
                 ["page_size"] = paginationParameters.PageSize.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<AlbumTracksGet>().Results)
                 tracks.Add(track.Track);
@@ -749,8 +693,6 @@ namespace MusixmatchClientLib
                 ["translations_list"] = JsonConvert.SerializeObject(translation),
                 ["time_spent"] = timeSpent.ToString()
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -759,15 +701,10 @@ namespace MusixmatchClientLib
         /// <param name="country">Country ISO code</param>
         public void UpdateUserProfileCountry(string country)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
-            {
-
-            }, new Dictionary<string, string>
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>(), new Dictionary<string, string>
             {
                 ["profile"] = $"{{\"country\":\"{country.ToUpper()}\"}}"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         /// <summary>
@@ -794,8 +731,6 @@ namespace MusixmatchClientLib
             {
                 ["profile"] = $"{{\"favourite_artists\":{artistString}}}"
             });
-            if ((StatusCode)response.StatusCode != StatusCode.Success)
-                throw new MusixmatchRequestException((StatusCode)response.StatusCode);
         }
 
         #region Work In Progress
