@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MusixmatchClientLib.API.Processors
+﻿namespace MusixmatchClientLib.API.Processors
 {
     public abstract class RequestProcessor
     {

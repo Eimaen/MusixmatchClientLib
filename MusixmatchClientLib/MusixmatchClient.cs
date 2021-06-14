@@ -94,7 +94,7 @@ namespace MusixmatchClientLib
         /// <param name="song">The song title</param>
         /// <param name="paginationParameters">Pagination parameters</param>
         /// <returns>List of tracks</returns>
-        public List<Track> SongSearch(string artist, string song, PaginationParameters paginationParameters)
+        public List<Track> SongSearch(string artist, string song, PaginationParameters paginationParameters = null)
         {
             if (paginationParameters == null)
                 paginationParameters = new PaginationParameters();

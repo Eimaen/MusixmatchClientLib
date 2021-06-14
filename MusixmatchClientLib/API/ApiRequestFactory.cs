@@ -3,11 +3,8 @@ using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Processors;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Text;
 
 namespace MusixmatchClientLib.API
 {

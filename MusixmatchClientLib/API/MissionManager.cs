@@ -14,7 +14,7 @@ namespace MusixmatchClientLib.API
 
         internal MissionManager(string jwtToken) => this.jwtToken = jwtToken;
 
-        [Obsolete("This class has to be rewritten with GraphQL support.")] 
+        [Obsolete("This class has to be rewritten with GraphQL support.")]
         public List<MissionResponse.Mission> ParseMissions(string userToken, string userId)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint (if it exists)
