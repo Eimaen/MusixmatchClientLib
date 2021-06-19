@@ -35,7 +35,10 @@ namespace MusixmatchClientLib
         /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
         /// </summary>
         /// <param name="userToken"></param>
-        public MusixmatchClient(MusixmatchToken userToken) => requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
+        public MusixmatchClient(MusixmatchToken userToken)
+        {
+            requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
+        }
 
         public void SetRequestProcessor(RequestProcessor requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
 
@@ -730,6 +733,32 @@ namespace MusixmatchClientLib
             }, new Dictionary<string, string>
             {
                 ["profile"] = $"{{\"favourite_artists\":{artistString}}}"
+            });
+        }
+
+        /// <summary>
+        /// Update user's profile favourite genres.
+        /// </summary>
+        /// <param name="genreIds">List of genre ids to favourite</param>
+        public void UpdateUserProfileFavouriteGenres(List<int> genreIds)
+        {
+            string artistString = "[]";
+
+            if (genreIds.Count != 0)
+            {
+                StringBuilder artistStringBuilder = new StringBuilder("[");
+                foreach (var artistId in genreIds)
+                    artistStringBuilder.Append(artistId.ToString() + ',');
+                artistStringBuilder[artistStringBuilder.Length - 1] = ']';
+                artistString = artistStringBuilder.ToString();
+            }
+
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
+            {
+
+            }, new Dictionary<string, string>
+            {
+                ["profile"] = $"{{\"favourite_genres\":{artistString}}}"
             });
         }
 
