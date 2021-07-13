@@ -14,9 +14,7 @@ namespace MusixmatchClientLib.API
 
         public string UserToken { get; private set; }
 
-        private static CookieContainer defaultCookieContainer = new CookieContainer();
-
-        public bool AssertOnError { get; set; }
+        public bool AssertOnError { get; set; } = true;
 
         /// <summary>
         /// Class to be used to process requests (useful when debugging your application or using proxy).

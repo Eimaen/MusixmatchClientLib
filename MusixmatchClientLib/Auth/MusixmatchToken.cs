@@ -49,5 +49,11 @@ namespace MusixmatchClientLib.Auth
         /// </summary>
         public void Deauthenticate() => new ApiRequestFactory(Token, Context).SendRequestLegacy(ApiRequestFactory.ApiMethod.CredentialPost, null, "{\"credential_list\":[]}");
 
+        /// <summary>
+        /// Get web auth url.
+        /// </summary>
+        /// <returns>Auth url.</returns>
+        public string GetAuthUrl() => $"https://oauth.musixmatch.com/credential/signin?app_id={MusixmatchApiContext.Get(Context).AppId}&usertoken={Token}&origin=none";
+
     }
 }
