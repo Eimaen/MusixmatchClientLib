@@ -70,23 +70,8 @@ Definitions:
 ## A *really* earnest request
 
 All the information provided in this repository is **for educational purposes only**. 
-**Please do not use this to write bots or other automation applications.** 
-This platform is good for it is supported by people. 
-There is no point in the race for points, they will not give you anything. 
-Another thing is the database of lyrics, which has been replenished every day since the beginning of Musixmatch's existence, and continues to grow to this day. 
-It is open to absolutely everyone, free of charge.
-
-*I apologize for such a long story.*
-In any case, you can get points for free without destroying the database of lyrics. 
-I do not recommend doing this, because it is against the rules for using Musixmatch, 
-however, if you don’t care what the paragraph above says, at least make sure you don’t do the following:
-- Don't write bots to translate lyrics *(machine-translated texts are just awful)*
-- Don't write bots to recognize lyrics *(STT is shit when used with songs)*
-- Don't write bots to sync lyrics *(as above, STT is a bad idea)*
-- Don't write bots to check lyrics *(they have to be checked by human)*
-- Don't write bots to spam lyrics *(oh my god why)*
-- Don't write bots to spam translations *(same as above)*
-- **Don't write bots at all**
+**Please do not use this to write bots or other automation applications**.
+Everything in this repo is **against Musixmatch ToS**.
 
 ## Usage
 Using the library is quite simple. 
@@ -187,9 +172,3 @@ Currently this library supports only `MusixmatchRequestException`. It has a `Sta
 
 ### Warning
 The docs are really outdated, this project is WIP and I refactor it literally on every commit. If you want to use it as a dependency, fork it first ;)
-
-## How to help
-Just star the project so as to understand that it is not useless and I could continue developing it *(and become a little happier ^_^)*
-
-## Musixmatch?
-Eima**en** is still waiting for `MusixmatchClientLib.Exploits` fixes! 
