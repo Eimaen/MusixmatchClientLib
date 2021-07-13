@@ -1,3 +1,4 @@
+
 # MusixmatchClientLib
 **Not partial Musixmatch client API documentation and its C# implementation**
 
@@ -105,19 +106,19 @@ MusixmatchClient client = new MusixmatchClient(token);
 **Song search:**
 ```C#
 // Search by query
-List<track> tracks = client.SongSearch("Hommarju - Universe");
+List<Track> tracks = client.SongSearch("Hommarju - Universe");
 
 // Search by artist and track name
-List<track> tracks = client.SongSearch("Kobaryo", "Speed Complexxx");
+List<Track> tracks = client.SongSearch("Kobaryo", "Speed Complexxx");
 
 // Search by the lyrics part
-List<track> tracks = client.SongSearchByLyrics("Watchin' you every night, to cast a small spell of fright"); 
+List<Track> tracks = client.SongSearchByLyrics("Watchin' you every night, to cast a small spell of fright"); 
 
 // It is also possible to separate lines with '\n'
-List<track> tracks = client.SongSearchByLyrics("Just like you never ruined my heart\nLike you never said the words"); 
+List<Track> tracks = client.SongSearchByLyrics("Just like you never ruined my heart\nLike you never said the words"); 
 
 // Advanced search by parameters
-List<track> tracks = client.SongSearch(new TrackSearchParameters
+List<Track> tracks = client.SongSearch(new TrackSearchParameters
 {
     Album = "Heartache Debug", // Album name
     Artist = "t+pazolite", // Artist name
@@ -139,13 +140,6 @@ Lyrics lyrics = client.GetTrackLyrics(trackId);
 string lyricsBody = lyrics.Instrumental != 1 ? lyrics.LyricsBody : "This track is instrumental"; // lyrics.LyricsBody is null when the track is instrumental
 ```
 
-**Song lyrics (synced):**
-```C#
-// Search for the track and get synced lyrics
-int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
-List<LyricsLine> lyrics = client.GetSyncedLyrics(trackId); // Throws ResourceNotFound if the track has no subtitles, check that first
-```
-
 **Get track by id:**
 ```C#
 // Get track by its Musixmatch id
@@ -162,9 +156,39 @@ string snippet = client.GetTrackSnippet(trackId);
 
 **Submit track synced lyrics:**
 ```C#
+// Submit track lyrics with time sync
+Subtitles subtitles = new Subtitles();
+subtitles.Lines.Add(new LyricsLine
+{
+    Text = "You make me feel alive",
+    LyricsTime = TimeSpan.FromMilliseconds(1448)
+});
+int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
+client.SubmitTrackSubtitles(trackId, subtitles);
+```
+
+**Get synced song lyrics:**
+```C#
+// Search for the track and get synced lyrics
+int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
+Subtitles subtitles = client.GetTrackSubtitles(trackId); // Throws ResourceNotFound if the track has no subtitles, check that first
+List<LyricsLine> lines = subtitles.Lines;
+string lineContent = lines.First().Text; // Line content
+TimeSpan lineTime = lines.First().LyricsTime; // Line time (from the beginning of the song)
+```
+
+**Submit raw synced song lyrics:**
+```C#
 // Submit track lyrics with time sync (in Musixmatch format)
 int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
-client.SubmitTrackLyricsSynced(trackId, "[{\"text\":\"You make me feel alive\",\"time\":{\"total\":17.33,\"minutes\":0,\"seconds\":17,\"hundredths\":33}}]");
+client.SubmitTrackSubtitlesRaw(trackId, "[{\"text\":\"You make me feel alive\",\"time\":{\"total\":17.33,\"minutes\":0,\"seconds\":17,\"hundredths\":33}}]");
+```
+
+**Get raw synced song lyrics:**
+```C#
+// Get raw track lyrics with time sync
+int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
+string mxm = client.GetTrackSubtitlesRaw(trackId, MusixmatchClient.SubtitleFormat.Musixmatch);
 ```
 
 ### Exception handling
