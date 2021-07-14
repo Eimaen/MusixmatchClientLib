@@ -132,12 +132,19 @@ List<Track> tracks = client.SongSearch(new TrackSearchParameters
 });
 ```
 
-**Song lyrics:**
+**Get song lyrics:**
 ```C#
 // Search for the track and get lyrics
 int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
 Lyrics lyrics = client.GetTrackLyrics(trackId);
 string lyricsBody = lyrics.Instrumental != 1 ? lyrics.LyricsBody : "This track is instrumental"; // lyrics.LyricsBody is null when the track is instrumental
+```
+
+**Submit song lyrics:**
+```C#
+// Submit track lyrics by id
+int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
+client.SubmitTrackLyrics(trackId, "You make me feel alright\nYou make me feel alive...");
 ```
 
 **Get track by id:**
@@ -154,7 +161,7 @@ int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
 string snippet = client.GetTrackSnippet(trackId);
 ```
 
-**Submit track synced lyrics:**
+**Submit synced song lyrics:**
 ```C#
 // Submit track lyrics with time sync
 Subtitles subtitles = new Subtitles();
@@ -189,6 +196,13 @@ client.SubmitTrackSubtitlesRaw(trackId, "[{\"text\":\"You make me feel alive\",\
 // Get raw track lyrics with time sync
 int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
 string mxm = client.GetTrackSubtitlesRaw(trackId, MusixmatchClient.SubtitleFormat.Musixmatch);
+```
+
+**Profile data update:**
+```C#
+client.UpdateUserProfileCountry("BY"); // Set country by ISO code
+client.UpdateUserProfileFavouriteArtists(new List<int>() { client.ArtistSearch("Camellia").First().ArtistId }); // Set favourite artists
+client.UpdateUserProfileFavouriteGenres(new List<int>() { client.GetMusicGenres().Where(genre => genre.MusicGenreName.ToLower() == "hardcore").First().MusicGenreId }); // Set favourite genres
 ```
 
 ### Exception handling
