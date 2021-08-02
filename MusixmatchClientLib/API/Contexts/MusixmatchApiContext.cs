@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace MusixmatchClientLib.API.Contexts
 {
@@ -32,6 +34,14 @@ namespace MusixmatchClientLib.API.Contexts
         /// <param name="context">API context type</param>
         /// <returns>MusixmatchApiContext</returns>
         public static MusixmatchApiContext Get(ApiContext context) => Clients[context];
+
+        /// <summary>
+        /// Get <see cref="ApiContext"/> from <see cref="MusixmatchApiContext"/>
+        /// </summary>
+        /// <param name="apiContext"><see cref="MusixmatchApiContext"/> to get</param>
+        /// <returns><see cref="ApiContext"/> enum value</returns>
+        [Obsolete("This method is a temporary placeholder, is very uneffective and has to be removed in next releases.", false)]
+        public static ApiContext Recover(MusixmatchApiContext apiContext) => Clients.Where(element => element.Value == apiContext).First().Key;
 
         public string AppId { get; private set; }
         public string ApiUrl { get; private set; }

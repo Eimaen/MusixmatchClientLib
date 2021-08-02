@@ -1,4 +1,5 @@
 ﻿using MusixmatchClientLib.API;
+using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Model.Requests;
@@ -29,7 +30,7 @@ namespace MusixmatchClientLib
         /// <summary>
         /// Current musixmatch token.
         /// </summary>
-        public MusixmatchToken Token { get => new MusixmatchToken(requestFactory.UserToken); }
+        public MusixmatchToken Token { get => new MusixmatchToken(requestFactory.UserToken, MusixmatchApiContext.Recover(requestFactory.Context)); }
 
         /// <summary>
         /// Initializes an instance of <see cref="MusixmatchClient"/> class using the given <see cref="MusixmatchToken"/>.
@@ -38,6 +39,11 @@ namespace MusixmatchClientLib
         public MusixmatchClient(MusixmatchToken userToken)
         {
             requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
+        }
+
+        public MusixmatchClient(string userToken, ApiContext context = ApiContext.Desktop)
+        {
+            requestFactory = new ApiRequestFactory(userToken, context);
         }
 
         public void SetRequestProcessor(RequestProcessor requestProcessor) => requestFactory.RequestProcessor = requestProcessor;
