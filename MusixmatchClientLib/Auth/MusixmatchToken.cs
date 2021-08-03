@@ -55,5 +55,6 @@ namespace MusixmatchClientLib.Auth
         /// <returns>Auth url.</returns>
         public string GetAuthUrl() => $"https://oauth.musixmatch.com/credential/signin?app_id={MusixmatchApiContext.Get(Context).AppId}&usertoken={Token}&origin=none";
 
+        public override string ToString() => Token;
     }
 }

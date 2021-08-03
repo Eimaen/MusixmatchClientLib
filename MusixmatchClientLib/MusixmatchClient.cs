@@ -41,6 +41,11 @@ namespace MusixmatchClientLib
             requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
         }
 
+        /// <summary>
+        /// Initializes an instance of <see cref="MusixmatchClient"/> class using token and context.
+        /// </summary>
+        /// <param name="userToken"></param>
+        /// <param name="context"></param>
         public MusixmatchClient(string userToken, ApiContext context = ApiContext.Desktop)
         {
             requestFactory = new ApiRequestFactory(userToken, context);
@@ -182,7 +187,7 @@ namespace MusixmatchClientLib
             Dfxp,
             /// <summary>Stledu format, unknown for me xd.</summary>
             Stledu,
-            /// <summary>JSON representation, used by Musixmatch desktop client and is not documented in an official API sheet.</summary>
+            /// <summary>JSON representation, used by Musixmatch desktop client and is not documented in the official API sheet.</summary>
             Musixmatch
         }
 
