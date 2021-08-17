@@ -1,6 +1,7 @@
 
+
 # MusixmatchClientLib
-**Not partial Musixmatch client API documentation and its C# implementation**
+**Complete partial Musixmatch client API documentation and its C# implementation**
 
 [![CodeFactor](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib/badge?s=70546a2802f8bab8bf9f44f18eeff4177faa14e7)](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib)
 [![DungeonCI](https://img.shields.io/static/v1?label=dungeonci&message=master&color=success)](https://www.google.com/search?q=Van+Darkholme)
@@ -65,7 +66,7 @@ Definitions:
 - [ ] Get tasks | **W**
 
 **Project**
-- [ ] Write samples for all the functions | **H**
+- [x] Write samples for all the functions | **IT**
 - [ ] Create wiki | **H**
 
 ## A *really* earnest request
@@ -88,7 +89,11 @@ Or it can be extracted from Musixmatch desktop application and used in the libra
 ```C#
 MusixmatchToken token = new MusixmatchToken("MyToken");
 ```
-
+A token could be created with a different API context, such as Musixmatch Community or Musixmatch iOS (more coming soon):
+```C#
+MusixmatchToken token = new MusixmatchToken("MyToken", API.Contexts.ApiContext.iOS);
+```
+Currently, you cannot create a token with a context other than `Desktop`.
 Also, a token requested from Musixmatch has limited capabilities *(let's call it ***guest token***)* until you log in through the browser:
 ```C#
 MusixmatchToken token = new MusixmatchToken();
@@ -100,6 +105,10 @@ To create a `MusixmatchClient` class you have to pass a `MusixmatchToken` to its
 ```C#
 MusixmatchToken token = new MusixmatchToken("MyToken");
 MusixmatchClient client = new MusixmatchClient(token);
+```
+You may also create a client without creating a token:
+```C#
+MusixmatchClient client = new MusixmatchClient("MyToken", API.Contexts.ApiContext.iOS);
 ```
 
 ### Other examples
@@ -198,6 +207,43 @@ int trackId = client.SongSearch("REDALiCE - Alive").First().TrackId;
 string mxm = client.GetTrackSubtitlesRaw(trackId, MusixmatchClient.SubtitleFormat.Musixmatch);
 ```
 
+**Submit track mood:**
+```C#
+int trackId = client.SongSearch("Camellia - AREA 52").First().TrackId;
+client.SubmitTrackMood(trackId, 100 /* energy */, 69 /* mood */);
+```
+
+**Get lyrics translation:**
+```C#
+int trackId = client.SongSearch("Camellia - Nasty * Nasty * Spell").First().TrackId;
+string translated = client.GetLyricsTranslation(trackId, "ru");
+```
+
+**Get top weekly contributors:**
+```C#
+List<User> coolGuysFromBelarus = client.GetUserWeeklyTop("BY");
+List<User> theCoolestGuys = client.GetUserWeeklyTop();
+```
+
+**Get spotify token (LOL):**
+```C#
+string spotifyToken = client.GetSpotifyOauthToken().OauthRefreshtokenReply.AccessToken;
+string refreshToken = client.GetSpotifyOauthToken().OauthRefreshtokenReply.RefreshToken;
+string scope = client.GetSpotifyOauthToken().OauthRefreshtokenReply.Scope;
+```
+
+**Get your statistics:**
+```C#
+User you = client.GetUserScore();
+int score = you.Score; // Cannot implicitly convert type 'long' to 'int' (joke, it works)
+```
+
+**Your data:**
+```C#
+var user = client.GetUserInfo();
+string yourAge = user.UserData.Profile.AgeRange; // Not for everyone
+```
+
 **Profile data update:**
 ```C#
 client.UpdateUserProfileCountry("BY"); // Set country by ISO code
@@ -207,6 +253,4 @@ client.UpdateUserProfileFavouriteGenres(new List<int>() { client.GetMusicGenres(
 
 ### Exception handling
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
-
-### Warning
-The docs are really outdated, this project is WIP and I refactor it literally on every commit. If you want to use it as a dependency, fork it first ;)
+By default, `MusixmatchClient` would throw these if it runs into a problem during request. To ignore some problems, you could set `AssertOnRequestException` parameter to `false`.
