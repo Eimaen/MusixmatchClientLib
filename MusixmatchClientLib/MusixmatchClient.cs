@@ -16,7 +16,7 @@ namespace MusixmatchClientLib
 {
     public class MusixmatchClient
     {
-        private ApiRequestFactory requestFactory;
+        internal ApiRequestFactory requestFactory;
 
         /// <summary>
         /// Indicates whether an exception will be thrown when an error occurs on the API side.
@@ -240,7 +240,7 @@ namespace MusixmatchClientLib
         {
             var trackData = GetTrackById(id);
             Random random = new Random();
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitlePost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackSubtitlePost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
                 ["length"] = trackData.TrackLength.ToString(),
@@ -351,13 +351,12 @@ namespace MusixmatchClientLib
         public void SubmitTrackLyrics(int id, string lyrics)
         {
             var trackData = GetTrackById(id);
-            Random random = new Random();
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsPost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsPost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
                 ["q_track"] = trackData.TrackName,
                 ["q_artist"] = trackData.ArtistName
-            }, new Dictionary<string, string>()
+            }, new Dictionary<string, string>
             {
                 ["lyrics_body"] = lyrics
             });
@@ -390,7 +389,7 @@ namespace MusixmatchClientLib
         /// <returns>List of tracks</returns>
         public List<Track> GetPollTracks()
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch, new Dictionary<string, string>());
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdPollsTracksSearch);
             List<Track> tracks = new List<Track>();
             foreach (var track in response.Cast<TrackSearch>().Results)
                 tracks.Add(track.Track);
@@ -443,7 +442,7 @@ namespace MusixmatchClientLib
         /// <param name="language">ISO language abbreviation (lowercase)</param>
         public void SubmitTrackLanguage(int id, string language)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
             {
                 ["answer_id"] = "lyrics_ai_ugc_language",
                 ["track_id"] = id.ToString(),
@@ -464,7 +463,7 @@ namespace MusixmatchClientLib
                 throw new ArgumentException("Track energy is an integer between 0 and 100");
             if (mood > 100 || mood < 0)
                 throw new ArgumentException("Track mood is an integer between 0 and 100");
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.AiQuestionPost, new Dictionary<string, string>
             {
                 ["answer_id"] = "lyrics_ai_mood_analysis_v3_value",
                 ["track_id"] = id.ToString(),
@@ -530,7 +529,7 @@ namespace MusixmatchClientLib
         {
             var trackData = GetTrackById(id);
             Random random = new Random();
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncPost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackRichsyncPost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
                 ["length"] = trackData.TrackLength.ToString(),
@@ -539,8 +538,8 @@ namespace MusixmatchClientLib
                 ["q_artist"] = trackData.ArtistName,
                 ["original_artist"] = trackData.ArtistName,
                 ["original_uri"] = trackData.TrackSpotifyId,
-                ["num_keypressed"] = random.Next(16, 2048).ToString(),
-                ["time_spent"] = random.Next(2048, 1048576).ToString()
+                ["num_keypressed"] = random.Next(32, 4086).ToString(), // Oh, so much keys pressed
+                ["time_spent"] = random.Next(2048, 1048576).ToString() // Oh, so much time spent
             }, new Dictionary<string, string>()
             {
                 ["richsync_body"] = richsync
@@ -560,7 +559,7 @@ namespace MusixmatchClientLib
         /// <returns>User</returns>
         public User GetUserScore()
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdScoreGet, new Dictionary<string, string>());
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdScoreGet);
             return response.Cast<CrowdScoreGet>().User;
         }
 
@@ -570,7 +569,7 @@ namespace MusixmatchClientLib
         /// <returns>List of genres</returns>
         public List<MusicGenre> GetMusicGenres()
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.MusicGenresGet, new Dictionary<string, string>());
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.MusicGenresGet);
             List<MusicGenre> genres = new List<MusicGenre>();
             foreach (var genre in response.Cast<MusicGenresGet>().Results)
                 genres.Add(genre.MusicGenre);
@@ -698,7 +697,7 @@ namespace MusixmatchClientLib
         public void SubmitTrackTranslationsRaw(int id, List<TranslationPost> translation, int timeSpent = int.MaxValue)
         {
             var trackData = GetTrackById(id);
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationPost, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationPost, new Dictionary<string, string>
             {
                 ["commontrack_id"] = trackData.CommontrackId.ToString(),
                 ["track_id"] = trackData.TrackId.ToString()
@@ -715,7 +714,7 @@ namespace MusixmatchClientLib
         /// <param name="country">Country ISO code</param>
         public void UpdateUserProfileCountry(string country)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>(), new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, null, new Dictionary<string, string>
             {
                 ["profile"] = $"{{\"country\":\"{country.ToUpper()}\"}}"
             });
@@ -738,10 +737,7 @@ namespace MusixmatchClientLib
                 artistString = artistStringBuilder.ToString();
             }
 
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
-            {
-
-            }, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, null, new Dictionary<string, string>
             {
                 ["profile"] = $"{{\"favourite_artists\":{artistString}}}"
             });
@@ -764,10 +760,7 @@ namespace MusixmatchClientLib
                 artistString = artistStringBuilder.ToString();
             }
 
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string>
-            {
-
-            }, new Dictionary<string, string>
+            requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdUserProfilePost, new Dictionary<string, string> { }, new Dictionary<string, string>
             {
                 ["profile"] = $"{{\"favourite_genres\":{artistString}}}"
             });

@@ -8,7 +8,7 @@ using System.Net;
 
 namespace MusixmatchClientLib.API
 {
-    class ApiRequestFactory
+    internal class ApiRequestFactory
     {
         public MusixmatchApiContext Context { get; private set; } = MusixmatchApiContext.Get(ApiContext.Desktop);
 
