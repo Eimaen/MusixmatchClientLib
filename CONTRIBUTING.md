@@ -8,4 +8,4 @@ There are no specific rules about pull requests, so:
 - Your code has to be *styled* and *commented* propperly
 
 ## Contacts
-**Discord**: Eimaen#0001
+**Discord**: Eimaen#7264
