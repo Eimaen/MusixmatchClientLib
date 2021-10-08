@@ -4,7 +4,6 @@
     {
         Desktop,
         Android, // TODO: do
-        iOS,
-        CommunityOld
+        iOS
     }
 }
