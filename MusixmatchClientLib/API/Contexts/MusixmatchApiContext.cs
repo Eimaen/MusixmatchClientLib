@@ -18,11 +18,6 @@ namespace MusixmatchClientLib.API.Contexts
             {
                 ApiUrl = @"https://apic.musixmatch.com/ws/1.1/",
                 AppId = @"mac-ios-v2.0"
-            },
-            [ApiContext.CommunityOld] = new MusixmatchApiContext
-            {
-                ApiUrl = @"https://musixmatch.com/ws/1.1/",
-                AppId = @"community-app-v1.0"
             }
             // AppId = @"api-php"
             // TODO: research
