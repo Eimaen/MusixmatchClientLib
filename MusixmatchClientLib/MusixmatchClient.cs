@@ -1,7 +1,6 @@
 ﻿using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model;
-using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Model.Requests;
 using MusixmatchClientLib.API.Model.Types;
 using MusixmatchClientLib.API.Processors;
@@ -39,6 +38,18 @@ namespace MusixmatchClientLib
         public MusixmatchClient(MusixmatchToken userToken)
         {
             requestFactory = new ApiRequestFactory(userToken.Token, userToken.Context);
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="MusixmatchClient"/> class using a newly-generated <see cref="MusixmatchToken"/>.
+        /// </summary>
+        [Obsolete("Generating too many tokens gets your IP address rate-limited. For development purposes you should try creating token first and then re-using it again.", false)]
+        public MusixmatchClient() : this(new MusixmatchToken())
+        {
+            ConsoleColor previousColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Looks like you're using an obsolete MusixmatchClient constructor. I'm here to warn you! Generating too many tokens gets your IP address rate-limited. For development purposes you should try creating token first and then re-using it again.");
+            Console.ForegroundColor = previousColor;
         }
 
         /// <summary>
