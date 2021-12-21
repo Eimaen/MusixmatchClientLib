@@ -3,8 +3,8 @@ using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.API.Processors;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace MusixmatchClientLib.API
 {
@@ -27,7 +27,7 @@ namespace MusixmatchClientLib.API
             if (arguments != null)
                 foreach (var pair in arguments)
                     if (pair.Value != string.Empty)
-                        argumentString += $"{pair.Key}={WebUtility.UrlEncode(pair.Value)}&";
+                        argumentString += $"{pair.Key}={Uri.EscapeUriString(pair.Value)}&"; // WARN: Untested
             argumentString = argumentString.Remove(argumentString.Length - 1);
             return argumentString;
         }
