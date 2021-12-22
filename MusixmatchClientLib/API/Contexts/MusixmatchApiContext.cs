@@ -9,7 +9,11 @@ namespace MusixmatchClientLib.API.Contexts
         private static Dictionary<ApiContext, MusixmatchApiContext> Clients = new Dictionary<ApiContext, MusixmatchApiContext>
         {
             // TODO: android context check
-            // TODO: community context check
+            [ApiContext.Web] = new MusixmatchApiContext
+            {
+                ApiUrl = @"https://www.musixmatch.com/ws/1.1/",
+                AppId = @"community-app-v1.0"
+            },
             [ApiContext.Desktop] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/",

@@ -4,6 +4,8 @@
     {
         Desktop,
         Android, // TODO: do
+        Web,
+        Community = Web,
         iOS
     }
 }

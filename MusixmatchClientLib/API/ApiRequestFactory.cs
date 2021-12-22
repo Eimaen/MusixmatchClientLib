@@ -5,6 +5,9 @@ using MusixmatchClientLib.API.Processors;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MusixmatchClientLib.API
 {
@@ -21,7 +24,7 @@ namespace MusixmatchClientLib.API
         /// </summary>
         public RequestProcessor RequestProcessor = new DefaultRequestProcessor();
 
-        private string GetArgumentString(Dictionary<string, string> arguments)
+        private static string GetArgumentString(Dictionary<string, string> arguments)
         {
             string argumentString = "?";
             if (arguments != null)
@@ -223,9 +226,12 @@ namespace MusixmatchClientLib.API
             }
         };
 
+        private Guid UserGuid;
+
         public ApiRequestFactory(string userToken, ApiContext context = ApiContext.Desktop)
         {
             UserToken = userToken;
+            UserGuid = Guid.NewGuid();
             Context = MusixmatchApiContext.Get(context);
         }
 
@@ -233,6 +239,16 @@ namespace MusixmatchClientLib.API
         {
             string dataEncoded = GetArgumentString(data);
             return SendRequestLegacy(method, additionalArguments, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+        }
+
+        private static string HmacSignature(string input, string key) => Convert.ToBase64String(new HMACSHA1(Encoding.ASCII.GetBytes(key)).ComputeHash(Encoding.ASCII.GetBytes(input)));
+
+        public static string SignRequestUrl(string url)
+        {
+            const string key = "8628af0515dc7e60e0e927eee895145ca3a76286";
+            string signature = Uri.EscapeUriString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), key));
+            string algo = "sha1";
+            return $"{url}&signature={signature}&signature_protocol={algo}";
         }
 
         public MusixmatchApiResponse SendRequestLegacy(ApiMethod method, Dictionary<string, string> additionalArguments = null, string data = null)
@@ -249,14 +265,17 @@ namespace MusixmatchClientLib.API
             if (additionalArguments == null)
                 additionalArguments = new Dictionary<string, string>();
 
+            Console.WriteLine(SignRequestUrl("https://www.musixmatch.com/ws/1.1/crowd.user.feedback.get?uaid=me&feedback_type=lyrics_music_id&page=1&page_size=30&part=track&format=json&app_id=community-app-v1.0&usertoken=2103035caab85cea79db7ac506647cd0be04d97470fe142a68e1b5&guid=3a1d73e7-7e01-4117-befd-715f997e5fd1"));
+
             additionalArguments.Add("format", "json");
             additionalArguments.Add("app_id", Context.AppId);
             additionalArguments.Add("usertoken", UserToken);
-            // TODO: Signatures, GUIDs and Userblobs. They are not checked, but Musixmatch desktop and mobile clients send them tho
+
+            additionalArguments.Add("guid", UserGuid.ToString());
 
             string arguments = GetArgumentString(additionalArguments);
 
-            string requestUrl = $"{Context.ApiUrl}{endpoint}{arguments}";
+            string requestUrl = SignRequestUrl($"{Context.ApiUrl}{endpoint}{arguments}");
 
             string response = string.Empty;
             switch (requestParameters.RequestMethod)
