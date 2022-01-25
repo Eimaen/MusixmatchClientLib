@@ -265,8 +265,6 @@ namespace MusixmatchClientLib.API
             if (additionalArguments == null)
                 additionalArguments = new Dictionary<string, string>();
 
-            Console.WriteLine(SignRequestUrl("https://www.musixmatch.com/ws/1.1/crowd.user.feedback.get?uaid=me&feedback_type=lyrics_music_id&page=1&page_size=30&part=track&format=json&app_id=community-app-v1.0&usertoken=2103035caab85cea79db7ac506647cd0be04d97470fe142a68e1b5&guid=3a1d73e7-7e01-4117-befd-715f997e5fd1"));
-
             additionalArguments.Add("format", "json");
             additionalArguments.Add("app_id", Context.AppId);
             additionalArguments.Add("usertoken", UserToken);

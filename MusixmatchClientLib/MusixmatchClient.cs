@@ -48,7 +48,6 @@ namespace MusixmatchClientLib
         {
             ConsoleColor previousColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Looks like you're using an obsolete MusixmatchClient constructor. I'm here to warn you! Generating too many tokens gets your IP address rate-limited. For development purposes you should try creating token first and then re-using it again.");
             Console.ForegroundColor = previousColor;
         }
 
