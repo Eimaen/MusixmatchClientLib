@@ -172,7 +172,7 @@ namespace MusixmatchClientLib
         }
 
         /// <summary>
-        /// Get track snippet by its Musixmatch id. Snippet is a lyrics line which (is meant to) represent the sense of lyrics?
+        /// Get track snippet by its Musixmatch id. Snippet is the most memorable line.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <returns>If the song is not instrumental, returns the snippet, otherwise returns an empty string</returns>
@@ -193,16 +193,16 @@ namespace MusixmatchClientLib
         {
             /// <summary>LRC format.</summary>
             Lrc,
-            /// <summary>Some kind of XML representation.</summary>
+            /// <summary>Dfxp (XML) format.</summary>
             Dfxp,
-            /// <summary>Stledu format, unknown for me xd.</summary>
+            /// <summary>Stledu format.</summary>
             Stledu,
             /// <summary>JSON representation, used by Musixmatch desktop client and is not documented in the official API sheet.</summary>
             Musixmatch
         }
 
         /// <summary>
-        /// Get synced subtitles for the song by its Musixmatch id 
+        /// Get synced subtitles for the song by its Musixmatch id.
         /// </summary>
         /// <param name="id">Musixmatch track id</param>
         /// <param name="format">Subtitle format</param>

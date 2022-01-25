@@ -10,7 +10,7 @@ namespace MusixmatchClientLib.Auth
         public ApiContext Context { get; private set; }
 
         /// <summary>
-        /// Issues a new Musixmatch token (What a crazy function, 1m cooldown from one IP).
+        /// Issues a new Musixmatch token (with a cooldown of 1 minute from one IP).
         /// </summary>
         /// <returns>New Musixmatch token</returns>
         private string IssueNewToken() => new ApiRequestFactory("gochecktokenshuh", Context).SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<TokenGet>().UserToken;
