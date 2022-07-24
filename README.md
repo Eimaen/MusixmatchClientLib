@@ -251,6 +251,15 @@ client.UpdateUserProfileFavouriteArtists(new List<int>() { client.ArtistSearch("
 client.UpdateUserProfileFavouriteGenres(new List<int>() { client.GetMusicGenres().Where(genre => genre.MusicGenreName.ToLower() == "hardcore").First().MusicGenreId }); // Set favourite genres
 ```
 
+**Get mission tracks:**
+```C#
+MissionManager missions = client.RequestMissionManager();
+List<Mission> missionList = missions.GetMissions();
+Mission mission = missionList.Find(m => m.Title == "The Jukebox");
+foreach (var track in missions.GetMissionTracks(mission.Id, "en", "en"))
+    Console.WriteLine($"{track.Artist} - {track.Title}");
+```
+
 ### Exception handling
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
 By default, `MusixmatchClient` would throw these if it runs into a problem during request. To ignore some problems, you could set `AssertOnRequestException` parameter to `false`.
