@@ -776,12 +776,6 @@ namespace MusixmatchClientLib
             });
         }
 
-        #region Work In Progress
-        public MissionManager RequestMissionManager()
-        {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>();
-            return new MissionManager(response.JwtToken);
-        }
-        #endregion
+        public MissionManager RequestMissionManager() => new MissionManager(requestFactory);
     }
 }

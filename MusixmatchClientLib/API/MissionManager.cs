@@ -1,127 +1,263 @@
-﻿using Newtonsoft.Json;
+﻿using GraphQL;
+using GraphQL.Client.Abstractions;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
+using MusixmatchClientLib.API.Model.Requests;
+using MusixmatchClientLib.API.Model.Types;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MusixmatchClientLib.API
 {
     // [ Circus-P - Last of Me ] You can keep the last of me, I don't care, I am obsolete 🎵
+    [Obsolete("This method is not well tested & GraphQL API of Musixmatch's missions is not fully reverse-engineered. Use at your own risk.")]
     public class MissionManager
     {
         private string jwtToken { get; set; }
+        private string userId { get; set; }
+        private ApiRequestFactory requestFactory { get; set; }
+        private GraphQLHttpClient graphQLClient { get; set; }
 
-        internal MissionManager(string jwtToken) => this.jwtToken = jwtToken;
-
-        [Obsolete("This class has to be rewritten with GraphQL support.")]
-        public List<MissionResponse.Mission> ParseMissions(string userToken, string userId)
+        internal MissionManager(ApiRequestFactory reqFactory)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://missions-backend.musixmatch.com/graphql"); // GraphQL request, now looking for the real endpoint (if it exists)
-            request.Method = "POST";
-            request.Headers = new WebHeaderCollection();
-            request.Headers.Add(HttpRequestHeader.Authorization, jwtToken);
-            request.CookieContainer = new CookieContainer();
-            string requestBody = $"{{\"operationName\":\"AvailableMissionsList\",\"variables\":{{\"userToken\":\"{userToken}\",\"appId\":\"web-desktop-app-v1.0\",\"userId\":\"{userId}\"}},\"query\":" +
-                $"\"query AvailableMissionsList($appId: String, $userId: ID!, $userToken: String = null) {{\\n  getAvailableMissions(input: {{appId: $appId, userId: $userId, userToken: $userToken}}) " +
-                $"{{\\n    items {{\\n      id\\n      badges {{\\n        image_url_large\\n        image_url_small\\n        name\\n        __typename\\n      }}\\n      categories\\n      " +
-                $"description\\n      duration\\n      expiry\\n      lastUpdated\\n      missionId\\n      num_tasks_target\\n      title\\n      userProgress {{\\n        id\\n        " +
-                $"deadline\\n        lastUpdated\\n        missionId\\n        num_tasks_completed\\n        status\\n        __typename\\n      }}\\n      __typename\\n    }}\\n    " +
-                $"nextToken\\n    __typename\\n  }}\\n}}\\n\"}}"; // So long...
-            byte[] byteArray = Encoding.UTF8.GetBytes(requestBody);
-            request.ContentType = "application/json";
-            request.ContentLength = byteArray.Length;
-            using (Stream dataStream = request.GetRequestStream())
-                dataStream.Write(byteArray, 0, byteArray.Length);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (Stream stream = response.GetResponseStream())
+            requestFactory = reqFactory;
+            jwtToken = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>().JwtToken;
+            userId = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.UserGet).Cast<UserGet>().UserData.UserId;
+            graphQLClient = new GraphQLHttpClient("https://missions-backend-new.musixmatch.com/graphql", new NewtonsoftJsonSerializer());
+            graphQLClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(jwtToken);
+            graphQLClient.HttpClient.DefaultRequestHeaders.Add("Origin", "https://curators.musixmatch.com");
+            graphQLClient.HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0");
+        }
+
+        public List<Mission> GetMissions()
+        {
+            var missionListRequest = new GraphQLRequest
             {
-                using (StreamReader reader = new StreamReader(stream))
+                Query = @"
+                query AvailableMissionsList($appId: String, $userId: ID, $userToken: String) {  
+                    getAvailableMissions(input: {appId: $appId, userId: $userId, userToken: $userToken}) {    
+                        items {
+                            id
+                            description
+                            title
+                        }
+                    }
+                }",
+                OperationName = "AvailableMissionsList",
+                Variables = new
                 {
-                    var responseBody = reader.ReadToEnd();
-                    Console.WriteLine(responseBody);
-                    MissionResponse responseParsed = JsonConvert.DeserializeObject<MissionResponse>(responseBody);
-                    return responseParsed.MissionData.GetAvailableMissions.Items;
+                    appId = requestFactory.Context.AppId,
+                    userId = userId,
+                    userToken = requestFactory.UserToken
                 }
+            };
+
+            var graphQLResponse = graphQLClient.SendQueryAsync(missionListRequest, () => new { getAvailableMissions = new GraphQLAvailableMissionsListResponse() }).GetAwaiter().GetResult();
+            return graphQLResponse.Data.getAvailableMissions.Items;
+        }
+
+        public List<MissionTrack> GetMissionTracks(string missionId, string languages = "en", string destinationLanguage = "en", int limit = 25, bool sortAscending = true)
+        {
+            var missionListRequest = new GraphQLRequest
+            {
+                Query = @"
+                query LyricsList(
+                    $appId: String
+                    $languages: String
+                    $destinationLanguage: String
+                    $limit: Int = 25
+                    $missionId: String
+                    $nextToken: String = null
+                    $sortAscending: Boolean = true
+                    $sortBy: String = ""rank""
+                    $status: String = ""AVAILABLE""
+                    $userToken: String
+                ) {
+                    getSortedLyrics(
+                        appId: $appId
+                        languages: $languages
+                        destinationLanguage: $destinationLanguage
+                        limit: $limit
+                        missionId: $missionId
+                        nextToken: $nextToken
+                        sortForward: $sortAscending
+                        sortBy: $sortBy
+                        status: $status
+                        userToken: $userToken
+                    ) {
+                        items {
+                            id
+                            artistName
+                            commonTrackId
+                            hasLyrics
+                            hasSync
+                            language
+                            title
+                        }
+                    }
+                }
+                ",
+                OperationName = "LyricsList",
+                Variables = new
+                {
+                    appId = requestFactory.Context.AppId,
+                    destinationLanguage = destinationLanguage,
+                    languages = languages,
+                    limit = limit,
+                    missionId = missionId.Replace("MISSION.", string.Empty),
+                    sortAscending = $"{sortAscending}",
+                    sortBy = "language",
+                    status = "AVAILABLE",
+                    userToken = requestFactory.UserToken
+                }   
+            };
+            var graphQLResponse = graphQLClient.SendQueryAsync(missionListRequest, () => new { getSortedLyrics = new GraphQLTrackListResponse() }).GetAwaiter().GetResult();
+            return graphQLResponse.Data.getSortedLyrics.Items;
+        }
+
+        [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
+        public bool ReserveTask(string missionId, string resourceId, string type = "VERIFY")
+        {
+            var createTaskRequest = new GraphQLRequest
+            {
+                Query = @"
+                mutation CreateTask(
+                	$appId: String
+                	$missionId: ID!
+                	$resourceId: ID!
+                	$type: TaskType!
+                	$userId: ID!
+                	$userToken: String = null
+                ) {
+                	reserveResource(
+                		input: {
+                			appId: $appId
+                			missionId: $missionId
+                			resourceId: $resourceId
+                			type: $type
+                			userId: $userId
+                			userToken: $userToken
+                		}
+                	) {
+                		id
+                		lastUpdated
+                		status
+                		type
+                		missionId
+                		resource {
+                			id
+                			actionURI
+                			artistName
+                			commonTrackId
+                			hasLyrics
+                			hasSync
+                			language
+                			missionId
+                			publishedStatusMacro
+                			rank
+                			status
+                			title
+                			trackLength
+                		}
+                	}
+                }
+                ",
+                OperationName = "CreateTask",
+                Variables = new
+                {
+                    appId = requestFactory.Context.AppId,
+                    missionId = missionId.Replace("MISSION.", string.Empty),
+                    resourceId = resourceId,
+                    type = type,
+                    userId = userId,
+                    userToken = requestFactory.UserToken
+                }
+            };
+            try
+            {
+                graphQLClient.SendQueryAsync<object>(createTaskRequest).GetAwaiter().GetResult(); // TODO: response (2 lazy 2 implement)
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        [Obsolete("This class has to be rewritten with GraphQL support.")]
-        public class MissionResponse
+        [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
+        public bool CancelTask(string missionId, string resourceId, string taskId, string type)
         {
-            [JsonProperty("data")]
-            public Data MissionData;
-
-            public class Badge
+            var cancelTaskRequest = new GraphQLRequest
             {
-                [JsonProperty("image_url_large")]
-                public string ImageUrlLarge;
-
-                [JsonProperty("image_url_small")]
-                public string ImageUrlSmall;
-
-                [JsonProperty("name")]
-                public string Name;
-
-                [JsonProperty("__typename")]
-                public string Typename;
+                Query = @"
+                mutation CancelTask(
+                    $appId: String
+                    $missionId: ID!
+                    $resourceId: ID!
+                    $taskId: ID!
+                    $type: TaskType!
+                    $userId: ID!
+                    $userToken: String = null
+                ) {
+                    releaseResource(
+                        input: {
+                            appId: $appId
+                            missionId: $missionId
+                            resourceId: $resourceId
+                            taskId: $taskId
+                            type: $type
+                            userId: $userId
+                            userToken: $userToken
+                        }
+                    ) {
+                        id
+                        lastUpdated
+                        status
+                        type
+                        resource {
+                            id
+                            actionURI
+                            artistName
+                            commonTrackId
+                            hasLyrics
+                            hasSync
+                            language
+                            missionId
+                            publishedStatusMacro
+                            rank
+                            status
+                            title
+                            trackLength
+                        }
+                    }
+                }
+                ",
+                OperationName = "CreateTask",
+                Variables = new
+                {
+                    appId = requestFactory.Context.AppId,
+                    missionId = missionId.Replace("MISSION.", string.Empty),
+                    resourceId = resourceId,
+                    taskId = taskId,
+                    type = type,
+                    userId = userId,
+                    userToken = requestFactory.UserToken
+                }
+            };
+            try
+            {
+                graphQLClient.SendQueryAsync<object>(cancelTaskRequest).GetAwaiter().GetResult(); // TODO: response (2 lazy 2 implement)
+                return true;
             }
-
-            public class Mission
+            catch
             {
-                [JsonProperty("id")]
-                public string Id;
-
-                [JsonProperty("badges")]
-                public List<Badge> Badges;
-
-                [JsonProperty("categories")]
-                public List<string> Categories;
-
-                [JsonProperty("description")]
-                public string Description;
-
-                [JsonProperty("duration")]
-                public int Duration;
-
-                [JsonProperty("expiry")]
-                public DateTime Expiry;
-
-                [JsonProperty("lastUpdated")]
-                public DateTime LastUpdated;
-
-                [JsonProperty("missionId")]
-                public string MissionId;
-
-                [JsonProperty("num_tasks_target")]
-                public int NumTasksTarget;
-
-                [JsonProperty("title")]
-                public string Title;
-
-                [JsonProperty("userProgress")]
-                public object UserProgress;
-
-                [JsonProperty("__typename")]
-                public string Typename;
-            }
-
-            public class GetAvailableMissions
-            {
-                [JsonProperty("items")]
-                public List<Mission> Items;
-
-                [JsonProperty("nextToken")]
-                public object NextToken;
-
-                [JsonProperty("__typename")]
-                public string Typename;
-            }
-
-            public class Data
-            {
-                [JsonProperty("getAvailableMissions")]
-                public GetAvailableMissions GetAvailableMissions;
+                return false;
             }
         }
     }

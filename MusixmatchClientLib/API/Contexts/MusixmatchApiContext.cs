@@ -8,7 +8,6 @@ namespace MusixmatchClientLib.API.Contexts
     {
         private static Dictionary<ApiContext, MusixmatchApiContext> Clients = new Dictionary<ApiContext, MusixmatchApiContext>
         {
-            // TODO: android context check
             [ApiContext.Web] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://www.musixmatch.com/ws/1.1/",
@@ -40,7 +39,6 @@ namespace MusixmatchClientLib.API.Contexts
         /// </summary>
         /// <param name="apiContext"><see cref="MusixmatchApiContext"/> to get</param>
         /// <returns><see cref="ApiContext"/> enum value</returns>
-        [Obsolete("This method is a temporary placeholder, is very uneffective and has to be removed in next releases.", false)]
         public static ApiContext Recover(MusixmatchApiContext apiContext) => Clients.Where(element => element.Value == apiContext).First().Key;
 
         public string AppId { get; private set; }
