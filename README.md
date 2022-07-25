@@ -250,6 +250,8 @@ client.UpdateUserProfileCountry("BY"); // Set country by ISO code
 client.UpdateUserProfileFavouriteArtists(new List<int>() { client.ArtistSearch("Camellia").First().ArtistId }); // Set favourite artists
 client.UpdateUserProfileFavouriteGenres(new List<int>() { client.GetMusicGenres().Where(genre => genre.MusicGenreName.ToLower() == "hardcore").First().MusicGenreId }); // Set favourite genres
 ```
+### Missions
+The cool stuff is, now the library supports [musixmatch missions](https://curators.musixmatch.com). The implementation is pretty raw tho, so feel free to contact me and give feedback via issues page or directly either via [Discord](https://discordapp.com/users/394601924881809408) or [Telegram](https://t.me/eimaen). Here are some quick examples on how to use the API: 
 
 **Get mission tracks:**
 ```C#
@@ -258,6 +260,17 @@ List<Mission> missionList = missions.GetMissions();
 Mission mission = missionList.Find(m => m.Title == "The Jukebox");
 foreach (var track in missions.GetMissionTracks(mission.Id, "en", "en"))
     Console.WriteLine($"{track.Artist} - {track.Title}");
+```
+This prints out the entire mission list to your console window.
+
+**Reserve a mission task:**
+```C#
+// Imagine spamming this one :clown:
+MissionManager missions = client.RequestMissionManager();
+List<Mission> missionList = missions.GetMissions();
+Mission mission = missionList.Find(m => m.Title == "The Jukebox");
+MissionTrack missionTrack = missions.GetMissionTracks(mission.Id, "en", "en").Find(t => t.Artist == "Cepheid" && t.Title == "Catch Wind");
+missions.ReserveTask(mission.Id, missionTrack.Id); // this reserves a Catch Wind task (it doesn't exist, example), so it appears on your "In Progress" list
 ```
 
 ### Exception handling
