@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
 using MusixmatchClientLib.API.Model.Exceptions;
 using MusixmatchClientLib.Auth;
-using System.Threading;
 
 namespace MusixmatchClientLib.Tests
 {
