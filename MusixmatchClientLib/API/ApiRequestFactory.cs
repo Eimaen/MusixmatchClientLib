@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
 {
@@ -241,6 +242,12 @@ namespace MusixmatchClientLib.API
             return SendRequestLegacy(method, additionalArguments, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
         }
 
+        public async Task<MusixmatchApiResponse> SendRequestAsync(ApiMethod method, Dictionary<string, string> additionalArguments = null, Dictionary<string, string> data = null)
+        {
+            string dataEncoded = GetArgumentString(data);
+            return await SendRequestLegacyAsync(method, additionalArguments, dataEncoded.Length > 1 ? dataEncoded.Substring(1) : "");
+        }
+
         private static string HmacSignature(string input, string key) => Convert.ToBase64String(new HMACSHA1(Encoding.ASCII.GetBytes(key)).ComputeHash(Encoding.ASCII.GetBytes(input)));
 
         public static string SignRequestUrl(string url)
@@ -283,6 +290,56 @@ namespace MusixmatchClientLib.API
                     break;
                 case RequestMethod.POST:
                     response = RequestProcessor.Post(requestUrl, data);
+                    break;
+            }
+
+            var responseParsed = JObject.Parse(response);
+            var statusCode = responseParsed.SelectToken("$..status_code", false).Value<int>(); // I guess, that value always exists
+
+            if (statusCode != 200 && AssertOnError)
+                throw new MusixmatchRequestException((Model.Types.StatusCode)statusCode);
+
+            return new MusixmatchApiResponse
+            {
+                StatusCode = statusCode,
+                TimeElapsed = responseParsed.SelectToken("$..execute_time", false).Value<double>(),
+                Body = responseParsed.SelectToken("$..body").ToString(),
+                Header = responseParsed.SelectToken("$..header").ToString()
+            };
+        }
+
+        public async Task<MusixmatchApiResponse> SendRequestLegacyAsync(ApiMethod method, Dictionary<string, string> additionalArguments = null, string data = null)
+        {
+            CustomRequestParameters requestParameters;
+
+            if (CustomRequestParameters.ContainsKey(method))
+                requestParameters = CustomRequestParameters[method];
+            else
+                requestParameters = new CustomRequestParameters();
+
+            string endpoint = requestParameters.EndpointResource;
+
+            if (additionalArguments == null)
+                additionalArguments = new Dictionary<string, string>();
+
+            additionalArguments.Add("format", "json");
+            additionalArguments.Add("app_id", Context.AppId);
+            additionalArguments.Add("usertoken", UserToken);
+
+            additionalArguments.Add("guid", UserGuid.ToString());
+
+            string arguments = GetArgumentString(additionalArguments);
+
+            string requestUrl = SignRequestUrl($"{Context.ApiUrl}{endpoint}{arguments}");
+
+            string response = string.Empty;
+            switch (requestParameters.RequestMethod)
+            {
+                case RequestMethod.GET:
+                    response = await RequestProcessor.GetAsync(requestUrl);
+                    break;
+                case RequestMethod.POST:
+                    response = await RequestProcessor.PostAsync(requestUrl, data);
                     break;
             }
 
