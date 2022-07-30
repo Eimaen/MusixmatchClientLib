@@ -21,6 +21,7 @@ Definitions:
 
 **Core**
 - [x] Custom request function | **I**
+- [x] Async functionality
 
 **Officially implemented API methods**
 - [x] chart.artists.get | **IS**
@@ -272,6 +273,9 @@ Mission mission = missionList.Find(m => m.Title == "The Jukebox");
 MissionTrack missionTrack = missions.GetMissionTracks(mission.Id, "en", "en").Find(t => t.Artist == "Cepheid" && t.Title == "Catch Wind");
 missions.ReserveTask(mission.Id, missionTrack.Id); // this reserves a Catch Wind task (it doesn't exist, example), so it appears on your "In Progress" list
 ```
+
+### Async development
+Thanks to [@AlexanderDotH](https://github.com/AlexanderDotH), library now supports async calls. The usage hasn't changed.
 
 ### Exception handling
 Currently this library supports only `MusixmatchRequestException`. It has a `StatusCode` property to understand the problem better.
