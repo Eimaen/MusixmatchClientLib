@@ -7,6 +7,6 @@ namespace MusixmatchClientLib.Types
         public TimeSpan LyricsTime { get; set; }
         public string Text { get; set; }
         public MusixmatchSubtitleFormattedLine GetMusixmatchSubtitle() => MusixmatchSubtitleFormattedLine.FromLyricsLine(this);
-        public static LyricsLine FromMusixmatchSubtitle(MusixmatchSubtitleFormattedLine msfl) => new LyricsLine { LyricsTime = TimeSpan.FromSeconds(msfl.Time.Seconds), Text = msfl.Text };
+        public static LyricsLine FromMusixmatchSubtitle(MusixmatchSubtitleFormattedLine msfl) => new LyricsLine { LyricsTime = TimeSpan.FromSeconds(msfl.Time.Total), Text = msfl.Text };
     }
 }
