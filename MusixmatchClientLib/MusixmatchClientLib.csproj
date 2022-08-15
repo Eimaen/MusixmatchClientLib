@@ -11,7 +11,7 @@
     <TargetFramework>net472</TargetFramework>
     <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
     <Configurations>Debug;Release</Configurations>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GraphQL.Client" Version="5.0.2" />
