@@ -252,8 +252,8 @@ namespace MusixmatchClientLib.API
 
         public static string SignRequestUrl(string url)
         {
-            const string key = "8628af0515dc7e60e0e927eee895145ca3a76286";
-            string signature = Uri.EscapeUriString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), key));
+            const string key = "8d2899b2aebb97a69a4a85cc991c0b6713a1d9e2";
+            string signature = Uri.EscapeDataString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), key));
             string algo = "sha1";
             return $"{url}&signature={signature}&signature_protocol={algo}";
         }
@@ -281,6 +281,7 @@ namespace MusixmatchClientLib.API
             string arguments = GetArgumentString(additionalArguments);
 
             string requestUrl = SignRequestUrl($"{Context.ApiUrl}{endpoint}{arguments}");
+            Console.WriteLine(requestUrl);
 
             string response = string.Empty;
             switch (requestParameters.RequestMethod)

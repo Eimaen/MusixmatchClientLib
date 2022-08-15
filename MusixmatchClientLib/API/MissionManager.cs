@@ -2,6 +2,7 @@
 using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
+using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model.Requests;
 using MusixmatchClientLib.API.Model.Types;
 using Newtonsoft.Json;
@@ -26,6 +27,9 @@ namespace MusixmatchClientLib.API
 
         internal MissionManager(ApiRequestFactory reqFactory)
         {
+            if (MusixmatchApiContext.Recover(reqFactory.Context) != ApiContext.Community)
+                throw new Exception("Only community tokens work with Missions API.");
+
             requestFactory = reqFactory;
             jwtToken = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.RequestJwtToken).Cast<JwtGet>().JwtToken;
             userId = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.UserGet).Cast<UserGet>().UserData.UserId;

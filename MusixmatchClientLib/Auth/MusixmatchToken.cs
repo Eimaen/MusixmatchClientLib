@@ -15,7 +15,7 @@ namespace MusixmatchClientLib.Auth
         /// Issues a new Musixmatch token (with a cooldown of 1 minute from one IP).
         /// </summary>
         /// <returns>New Musixmatch token</returns>
-        public string IssueNewToken() => new ApiRequestFactory("gochecktokenshuh", Context).SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<TokenGet>().UserToken;
+        public string IssueNewToken() => new ApiRequestFactory("", Context).SendRequest(ApiRequestFactory.ApiMethod.TokenGet).Cast<TokenGet>().UserToken;
 
         /// <summary>
         /// Issues a new Musixmatch token (with a cooldown of 1 minute from one IP).
@@ -23,7 +23,7 @@ namespace MusixmatchClientLib.Auth
         /// <returns>New Musixmatch token</returns>
         public async Task<string> IssueNewTokenAsync()
         {
-            MusixmatchApiResponse response = await new ApiRequestFactory("gochecktokenshuh", Context).SendRequestAsync(ApiRequestFactory.ApiMethod.TokenGet);
+            MusixmatchApiResponse response = await new ApiRequestFactory("", Context).SendRequestAsync(ApiRequestFactory.ApiMethod.TokenGet);
             return response.Cast<TokenGet>().UserToken;
         }
 

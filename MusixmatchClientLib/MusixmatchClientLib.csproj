@@ -6,11 +6,12 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Authors>Eimaen</Authors>
     <PackageProjectUrl>https://github.com/Eimaen/MusixmatchClientLib</PackageProjectUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x86</Platforms>
     <TargetFramework>net472</TargetFramework>
     <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
     <Configurations>Debug;Release</Configurations>
+    <Version>1.1.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GraphQL.Client" Version="5.0.2" />
