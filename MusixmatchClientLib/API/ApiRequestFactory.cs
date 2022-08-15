@@ -281,7 +281,6 @@ namespace MusixmatchClientLib.API
             string arguments = GetArgumentString(additionalArguments);
 
             string requestUrl = SignRequestUrl($"{Context.ApiUrl}{endpoint}{arguments}");
-            Console.WriteLine(requestUrl);
 
             string response = string.Empty;
             switch (requestParameters.RequestMethod)
