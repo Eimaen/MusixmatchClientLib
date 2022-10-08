@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
@@ -234,26 +235,33 @@ namespace MusixmatchClientLib.API
 
         private string ObtainSignKey()
         {
-            try
-            {
-                string communityPageContent = RequestProcessor.Get("https://www.musixmatch.com/community");
-                int cIdx = communityPageContent.IndexOf("common-"),
-                    beginning = communityPageContent.LastIndexOf('"', cIdx),
-                    length = communityPageContent.IndexOf('"', cIdx) - beginning;
-                string commonJsLink = communityPageContent.Substring(beginning + 1, length); // Better approach
-                // string commonJsLink = new Regex("\"(.*common-.*\\.js)\"").Match(communityPageContent).Groups[1].Value;
-                string commonJsContent = RequestProcessor.Get("https:" + commonJsLink);
-                return new Regex("signatureSecret:\"(.{40})\"").Match(commonJsContent).Groups[1].Value;
-            }
-            catch
-            {
-                return SignKey; // Just in case
-            }
+            string communityPageContent = RequestProcessor.Get("https://www.musixmatch.com/community");
+            int cIdx = communityPageContent.IndexOf("common-"),
+                beginning = communityPageContent.LastIndexOf('"', cIdx) + 1,
+                length = communityPageContent.IndexOf('"', cIdx) - beginning;
+            string commonJsLink = communityPageContent.Substring(beginning, length); // Better approach
+            // string commonJsLink = new Regex("\"(.*common-.*\\.js)\"").Match(communityPageContent).Groups[1].Value;
+            string commonJsContent = RequestProcessor.Get("https:" + commonJsLink);
+            return new Regex("signatureSecret:\"(.{40})\"").Match(commonJsContent).Groups[1].Value;
         }
 
         public ApiRequestFactory(string userToken, ApiContext context = ApiContext.Desktop)
         {
-            SignKey = ObtainSignKey();
+            int retries = 5;
+            while (retries > 0)
+            {
+                try 
+                { 
+                    SignKey = ObtainSignKey();
+                    retries = 0;
+                } 
+                catch 
+                { 
+                    /* What? */ 
+                    retries++; 
+                    Thread.Sleep(250); 
+                }
+            }
             UserToken = userToken;
             UserGuid = Guid.NewGuid();
             Context = MusixmatchApiContext.Get(context);
