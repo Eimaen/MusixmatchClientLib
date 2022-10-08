@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
@@ -229,8 +230,30 @@ namespace MusixmatchClientLib.API
 
         private Guid UserGuid;
 
+        private string SignKey = "741941edc264ea6293cb9a6458103b4eda3ac8ed"; // Fallback 
+
+        private string ObtainSignKey()
+        {
+            try
+            {
+                string communityPageContent = RequestProcessor.Get("https://www.musixmatch.com/community");
+                int cIdx = communityPageContent.IndexOf("common-"),
+                    beginning = communityPageContent.LastIndexOf('"', cIdx),
+                    length = communityPageContent.IndexOf('"', cIdx) - beginning;
+                string commonJsLink = communityPageContent.Substring(beginning + 1, length); // Better approach
+                // string commonJsLink = new Regex("\"(.*common-.*\\.js)\"").Match(communityPageContent).Groups[1].Value;
+                string commonJsContent = RequestProcessor.Get("https:" + commonJsLink);
+                return new Regex("signatureSecret:\"(.{40})\"").Match(commonJsContent).Groups[1].Value;
+            }
+            catch
+            {
+                return SignKey; // Just in case
+            }
+        }
+
         public ApiRequestFactory(string userToken, ApiContext context = ApiContext.Desktop)
         {
+            SignKey = ObtainSignKey();
             UserToken = userToken;
             UserGuid = Guid.NewGuid();
             Context = MusixmatchApiContext.Get(context);
@@ -250,10 +273,9 @@ namespace MusixmatchClientLib.API
 
         private static string HmacSignature(string input, string key) => Convert.ToBase64String(new HMACSHA1(Encoding.ASCII.GetBytes(key)).ComputeHash(Encoding.ASCII.GetBytes(input)));
 
-        public static string SignRequestUrl(string url)
+        public string SignRequestUrl(string url)
         {
-            const string key = "8d2899b2aebb97a69a4a85cc991c0b6713a1d9e2";
-            string signature = Uri.EscapeDataString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), key));
+            string signature = Uri.EscapeDataString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), SignKey));
             string algo = "sha1";
             return $"{url}&signature={signature}&signature_protocol={algo}";
         }
