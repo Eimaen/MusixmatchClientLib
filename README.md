@@ -1,7 +1,7 @@
 
 
 # MusixmatchClientLib
-**Complete Musixmatch client API documentation and its C# implementation**
+**Complete Musixmatch client API C# implementation**
 
 [![CodeFactor](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib/badge?s=70546a2802f8bab8bf9f44f18eeff4177faa14e7)](https://www.codefactor.io/repository/github/eimaen/musixmatchclientlib)
 [![DungeonCI](https://img.shields.io/static/v1?label=dungeonci&message=master&color=success)](https://www.google.com/search?q=Van+Darkholme)
@@ -63,8 +63,10 @@ Definitions:
 - [x] crowd.score.get | **WIST**
 
 **Missions API**
-- [x] Get missions | **IT**
-- [ ] Get tasks | **W**
+- [x] Get missions | **IST**
+- [x] Get tasks | **WS**
+- [x] Reserve tasks | **WS**
+- [x] Release tasks | **WS**
 
 **Project**
 - [x] Write samples for all the functions | **IT**
@@ -79,6 +81,8 @@ Everything in this repo is **against Musixmatch ToS**.
 ## Usage
 Using the library is quite simple. 
 A complete list of samples is under development, until it's ready I'll leave some usage examples:
+
+Too boring? [Jump to example app!](https://github.com/Eimaen/MusixmatchClientLib/blob/dev/MusixmatchClientLib.Example/Program.cs)
 
 ### Tokens
 `MusixmatchToken` class represents the Musixmatch client token, that is used in all the client requests. 
