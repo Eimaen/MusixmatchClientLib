@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MusixmatchClientLib.API
 {
@@ -39,7 +40,9 @@ namespace MusixmatchClientLib.API
             graphQLClient.HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0");
         }
 
-        public List<Mission> GetMissions()
+        public List<Mission> GetMissions() => GetMissionsAsync().GetAwaiter().GetResult();
+
+        public async Task<List<Mission>> GetMissionsAsync()
         {
             var missionListRequest = new GraphQLRequest
             {
@@ -62,11 +65,13 @@ namespace MusixmatchClientLib.API
                 }
             };
 
-            var graphQLResponse = graphQLClient.SendQueryAsync(missionListRequest, () => new { getAvailableMissions = new GraphQLAvailableMissionsListResponse() }).GetAwaiter().GetResult();
+            var graphQLResponse = await graphQLClient.SendQueryAsync(missionListRequest, () => new { getAvailableMissions = new GraphQLAvailableMissionsListResponse() });
             return graphQLResponse.Data.getAvailableMissions.Items;
         }
 
-        public List<MissionTrack> GetMissionTracks(string missionId, string languages = "en", string destinationLanguage = "en", int limit = 25, bool sortAscending = true)
+        public List<MissionTrack> GetMissionTracks(string missionId, string languages = "en", string destinationLanguage = "en", int limit = 25, bool sortAscending = true) => GetMissionTracksAsync(missionId, languages, destinationLanguage, limit, sortAscending).GetAwaiter().GetResult();
+
+        public async Task<List<MissionTrack>> GetMissionTracksAsync(string missionId, string languages = "en", string destinationLanguage = "en", int limit = 25, bool sortAscending = true)
         {
             var missionListRequest = new GraphQLRequest
             {
@@ -121,12 +126,15 @@ namespace MusixmatchClientLib.API
                     userToken = requestFactory.UserToken
                 }   
             };
-            var graphQLResponse = graphQLClient.SendQueryAsync(missionListRequest, () => new { getSortedLyrics = new GraphQLTrackListResponse() }).GetAwaiter().GetResult();
+            var graphQLResponse = await graphQLClient.SendQueryAsync(missionListRequest, () => new { getSortedLyrics = new GraphQLTrackListResponse() });
             return graphQLResponse.Data.getSortedLyrics.Items;
         }
 
         [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
-        public bool ReserveTask(string missionId, string resourceId, string type = "VERIFY")
+        public bool ReserveTask(string missionId, string resourceId, string type = "VERIFY") => ReserveTaskAsync(missionId, resourceId, type).GetAwaiter().GetResult();
+
+        [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
+        public async Task<bool> ReserveTaskAsync(string missionId, string resourceId, string type = "VERIFY")
         {
             var createTaskRequest = new GraphQLRequest
             {
@@ -185,7 +193,7 @@ namespace MusixmatchClientLib.API
             };
             try
             {
-                graphQLClient.SendQueryAsync<object>(createTaskRequest).GetAwaiter().GetResult(); // TODO: response (2 lazy 2 implement)
+                await graphQLClient.SendQueryAsync<object>(createTaskRequest); // TODO: response (2 lazy 2 implement)
                 return true;
             }
             catch
@@ -195,7 +203,10 @@ namespace MusixmatchClientLib.API
         }
 
         [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
-        public bool CancelTask(string missionId, string resourceId, string taskId, string type)
+        public bool CancelTask(string missionId, string resourceId, string taskId, string type) => CancelTaskAsync(missionId, resourceId, taskId, type).GetAwaiter().GetResult();
+
+        [Obsolete("This method is not well tested and sometimes doesn't work as intended. If you aren't aware of unexpected behaviour, go ahead :)")]
+        public async Task<bool> CancelTaskAsync(string missionId, string resourceId, string taskId, string type)
         {
             var cancelTaskRequest = new GraphQLRequest
             {
@@ -256,7 +267,7 @@ namespace MusixmatchClientLib.API
             };
             try
             {
-                graphQLClient.SendQueryAsync<object>(cancelTaskRequest).GetAwaiter().GetResult(); // TODO: response (2 lazy 2 implement)
+                await graphQLClient.SendQueryAsync<object>(cancelTaskRequest); // TODO: response (2 lazy 2 implement)
                 return true;
             }
             catch
