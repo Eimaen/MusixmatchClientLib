@@ -512,12 +512,13 @@ namespace MusixmatchClientLib
         /// <returns>String with translated lyrics</returns>
         public string GetLyricsTranslation(int id, string language)
         {
-            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.TrackLyricsTranslationGet, new Dictionary<string, string>
-            {
-                ["track_id"] = id.ToString(),
-                ["selected_language"] = language
-            });
-            return response.Cast<TrackLyricsTranslationGet>().Lyrics.TranslatedLyrics.LyricsBody;
+            var trackLyrics = GetTrackLyrics(id).LyricsBody;
+            var trackTranslations = GetLyricsTranslationsRaw(id, language);
+
+            foreach (var translation in trackTranslations)
+                trackLyrics = trackLyrics.Replace(translation.Snippet, translation.Description);
+
+            return trackLyrics;
         }
 
         /// <summary>
@@ -528,12 +529,79 @@ namespace MusixmatchClientLib
         /// <returns>String with translated lyrics</returns>
         public async Task<string> GetLyricsTranslationAsync(int id, string language)
         {
-            var response = await requestFactory.SendRequestAsync(ApiRequestFactory.ApiMethod.TrackLyricsTranslationGet, new Dictionary<string, string>
+            var trackLyrics = (await GetTrackLyricsAsync(id)).LyricsBody;
+            var trackTranslations = await GetLyricsTranslationsRawAsync(id, language);
+
+            foreach (var translation in trackTranslations)
+                trackLyrics = trackLyrics.Replace(translation.Snippet, translation.Description);
+
+            return trackLyrics;
+        }
+
+        /// <summary>
+        /// Gets raw lyrics translation object.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">Selected language in ISO format</param>
+        /// <returns>List of translated lyrics</returns>
+        public List<Translation> GetLyricsTranslationLines(int id, string language)
+        {
+            List<Translation> translations = new List<Translation>();
+            foreach (var translation in GetLyricsTranslationsRaw(id, language))
+                translations.Add(new Translation { OriginalLine = translation.Snippet, TranslatedLine = translation.Description });
+            return translations;
+        }
+
+        /// <summary>
+        /// Gets raw lyrics translation object.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">Selected language in ISO format</param>
+        /// <returns>List of translated lyrics</returns>
+        public async Task<List<Translation>> GetLyricsTranslationLinesAsync(int id, string language)
+        {
+            List<Translation> translations = new List<Translation>();
+            foreach (var translation in await GetLyricsTranslationsRawAsync(id, language))
+                translations.Add(new Translation { OriginalLine = translation.Snippet, TranslatedLine = translation.Description });
+            return translations;
+        }
+
+        /// <summary>
+        /// Gets raw lyrics translation object.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">Selected language in ISO format</param>
+        /// <returns>List of translated lyrics</returns>
+        public List<CrowdTrackTranslationsGet.Translation> GetLyricsTranslationsRaw(int id, string language)
+        {
+            var response = requestFactory.SendRequest(ApiRequestFactory.ApiMethod.CrowdTrackTranslationsGet, new Dictionary<string, string>
             {
                 ["track_id"] = id.ToString(),
                 ["selected_language"] = language
             });
-            return response.Cast<TrackLyricsTranslationGet>().Lyrics.TranslatedLyrics.LyricsBody;
+            List<CrowdTrackTranslationsGet.Translation> translations = new List<CrowdTrackTranslationsGet.Translation>();
+            foreach (var translation in response.Cast<CrowdTrackTranslationsGet>().TranslationsList)
+                translations.Add(translation.Translation);
+            return translations;
+        }
+
+        /// <summary>
+        /// Gets raw lyrics translation object.
+        /// </summary>
+        /// <param name="id">Musixmatch track id</param>
+        /// <param name="language">Selected language in ISO format</param>
+        /// <returns>List of translated lyrics</returns>
+        public async Task<List<CrowdTrackTranslationsGet.Translation>> GetLyricsTranslationsRawAsync(int id, string language)
+        {
+            var response = await requestFactory.SendRequestAsync(ApiRequestFactory.ApiMethod.CrowdTrackTranslationsGet, new Dictionary<string, string>
+            {
+                ["track_id"] = id.ToString(),
+                ["selected_language"] = language
+            });
+            List<CrowdTrackTranslationsGet.Translation> translations = new List<CrowdTrackTranslationsGet.Translation>();
+            foreach (var translation in response.Cast<CrowdTrackTranslationsGet>().TranslationsList)
+                translations.Add(translation.Translation);
+            return translations;
         }
 
         /// <summary>

@@ -34,11 +34,12 @@ catch
 
 var songs = client.SongSearch(new TrackSearchParameters
 {
-    Query = "Cepheid - Catch Wind"
+    Query = "RichaadEB - Bad Apple!!",
+    HasLyrics = true
 }, new PaginationParameters
 {
     Page = 1,
-    PageSize = 5
+    PageSize = 20
 });
 
 Console.WriteLine($"Found {songs.Count} songs (max page size: 5)");
@@ -46,9 +47,3 @@ foreach (var song in songs)
     Console.WriteLine($"[{song.TrackId}] {song.ArtistName} - {song.TrackName} (on {song.AlbumName})");
 
 Console.WriteLine($"\nFirst track id: {songs.First().TrackId}\n");
-
-var lyrics = client.GetTrackLyrics(songs.First().TrackId);
-Console.WriteLine($"Lyrics:\n{lyrics.LyricsBody}\n");
-
-var subtitlesLrc = client.GetTrackSubtitlesRaw(songs.First().TrackId, SubtitleFormat.Lrc);
-Console.WriteLine($"LRC subtitles:\n{subtitlesLrc.SubtitleBody}\n");
