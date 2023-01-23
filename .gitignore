@@ -341,3 +341,7 @@ healthchecksdb
 
 # MusixmatchClientLib debug project
 MusixmatchClientLib.Dev/
+
+# DS_Store Something
+*/.DS_Store
+.DS_Store
