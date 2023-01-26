@@ -8,6 +8,9 @@
 
 ----
 
+## Development suspension notice
+Development of this project is suspended due to pending rewrite in Node.js, [libmxm](https://github.com/Eimaen/libmxm). When the project is finished, I'll keep both projects up to date.
+
 ## TODO
 Definitions:
 - **W**: Work in progress
