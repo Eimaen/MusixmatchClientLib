@@ -32,7 +32,7 @@ namespace MusixmatchClientLib.API
             string argumentString = "?";
             if (arguments != null)
                 foreach (var pair in arguments)
-                    if (pair.Value != string.Empty)
+                    if (!String.IsNullOrEmpty(pair.Value))
                         argumentString += $"{pair.Key}={Uri.EscapeUriString(pair.Value)}&"; // WARN: Untested
             argumentString = argumentString.Remove(argumentString.Length - 1);
             return argumentString;
@@ -65,6 +65,7 @@ namespace MusixmatchClientLib.API
             CrowdUserSuggestionVotesGet,
             AiQuestionPost,
             CredentialPost,
+            AccountPost,
             TrackRichsyncGet,
             TrackRichsyncPost,
             CrowdScoreGet,
@@ -178,6 +179,11 @@ namespace MusixmatchClientLib.API
                 EndpointResource = "credential.post",
                 RequestMethod = RequestMethod.POST
             },
+            [ApiMethod.AccountPost] = new CustomRequestParameters
+            {
+                EndpointResource = "account.post",
+                RequestMethod = RequestMethod.POST
+            },
             [ApiMethod.CrowdChartUsersGet] = new CustomRequestParameters
             {
                 EndpointResource = "crowd.chart.users.get"
@@ -288,6 +294,9 @@ namespace MusixmatchClientLib.API
 
         public string SignRequestUrl(string url)
         {
+            if (!Context.RequiresSignature)
+                return url;
+            
             string signature = Uri.EscapeDataString(HmacSignature(url + DateTime.Now.ToString("yyyyMMdd"), SignKey));
             string algo = "sha1";
             return $"{url}&signature={signature}&signature_protocol={algo}";

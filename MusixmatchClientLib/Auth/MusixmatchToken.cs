@@ -3,6 +3,7 @@ using MusixmatchClientLib.API;
 using MusixmatchClientLib.API.Contexts;
 using MusixmatchClientLib.API.Model;
 using MusixmatchClientLib.API.Model.Requests;
+using MusixmatchClientLib.API.Model.Types;
 
 namespace MusixmatchClientLib.Auth
 {
@@ -37,6 +38,19 @@ namespace MusixmatchClientLib.Auth
         {
             Context = context;
             Token = IssueNewToken();
+        }
+
+        public static MusixmatchToken FromMusixmatchAccount(string email, string password)
+        {
+            MusixmatchApiResponse response = new ApiRequestFactory("", ApiContext.AuthWeb)
+                .SendRequestLegacy(
+                    ApiRequestFactory.ApiMethod.AccountPost, 
+                    null, 
+                    $"{{\"credential_list\":[{{\"credential\":{{\"type\":\"mxm\",\"email\":\"{email}\",\"password\":\"{password}\",\"action\":\"login\"}}}}]}}");
+
+            string token = response.Cast<AuthenticationGet>().tokens.webdesktopappv10;
+            
+            return new MusixmatchToken(token);
         }
 
         /// <summary>

@@ -32,6 +32,9 @@ namespace MusixmatchClientLib.Types
         public string Language { get; set; } = "";
         public bool HasLyrics { get; set; } = true;
         public bool HasSubtitles { get; set; } = false;
+
+        public bool HasRichSync { get; set; } = false;
+        
         public SortStrategy Sort { get; set; } = SortStrategy.TrackRatingDesc;
     }
 }
