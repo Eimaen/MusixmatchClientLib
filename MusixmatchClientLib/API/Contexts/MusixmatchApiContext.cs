@@ -11,17 +11,25 @@ namespace MusixmatchClientLib.API.Contexts
             [ApiContext.Web] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://www.musixmatch.com/ws/1.1/",
-                AppId = @"community-app-v1.0"
+                AppId = @"community-app-v1.0",
+                RequiresSignature = true
             },
             [ApiContext.Desktop] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://apic-desktop.musixmatch.com/ws/1.1/",
-                AppId = @"web-desktop-app-v1.0"
+                AppId = @"web-desktop-app-v1.0",
+                RequiresSignature = true
             },
             [ApiContext.iOS] = new MusixmatchApiContext
             {
                 ApiUrl = @"https://apic.musixmatch.com/ws/1.1/",
-                AppId = @"mac-ios-v2.0"
+                AppId = @"mac-ios-v2.0",
+                RequiresSignature = true
+            },
+            [ApiContext.AuthWeb] = new MusixmatchApiContext
+            {
+                ApiUrl = @"https://account.musixmatch.com/ws/1.1/",
+                RequiresSignature = false
             }
             // AppId = @"api-php"
             // TODO: research
@@ -43,5 +51,6 @@ namespace MusixmatchClientLib.API.Contexts
 
         public string AppId { get; private set; }
         public string ApiUrl { get; private set; }
+        public bool RequiresSignature { get; private set; }
     }
 }

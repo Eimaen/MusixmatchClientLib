@@ -5,6 +5,7 @@
         Desktop,
         Web,
         Community = Web,
-        iOS
+        iOS,
+        AuthWeb
     }
 }
