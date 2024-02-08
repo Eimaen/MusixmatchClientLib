@@ -22,7 +22,6 @@ namespace MusixmatchClientLib.API.Model.Exceptions
             [StatusCode.ServerBusy] = "Our system is a bit busy at the moment and your request can’t be satisfied."
         };
 
-        public MusixmatchRequestException(string message, StatusCode statusCode) : base(message) => StatusCode = statusCode;
-        public MusixmatchRequestException(StatusCode statusCode) : base(ExceptionMessages[statusCode]) { }
+        public MusixmatchRequestException(StatusCode statusCode) : base(ExceptionMessages[statusCode]) => StatusCode = statusCode;
     }
 }
