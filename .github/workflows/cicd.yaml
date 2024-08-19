@@ -32,7 +32,9 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --verbosity minimal
       - name: Publish to NuGET
-        run: ./publish.sh
+        run: |
+          chmod +x ./publish.sh
+          ./publish.sh
         if: startsWith( github.ref, 'refs/tags/')
         env:
           NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
