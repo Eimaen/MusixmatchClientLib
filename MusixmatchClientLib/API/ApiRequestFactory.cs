@@ -269,7 +269,7 @@ namespace MusixmatchClientLib.API
                 catch 
                 { 
                     /* What? */ 
-                    retries++; 
+                    retries--; 
                     Thread.Sleep(250); 
                 }
             }
